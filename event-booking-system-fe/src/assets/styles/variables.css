@@ -1,0 +1,9 @@
+/* variables.css - Gam màu chung cho toàn bộ hệ thống */
+:root {
+  --primary-color: #007bff; /* Xanh dương chính */
+  --secondary-color: #6c757d; /* Xám phụ */
+  --background-color: #ffffff; /* Nền trắng */
+  --text-color: #212529; /* Chữ tối */
+  --hover-color: #0056b3; /* Xanh dương đậm khi hover */
+  --footer-bg: #007bff; /* Nền footer giống primary */
+}
