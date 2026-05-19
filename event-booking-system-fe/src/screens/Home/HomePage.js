@@ -6,117 +6,134 @@ import './HomePage.css';
 const HomePage = () => {
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    navigate('/login');
-  };
-
-  const handleRegister = () => {
-    navigate('/register');
-  };
-
   return (
     <div className="home-page">
-      {/* Hero Section */}
       <section className="hero-section">
-        <Container className="h-100">
-          <Row className="align-items-center h-100">
-            <Col lg={6} className="text-center text-lg-start">
-              <h1 className="hero-title">Chào mừng đến Event Booking System</h1>
-              <p className="hero-subtitle">Đặt vé sự kiện dễ dàng và nhanh chóng với trải nghiệm tuyệt vời</p>
+        <Container>
+          <Row>
+            <Col lg={8}>
+              <div className="section-eyebrow text-white-50">Event Booking</div>
+              <h1 className="hero-title">Đặt vé sự kiện nhanh, rõ ràng và đáng tin cậy</h1>
+              <p className="hero-subtitle">
+                Khám phá sự kiện nổi bật, đặt vé thuận tiện và quản lý trải
+                nghiệm tham dự trong một nền tảng thống nhất.
+              </p>
               <div className="hero-buttons">
-                <Button onClick={handleLogin} variant="light" size="lg" className="me-3">Đăng nhập</Button>
-                <Button onClick={handleRegister} variant="outline-light" size="lg">Đăng ký</Button>
-              </div>
-            </Col>
-            <Col lg={6} className="d-none d-lg-block">
-              <div className="hero-image">
-                <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Event" className="img-fluid rounded shadow" />
+                <Button variant="primary" size="lg" onClick={() => navigate('/events')}>
+                  Khám phá sự kiện
+                </Button>
+                <Button variant="outline-light" size="lg" onClick={() => navigate('/register')}>
+                  Tạo tài khoản
+                </Button>
               </div>
             </Col>
           </Row>
         </Container>
       </section>
 
-      {/* Featured Events Carousel */}
-      <section className="featured-events py-5">
+      <section className="featured-events">
         <Container>
-          <h2 className="section-title text-center mb-5">Sự kiện nổi bật</h2>
+          <div className="section-heading text-center">
+            <div className="section-eyebrow">Nổi bật</div>
+            <h2 className="section-title">Sự kiện đáng chú ý</h2>
+            <p className="section-subtitle mx-auto">
+              Những trải nghiệm được chọn lọc cho âm nhạc, hội thảo, triển lãm
+              và các hoạt động cộng đồng.
+            </p>
+          </div>
+
           <Carousel>
             <Carousel.Item>
               <img
                 className="d-block w-100"
-                src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-                alt="First slide"
+                src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=2070&q=80"
+                alt="Concert"
               />
               <Carousel.Caption>
-                <h3>Concert Rock 2024</h3>
-                <p>Trải nghiệm âm nhạc đỉnh cao với các nghệ sĩ hàng đầu.</p>
-                <Button variant="primary">Đặt vé ngay</Button>
+                <h3>Concert mùa hè</h3>
+                <p>Không gian âm nhạc sôi động với các nghệ sĩ được yêu thích.</p>
+                <Button variant="primary" onClick={() => navigate('/events')}>
+                  Đặt vé ngay
+                </Button>
               </Carousel.Caption>
             </Carousel.Item>
+
             <Carousel.Item>
               <img
                 className="d-block w-100"
-                src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-                alt="Second slide"
+                src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=2070&q=80"
+                alt="Technology conference"
               />
               <Carousel.Caption>
-                <h3>Hội thảo Công nghệ</h3>
-                <p>Cập nhật xu hướng công nghệ mới nhất.</p>
-                <Button variant="primary">Đăng ký tham gia</Button>
+                <h3>Hội thảo công nghệ</h3>
+                <p>Cập nhật xu hướng mới và kết nối với cộng đồng chuyên môn.</p>
+                <Button variant="primary" onClick={() => navigate('/events')}>
+                  Xem chi tiết
+                </Button>
               </Carousel.Caption>
             </Carousel.Item>
+
             <Carousel.Item>
               <img
                 className="d-block w-100"
-                src="https://images.unsplash.com/photo-1460661411084-41d2db419c91?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-                alt="Third slide"
+                src="https://images.unsplash.com/photo-1460661411084-41d2db419c91?auto=format&fit=crop&w=2070&q=80"
+                alt="Art exhibition"
               />
               <Carousel.Caption>
-                <h3>Triển lãm Nghệ thuật</h3>
-                <p>Khám phá thế giới nghệ thuật đương đại.</p>
-                <Button variant="primary">Xem chi tiết</Button>
+                <h3>Triển lãm nghệ thuật</h3>
+                <p>Khám phá các tác phẩm đương đại trong không gian giàu cảm hứng.</p>
+                <Button variant="primary" onClick={() => navigate('/events')}>
+                  Khám phá
+                </Button>
               </Carousel.Caption>
             </Carousel.Item>
           </Carousel>
         </Container>
       </section>
 
-      {/* Features Section */}
-      <section className="features py-5 bg-light">
+      <section className="features">
         <Container>
-          <h2 className="section-title text-center mb-5">Tính năng nổi bật</h2>
-          <Row>
-            <Col md={4} className="mb-4">
-              <Card className="feature-card h-100 border-0 shadow-sm">
-                <Card.Body className="text-center p-4">
-                  <div className="feature-icon mb-3">
-                    <i className="fas fa-ticket-alt fa-3x text-primary"></i>
-                  </div>
-                  <Card.Title className="h5">Đặt vé dễ dàng</Card.Title>
-                  <Card.Text>Chỉ với vài bước đơn giản, bạn có thể đặt vé cho sự kiện yêu thích.</Card.Text>
+          <div className="section-heading text-center">
+            <div className="section-eyebrow">Trải nghiệm</div>
+            <h2 className="section-title">Tối ưu cho người tham dự và nhà tổ chức</h2>
+          </div>
+
+          <Row className="g-4">
+            <Col md={4}>
+              <Card className="feature-card">
+                <Card.Body className="p-4">
+                  <div className="feature-icon mb-3 text-primary fw-bold">01</div>
+                  <Card.Title>Đặt vé dễ dàng</Card.Title>
+                  <Card.Text className="text-muted">
+                    Tìm sự kiện, xem thông tin quan trọng và hoàn tất đặt vé
+                    trong vài bước.
+                  </Card.Text>
                 </Card.Body>
               </Card>
             </Col>
-            <Col md={4} className="mb-4">
-              <Card className="feature-card h-100 border-0 shadow-sm">
-                <Card.Body className="text-center p-4">
-                  <div className="feature-icon mb-3">
-                    <i className="fas fa-calendar-alt fa-3x text-success"></i>
-                  </div>
-                  <Card.Title className="h5">Sự kiện đa dạng</Card.Title>
-                  <Card.Text>Âm nhạc, thể thao, hội thảo, triển lãm - mọi loại sự kiện đều có.</Card.Text>
+
+            <Col md={4}>
+              <Card className="feature-card">
+                <Card.Body className="p-4">
+                  <div className="feature-icon mb-3 text-primary fw-bold">02</div>
+                  <Card.Title>Sự kiện đa dạng</Card.Title>
+                  <Card.Text className="text-muted">
+                    Âm nhạc, thể thao, hội thảo và triển lãm được trình bày
+                    nhất quán, dễ so sánh.
+                  </Card.Text>
                 </Card.Body>
               </Card>
             </Col>
-            <Col md={4} className="mb-4">
-              <Card className="feature-card h-100 border-0 shadow-sm">
-                <Card.Body className="text-center p-4">
-                  <div className="feature-icon mb-3">
-                    <i className="fas fa-shield-alt fa-3x text-warning"></i>
-                  </div>
-                  <Card.Title className="h5">Thanh toán an toàn</Card.Title>
-                  <Card.Text>Bảo mật thông tin tối đa với công nghệ mã hóa tiên tiến.</Card.Text>
+
+            <Col md={4}>
+              <Card className="feature-card">
+                <Card.Body className="p-4">
+                  <div className="feature-icon mb-3 text-primary fw-bold">03</div>
+                  <Card.Title>Quản lý rõ ràng</Card.Title>
+                  <Card.Text className="text-muted">
+                    Nhà tổ chức có khu vực riêng để theo dõi sự kiện, vé và
+                    hiệu quả vận hành.
+                  </Card.Text>
                 </Card.Body>
               </Card>
             </Col>

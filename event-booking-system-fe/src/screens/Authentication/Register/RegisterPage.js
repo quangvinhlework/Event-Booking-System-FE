@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Form, Button, Alert } from 'react-bootstrap';
 import { useAuth } from '../../../hooks/useAuth';
 import { uploadToCloudinary } from '../../../configs/CloudinaryConfig';
+import { FormField } from '../../../components';
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -11,7 +12,7 @@ const RegisterPage = () => {
     password: '',
     confirmPassword: '',
     avatar: null,
-    avatarUrl: ''
+    avatarUrl: '',
   });
   const [preview, setPreview] = useState('');
   const [error, setError] = useState('');
@@ -28,46 +29,44 @@ const RegisterPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
+    if (!file) return;
 
-      if (!file.type.startsWith('image/')) {
-        setError('Vui lòng chọn một file ảnh');
-        return;
-      }
-
-      if (file.size > 5 * 1024 * 1024) {
-        setError('Kích thước ảnh không được vượt quá 5MB');
-        return;
-      }
-
-      setFormData(prev => ({
-        ...prev,
-        avatar: file
-      }));
-
-      // Hiển thị preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-      setError('');
+    if (!file.type.startsWith('image/')) {
+      setError('Vui lòng chọn một file ảnh');
+      return;
     }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Kích thước ảnh không được vượt quá 5MB');
+      return;
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      avatar: file,
+    }));
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+    setError('');
   };
 
   const handleRemoveAvatar = () => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       avatar: null,
-      avatarUrl: ''
+      avatarUrl: '',
     }));
     setPreview('');
   };
@@ -95,9 +94,9 @@ const RegisterPage = () => {
       setIsUploading(true);
       try {
         const avatarUrl = await uploadToCloudinary(formData.avatar);
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
-          avatarUrl: avatarUrl
+          avatarUrl,
         }));
         setSuccess('Avatar đã được tải lên thành công');
       } catch (err) {
@@ -110,67 +109,71 @@ const RegisterPage = () => {
     }
   };
 
-
   return (
-    <Container className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
-      <div className="bg-white p-4 rounded shadow w-100" style={{ maxWidth: '400px' }}>
+    <Container className="auth-page justify-content-center">
+      <div className="auth-card">
         <h2 className="text-center mb-4">Đăng ký tài khoản</h2>
         {error && <Alert variant="danger">{error}</Alert>}
         {success && <Alert variant="success">{success}</Alert>}
-        <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3" controlId="fullName">
-            <Form.Label>Họ và tên:</Form.Label>
-            <Form.Control
-              type="text"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              placeholder="Nhập họ và tên"
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="email">
-            <Form.Label>Email:</Form.Label>
-            <Form.Control
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Nhập email"
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="password">
-            <Form.Label>Mật khẩu:</Form.Label>
-            <Form.Control
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Nhập mật khẩu"
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="confirmPassword">
-            <Form.Label>Xác nhận mật khẩu:</Form.Label>
-            <Form.Control
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="Nhập lại mật khẩu"
-              required
-            />
-          </Form.Group>
 
-          <Form.Group className="mb-3" controlId="avatar">
-            <Form.Label>Tải ảnh đại diện (Avatar):</Form.Label>
-            <Form.Control
-              type="file"
-              accept="image/*"
-              onChange={handleAvatarChange}
-              disabled={isUploading}
-            />
+        <Form onSubmit={handleSubmit}>
+          <FormField
+            className="mb-3"
+            controlId="fullName"
+            label="Họ và tên:"
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleChange}
+            placeholder="Nhập họ và tên"
+            required
+          />
+
+          <FormField
+            className="mb-3"
+            controlId="email"
+            label="Email:"
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Nhập email"
+            required
+          />
+
+          <FormField
+            className="mb-3"
+            controlId="password"
+            label="Mật khẩu:"
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Nhập mật khẩu"
+            required
+          />
+
+          <FormField
+            className="mb-3"
+            controlId="confirmPassword"
+            label="Xác nhận mật khẩu:"
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            placeholder="Nhập lại mật khẩu"
+            required
+          />
+
+          <FormField
+            className="mb-3"
+            controlId="avatar"
+            label="Tải ảnh đại diện (Avatar):"
+            type="file"
+            name="avatar"
+            accept="image/*"
+            onChange={handleAvatarChange}
+            disabled={isUploading}
+          >
             <Form.Text className="text-muted">
               Định dạng: JPG, PNG, GIF (Tối đa 5MB)
             </Form.Text>
@@ -185,11 +188,12 @@ const RegisterPage = () => {
                       maxWidth: '150px',
                       maxHeight: '150px',
                       borderRadius: '8px',
-                      objectFit: 'cover'
+                      objectFit: 'cover',
                     }}
                   />
                 </div>
                 <Button
+                  type="button"
                   variant="danger"
                   size="sm"
                   className="w-100 mt-2"
@@ -200,19 +204,23 @@ const RegisterPage = () => {
                 </Button>
               </div>
             )}
-          </Form.Group>
+          </FormField>
 
-          <Button 
-            type="submit" 
-            variant="primary" 
+          <Button
+            type="submit"
+            variant="primary"
             className="w-100"
             disabled={isUploading}
           >
             {isUploading ? 'Đang tải ảnh...' : 'Đăng ký'}
           </Button>
         </Form>
+
         <p className="text-center mt-3">
-          Đã có tài khoản? <Button variant="link" onClick={handleLogin}>Đăng nhập ngay</Button>
+          Đã có tài khoản?{' '}
+          <Button variant="link" onClick={handleLogin}>
+            Đăng nhập ngay
+          </Button>
         </p>
       </div>
     </Container>

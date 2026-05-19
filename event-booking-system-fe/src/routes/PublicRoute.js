@@ -2,15 +2,11 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 const PublicRoute = ({ children }) => {
-  const { isAuthenticated, loading, user } = useAuth();
+  const { loading, user } = useAuth();
 
   if (loading) return <div>Loading...</div>;
 
-  if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
-  if (user?.role === 'organizer') {
+  if (user?.role === 'ORGANIZER') {
     return <Navigate to="/organizer/dashboard" replace />;
   }
 

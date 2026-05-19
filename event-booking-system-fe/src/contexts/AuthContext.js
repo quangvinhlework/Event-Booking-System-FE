@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from "react";
+import * as authService from "../services/authService";
 
 export const AuthContext = createContext();
 
@@ -10,52 +11,36 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    console.log('Token from localStorage:', token);
 
     if (token) {
+      authService.getMyInfo(token)
+        .then(response => {
+          console.log('User info fetched successfully: ', response.data);
+          setUser(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching user info:', error);
+        });
       setAccessToken(token);
       setIsAuthenticated(true);
-
-      // Mockup
-      const fakeUser = {
-        id: 1,
-        name: "Vinh",
-        role: "user",
-      };
-      setUser(fakeUser);
     }
 
     setLoading(false);
   }, []);
 
   const login = async (email, password) => {
-    // gọi API thật
-    if (email === "user@gmail.com" && password === "1") {
-      const fakeResponse = {
-        token: "abc123",
-        user: {
-          id: 1,
-          name: "Vinh User",
-          role: "user",
-        },
-      };
-      setUser(fakeResponse.user);
-      setAccessToken(fakeResponse.token);
-      setIsAuthenticated(true);
-      localStorage.setItem("token", fakeResponse.token);
-    } else {
-      const fakeResponse = {
-        token: "def456",
-        user: {
-          id: 2,
-          name: "Vinh Organizer",
-          role: "organizer",
-        },
-      };
-      setUser(fakeResponse.user);
-      setAccessToken(fakeResponse.token);
-      setIsAuthenticated(true);
-      localStorage.setItem("token", fakeResponse.token);
+    const response = await authService.login(email, password);
+
+    if (!response.success) {
+      console.error('Login error:', response.message);
+      throw new Error(response.message || 'Đăng nhập thất bại');
     }
+
+    setUser(response.data.user);
+    setAccessToken(response.data.accessToken);
+    setIsAuthenticated(true);
+    localStorage.setItem('token', response.data.accessToken);
   };
 
   const logout = () => {

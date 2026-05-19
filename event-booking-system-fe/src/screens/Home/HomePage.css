@@ -1,176 +1,108 @@
-/* HomePage.css */
-
 .home-page {
-  font-family: 'Arial', sans-serif;
+  background: transparent;
 }
 
-/* Hero Section */
 .hero-section {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  min-height: 80vh;
+  min-height: 72vh;
   display: flex;
   align-items: center;
   position: relative;
   overflow: hidden;
-}
-
-.hero-section::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(45deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.1) 100%);
-  z-index: 1;
-}
-
-.hero-section .container {
-  position: relative;
-  z-index: 2;
+  background:
+    linear-gradient(90deg, rgba(23, 32, 51, 0.9) 0%, rgba(23, 32, 51, 0.58) 48%, rgba(23, 32, 51, 0.22) 100%),
+    url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=2070&q=80') center/cover;
+  color: #ffffff;
 }
 
 .hero-title {
-  font-size: 3.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  max-width: 46rem;
+  font-size: clamp(2.5rem, 5vw, 4.8rem);
+  line-height: 1.02;
+  font-weight: 900;
+  letter-spacing: 0;
+  margin-bottom: 1.25rem;
 }
 
 .hero-subtitle {
-  font-size: 1.25rem;
+  max-width: 36rem;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 1.15rem;
   margin-bottom: 2rem;
-  opacity: 0.9;
 }
 
-.hero-buttons .btn {
-  padding: 0.75rem 2rem;
-  font-weight: 600;
-  border-radius: 50px;
-  transition: all 0.3s ease;
+.hero-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
-.hero-buttons .btn:hover {
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+.featured-events,
+.features {
+  padding: 4.5rem 0;
 }
 
-.hero-image img {
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-}
-
-/* Featured Events */
 .featured-events {
-  background-color: #f8f9fa;
+  background: var(--app-bg);
 }
 
-.section-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #333;
-  margin-bottom: 3rem;
+.featured-events .carousel {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--app-shadow);
 }
 
 .carousel-item img {
-  height: 400px;
+  height: min(460px, 58vw);
   object-fit: cover;
-  border-radius: 10px;
 }
 
 .carousel-caption {
-  background: rgba(0,0,0,0.7);
-  border-radius: 10px;
-  padding: 2rem;
-  bottom: 20px;
-  left: 10%;
-  right: 10%;
+  right: auto;
+  left: 2rem;
+  bottom: 2rem;
+  max-width: 34rem;
+  text-align: left;
+  background: rgba(23, 32, 51, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  padding: 1.25rem;
+  backdrop-filter: blur(10px);
 }
 
 .carousel-caption h3 {
-  font-size: 1.75rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.carousel-caption p {
-  font-size: 1rem;
-  margin-bottom: 1rem;
-}
-
-.carousel-caption .btn {
-  background-color: #007bff;
-  border: none;
-  padding: 0.5rem 1.5rem;
-  border-radius: 25px;
-  font-weight: 600;
-}
-
-/* Features */
-.features {
-  background-color: #ffffff;
+  font-weight: 800;
 }
 
 .feature-card {
-  transition: box-shadow 0.3s ease;
-  border-radius: 15px;
+  height: 100%;
+  border: 1px solid var(--app-border);
+  border-radius: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .feature-card:hover {
-  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+  transform: translateY(-4px);
+  box-shadow: var(--app-shadow);
 }
 
 .feature-icon {
-  color: #007bff;
-  margin-bottom: 1rem;
+  width: 54px;
+  height: 54px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--app-primary-soft);
 }
 
-/* Testimonials */
-.testimonials {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: white;
-}
-
-.testimonial-card {
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 15px;
-}
-
-.testimonial-card:hover {
-}
-
-.testimonial-avatar img {
-  border: 3px solid white;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
-
-.testimonial-card .card-text {
-  font-style: italic;
-  font-size: 1.1rem;
-}
-
-/* Responsive */
 @media (max-width: 768px) {
-  .hero-title {
-    font-size: 2.5rem;
-  }
-
-  .hero-subtitle {
-    font-size: 1rem;
-  }
-
-  .section-title {
-    font-size: 2rem;
-  }
-
-  .carousel-item img {
-    height: 250px;
+  .hero-section {
+    min-height: 64vh;
   }
 
   .carousel-caption {
-    left: 5%;
-    right: 5%;
-    padding: 1rem;
+    position: static;
+    max-width: none;
+    border-radius: 0;
   }
 }
