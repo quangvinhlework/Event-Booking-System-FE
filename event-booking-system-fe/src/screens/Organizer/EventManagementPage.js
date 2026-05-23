@@ -1,36 +1,63 @@
-import React, { useEffect, useState } from 'react';
-import { Container, Button, Table, Badge } from 'react-bootstrap';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useOrganizerEvent } from '../../hooks/event/useOrganizerEvent';
 import { formatTimestamp } from '../../utils/dateConvert';
 import CreateEventModal from './EventManagementModal/CreateEventModal';
-import { useCreateEvent } from '../../hooks/event/useCreateEvent';
 import UpdateEventModal from './EventManagementModal/UpdateEventModal';
-import { useUpdateEvent } from '../../hooks/event/useUpdateEvent';
+import { useEventMotations } from '../../hooks/event/useEventMotations';
+import { eventFilters } from '../../filters/eventFilter';
+import OrganizerLayout from './OrganizerLayout';
 
 const EventManagement = () => {
   const [showModal, setShowModal] = useState(false);
   const [showModifyModal, setShowModifyModal] = useState(false);
-  const { events, fetchEvents, event, getEventById } = useOrganizerEvent();
-  const { createEvent, loading: createLoading } = useCreateEvent();
-  const { updateEvent, loading: updateLoading } = useUpdateEvent();
+  const [page, setPage] = useState(1);
+
+  const queryFilters = useMemo(
+    () => eventFilters.combine(eventFilters.byPage(page)),
+    [page]
+  );
+
+  const { events, fetchEvents, event, getEventById, hasMore } = useOrganizerEvent(queryFilters, {
+    autoFetch: true,
+    append: page > 1,
+  });
+  const { createEvent, updateEvent, deleteEvent, loading } = useEventMotations();
 
   useEffect(() => {
-    fetchEvents();
-  }, [showModal, fetchEvents]);
+    fetchEvents({ page });
+  }, [showModal, fetchEvents, page]);
+
+  const handleLoadMore = () => setPage((p) => p + 1);
 
   const handleCreateEvent = async (eventData) => {
     try {
       await createEvent(eventData);
-    } catch (error) {
-      console.error('Error creating event:', error);
+      setShowModal(false);
+      setPage(1);
+      fetchEvents();
+    } catch (err) {
+      console.error('Error creating event:', err);
     }
   };
 
   const handleUpdateEvent = async (eventData, id) => {
     try {
       await updateEvent(eventData, id);
-    } catch (error) {
-      console.error('Error updating event:', error);
+      setShowModifyModal(false);
+      fetchEvents();
+    } catch (err) {
+      console.error('Error updating event:', err);
+    }
+  };
+
+  const handleDeleteEvent = async (id) => {
+    if (window.confirm('Bạn có chắc chắn muốn xóa sự kiện này?')) {
+      try {
+        await deleteEvent(id);
+        fetchEvents();
+      } catch (err) {
+        console.error('Error deleting event:', err);
+      }
     }
   };
 
@@ -39,92 +66,107 @@ const EventManagement = () => {
     setShowModifyModal(true);
   };
 
-  const getStatusVariant = (status) => {
-    const normalizedStatus = String(status || '').toLowerCase();
-    if (normalizedStatus.includes('active') || normalizedStatus.includes('open')) {
-      return 'success';
-    }
-    if (normalizedStatus.includes('pending')) {
-      return 'warning';
-    }
-    return 'secondary';
+  const getStatusClass = (status) => {
+    const s = String(status || '').toLowerCase();
+    if (s.includes('active') || s.includes('open') || s.includes('onsale')) return 'organizer-status--success';
+    if (s.includes('pending')) return 'organizer-status--warning';
+    return 'organizer-status--muted';
   };
 
   return (
-    <Container className="app-page">
-      <div className="d-flex flex-column flex-md-row justify-content-between gap-3 section-heading">
-        <div>
-          <div className="section-eyebrow">Quản lý</div>
-          <h1 className="section-title">Sự kiện</h1>
-          <p className="section-subtitle">
-            Tạo, cập nhật và theo dõi trạng thái các sự kiện của bạn.
-          </p>
-        </div>
-
-        <div className="d-flex align-items-start">
-          <Button onClick={() => setShowModal(true)}>
-            Thêm sự kiện
-          </Button>
-        </div>
-      </div>
-
-      <div className="table-panel">
-        <Table responsive hover>
+    <OrganizerLayout
+      eyebrow="Quản lý"
+      title="Sự kiện"
+      subtitle="Tạo, chỉnh sửa và theo dõi trạng thái các sự kiện của bạn."
+      actions={
+        <button type="button" className="organizer-btn-primary" onClick={() => setShowModal(true)}>
+          + Thêm sự kiện
+        </button>
+      }
+    >
+      <div className="organizer-table-wrap">
+        <table className="organizer-table">
           <thead>
             <tr>
               <th>ID</th>
               <th>Tên sự kiện</th>
-              <th>Ngày bắt đầu</th>
-              <th>Ngày kết thúc</th>
+              <th>Bắt đầu</th>
+              <th>Kết thúc</th>
               <th>Trạng thái</th>
               <th>Hành động</th>
             </tr>
           </thead>
           <tbody>
-            {events.map((eventItem) => (
-              <tr key={eventItem.id}>
-                <td>{eventItem.id}</td>
-                <td className="fw-semibold">{eventItem.name}</td>
-                <td>{formatTimestamp(eventItem.startTime)}</td>
-                <td>{formatTimestamp(eventItem.endTime)}</td>
-                <td>
-                  <Badge bg={getStatusVariant(eventItem.status)}>
-                    {eventItem.status}
-                  </Badge>
-                </td>
-                <td>
-                  <Button
-                    variant="warning"
-                    size="sm"
-                    className="me-2"
-                    onClick={() => handleClickUpdateButton(eventItem.id)}
-                  >
-                    Sửa
-                  </Button>
-                  <Button variant="danger" size="sm">
-                    Xóa
-                  </Button>
+            {events.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="organizer-table__empty">
+                  Chưa có sự kiện. Bấm &quot;Thêm sự kiện&quot; để tạo mới.
                 </td>
               </tr>
-            ))}
+            ) : (
+              events.map((eventItem) => (
+                <tr key={eventItem.id}>
+                  <td className="text-muted">#{eventItem.id}</td>
+                  <td className="fw-semibold">{eventItem.name}</td>
+                  <td>{formatTimestamp(eventItem.startTime)}</td>
+                  <td>{formatTimestamp(eventItem.endTime)}</td>
+                  <td>
+                    <span className={`organizer-status ${getStatusClass(eventItem.status)}`}>
+                      {eventItem.status}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="organizer-row-actions">
+                      <button
+                        type="button"
+                        className="organizer-btn-sm organizer-btn-sm--gold"
+                        onClick={() => handleClickUpdateButton(eventItem.id)}
+                      >
+                        Sửa
+                      </button>
+                      <button
+                        type="button"
+                        className="organizer-btn-sm organizer-btn-sm--danger"
+                        onClick={() => handleDeleteEvent(eventItem.id)}
+                      >
+                        Xóa
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
-        </Table>
+        </table>
       </div>
+
+      {events.length > 0 && hasMore && (
+        <div className="organizer-load-more">
+          <button
+            type="button"
+            className="organizer-btn-outline"
+            onClick={handleLoadMore}
+            disabled={loading}
+          >
+            {loading ? 'Đang tải...' : 'Tải thêm sự kiện'}
+          </button>
+        </div>
+      )}
 
       <CreateEventModal
         show={showModal}
         onHide={() => setShowModal(false)}
         onCreate={handleCreateEvent}
-        createLoading={createLoading}
+        createLoading={loading}
       />
       <UpdateEventModal
         show={showModifyModal}
         onHide={() => setShowModifyModal(false)}
         eventData={event}
         onUpdate={handleUpdateEvent}
-        updateLoading={updateLoading}
+        updateLoading={loading}
       />
-    </Container>
+    </OrganizerLayout>
   );
 };
 

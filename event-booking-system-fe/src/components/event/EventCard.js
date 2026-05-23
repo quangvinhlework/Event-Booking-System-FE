@@ -20,17 +20,36 @@ const EventCard = ({
     event.image ||
     'https://via.placeholder.com/400x200?text=No+Image';
 
+  const handleCardClick = () => {
+    onViewDetails?.(event.id);
+  };
+
+  const handleButtonClick = (clickEvent) => {
+    clickEvent.stopPropagation();
+    onViewDetails?.(event.id);
+  };
+
   return (
-    <Card className="event-card h-100" style={{ cursor: 'pointer' }}>
-      <Card.Img
-        variant="top"
-        src={imageUrl}
-        alt={event.name || event.title}
-        style={{
-          height: '200px',
-          objectFit: 'cover',
-        }}
-      />
+    <Card
+      className="event-card h-100"
+      role="button"
+      tabIndex={0}
+      onClick={handleCardClick}
+      onKeyDown={(keyboardEvent) => {
+        if (keyboardEvent.key === 'Enter' || keyboardEvent.key === ' ') {
+          keyboardEvent.preventDefault();
+          handleCardClick();
+        }
+      }}
+    >
+      <div className="event-card__image-wrap">
+        <Card.Img
+          variant="top"
+          src={imageUrl}
+          alt={event.name || event.title}
+          className="event-card__image"
+        />
+      </div>
 
       <Card.Body className="d-flex flex-column">
         <div className="mb-2">
@@ -74,7 +93,7 @@ const EventCard = ({
             type="button"
             variant="primary"
             size="sm"
-            onClick={() => onViewDetails?.(event.id)}
+            onClick={handleButtonClick}
           >
             {detailsLabel}
           </Button>

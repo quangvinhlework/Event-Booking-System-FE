@@ -20,9 +20,6 @@ const Footer = () => {
               <li className="mb-2">
                 <a href="/" className="text-decoration-none">Trang chủ</a>
               </li>
-              <li className="mb-2">
-                <a href="/events" className="text-decoration-none">Sự kiện</a>
-              </li>
               <li>
                 <a href="/contact" className="text-decoration-none">Liên hệ</a>
               </li>

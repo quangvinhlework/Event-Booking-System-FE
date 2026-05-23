@@ -1,24 +1,43 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { useAuth } from '../hooks/useAuth';
 
 const Header = () => {
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isOrganizerArea = location.pathname.startsWith('/organizer');
+  const isLuxuryTheme =
+    isOrganizerArea ||
+    location.pathname === '/' ||
+    location.pathname === '/login' ||
+    location.pathname === '/register' ||
+    location.pathname.startsWith('/event/');
 
   const handleLogoutClick = () => {
     logout();
   };
 
+  const goHome = () => {
+    if (location.pathname === '/') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    navigate('/');
+  };
+
   return (
-    <Navbar expand="lg" className="navbar-app sticky-top">
+    <Navbar
+      expand="lg"
+      className={`navbar-app sticky-top${isLuxuryTheme ? ' navbar-app--luxury' : ''}`}
+    >
       <Container>
         <Navbar.Brand
           onClick={() =>
             navigate(user?.role === 'ORGANIZER' ? '/organizer/dashboard' : '/')
           }
-          className="fw-bold"
+          className="fw-bold navbar-brand-luxury"
         >
           Event Booking
         </Navbar.Brand>
@@ -26,28 +45,22 @@ const Header = () => {
         <Navbar.Toggle aria-controls="main-navbar-nav" />
         <Navbar.Collapse id="main-navbar-nav">
           <Nav className="me-auto">
-            {user?.role === 'ORGANIZER' ? (
+            {user?.role === 'ORGANIZER' && !isOrganizerArea ? (
               <>
                 <Nav.Link onClick={() => navigate('/organizer/dashboard')}>
-                  Tổng quan
-                </Nav.Link>
-                <Nav.Link onClick={() => navigate('/organizer/events')}>
-                  Sự kiện
-                </Nav.Link>
-                <Nav.Link onClick={() => navigate('/organizer/tickets')}>
-                  Vé
-                </Nav.Link>
-                <Nav.Link onClick={() => navigate('/organizer/analytics')}>
-                  Phân tích
+                  Bảng điều khiển
                 </Nav.Link>
               </>
-            ) : (
+            ) : user?.role !== 'ORGANIZER' ? (
               <>
-                <Nav.Link onClick={() => navigate('/')}>Trang chủ</Nav.Link>
-                <Nav.Link onClick={() => navigate('/events')}>Sự kiện</Nav.Link>
-                <Nav.Link onClick={() => navigate('/about')}>Giới thiệu</Nav.Link>
+                <Nav.Link onClick={goHome} className={isLuxuryTheme ? 'nav-link-luxury' : ''}>
+                  Trang chủ
+                </Nav.Link>
+                <Nav.Link onClick={() => navigate('/about')} className={isLuxuryTheme ? 'nav-link-luxury' : ''}>
+                  Giới thiệu
+                </Nav.Link>
               </>
-            )}
+            ) : null}
           </Nav>
 
           <Nav className="align-items-lg-center gap-2">
@@ -55,25 +68,41 @@ const Header = () => {
               <>
                 {user?.role === 'USER' && (
                   <Button
-                    variant="outline-primary"
+                    variant={isLuxuryTheme ? 'outline-light' : 'outline-primary'}
+                    size="sm"
+                    className={isLuxuryTheme ? 'btn-luxury-outline' : ''}
                     onClick={() => navigate('/become-organizer')}
                   >
                     Trở thành tổ chức viên
                   </Button>
                 )}
-                <Navbar.Text className="text-muted">
+                <Navbar.Text className={isLuxuryTheme ? 'text-luxury-muted' : 'text-muted'}>
                   Xin chào, {user?.fullName}
                 </Navbar.Text>
-                <Button variant="danger" onClick={handleLogoutClick}>
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={handleLogoutClick}
+                >
                   Đăng xuất
                 </Button>
               </>
             ) : (
               <>
-                <Button variant="outline-primary" onClick={() => navigate('/login')}>
+                <Button
+                  variant={isLuxuryTheme ? 'outline-light' : 'outline-primary'}
+                  size="sm"
+                  className={isLuxuryTheme ? 'btn-luxury-outline' : ''}
+                  onClick={() => navigate('/login')}
+                >
                   Đăng nhập
                 </Button>
-                <Button variant="primary" onClick={() => navigate('/register')}>
+                <Button
+                  variant={isLuxuryTheme ? 'warning' : 'primary'}
+                  size="sm"
+                  className={isLuxuryTheme ? 'btn-luxury-gold' : ''}
+                  onClick={() => navigate('/register')}
+                >
                   Đăng ký
                 </Button>
               </>

@@ -28,3 +28,8 @@ export const updateEvent = async (eventData, id) => {
   const formData = buildEventFormData(eventData);
   return handleApi(() => authAxiosClient(token).put(`/secure/organizer/events/${id}`, formData));
 }
+
+export const deleteEvent = async (id) => {
+  const token = localStorage.getItem('token');
+  return handleApi(() => authAxiosClient(token).delete(`/secure/organizer/events/${id}`));
+}

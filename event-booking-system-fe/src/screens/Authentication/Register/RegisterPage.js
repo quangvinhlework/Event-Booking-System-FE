@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Form, Button, Alert } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { useAuth } from '../../../hooks/useAuth';
 import { uploadToCloudinary } from '../../../configs/CloudinaryConfig';
 import { FormField } from '../../../components';
+import AuthBrandPanel from '../AuthBrandPanel';
+import '../AuthPage.css';
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -29,10 +31,7 @@ const RegisterPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleAvatarChange = (e) => {
@@ -49,30 +48,17 @@ const RegisterPage = () => {
       return;
     }
 
-    setFormData((prev) => ({
-      ...prev,
-      avatar: file,
-    }));
+    setFormData((prev) => ({ ...prev, avatar: file }));
 
     const reader = new FileReader();
-    reader.onloadend = () => {
-      setPreview(reader.result);
-    };
+    reader.onloadend = () => setPreview(reader.result);
     reader.readAsDataURL(file);
     setError('');
   };
 
   const handleRemoveAvatar = () => {
-    setFormData((prev) => ({
-      ...prev,
-      avatar: null,
-      avatarUrl: '',
-    }));
+    setFormData((prev) => ({ ...prev, avatar: null, avatarUrl: '' }));
     setPreview('');
-  };
-
-  const handleLogin = () => {
-    navigate('/login');
   };
 
   const handleSubmit = async (e) => {
@@ -94,10 +80,7 @@ const RegisterPage = () => {
       setIsUploading(true);
       try {
         const avatarUrl = await uploadToCloudinary(formData.avatar);
-        setFormData((prev) => ({
-          ...prev,
-          avatarUrl,
-        }));
+        setFormData((prev) => ({ ...prev, avatarUrl }));
         setSuccess('Avatar đã được tải lên thành công');
       } catch (err) {
         setError(err.message || 'Không thể tải lên avatar');
@@ -110,120 +93,121 @@ const RegisterPage = () => {
   };
 
   return (
-    <Container className="auth-page justify-content-center">
-      <div className="auth-card">
-        <h2 className="text-center mb-4">Đăng ký tài khoản</h2>
-        {error && <Alert variant="danger">{error}</Alert>}
-        {success && <Alert variant="success">{success}</Alert>}
+    <div className="lux-page auth-luxury">
+      <AuthBrandPanel
+        title="Gia nhập"
+        titleEmphasis="cộng đồng"
+        description="Tạo tài khoản để khám phá và đặt vé những sự kiện được tuyển chọn."
+      />
 
-        <Form onSubmit={handleSubmit}>
-          <FormField
-            className="mb-3"
-            controlId="fullName"
-            label="Họ và tên:"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
-            placeholder="Nhập họ và tên"
-            required
-          />
+      <div className="auth-luxury__form-side">
+        <div className="auth-luxury__card">
+          <span className="auth-luxury__mobile-eyebrow">Event Booking</span>
+          <h2 className="auth-luxury__card-title">Đăng ký</h2>
+          <p className="auth-luxury__card-subtitle">Tạo tài khoản mới của bạn</p>
 
-          <FormField
-            className="mb-3"
-            controlId="email"
-            label="Email:"
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Nhập email"
-            required
-          />
+          {error && <div className="auth-luxury__alert auth-luxury__alert--danger">{error}</div>}
+          {success && <div className="auth-luxury__alert auth-luxury__alert--success">{success}</div>}
 
-          <FormField
-            className="mb-3"
-            controlId="password"
-            label="Mật khẩu:"
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Nhập mật khẩu"
-            required
-          />
+          <Form onSubmit={handleSubmit}>
+            <FormField
+              className="mb-3 auth-luxury__field"
+              controlId="fullName"
+              label="Họ và tên"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleChange}
+              placeholder="Nguyễn Văn A"
+              required
+            />
 
-          <FormField
-            className="mb-3"
-            controlId="confirmPassword"
-            label="Xác nhận mật khẩu:"
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            placeholder="Nhập lại mật khẩu"
-            required
-          />
+            <FormField
+              className="mb-3 auth-luxury__field"
+              controlId="email"
+              label="Email"
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="name@email.com"
+              required
+            />
 
-          <FormField
-            className="mb-3"
-            controlId="avatar"
-            label="Tải ảnh đại diện (Avatar):"
-            type="file"
-            name="avatar"
-            accept="image/*"
-            onChange={handleAvatarChange}
-            disabled={isUploading}
-          >
-            <Form.Text className="text-muted">
-              Định dạng: JPG, PNG, GIF (Tối đa 5MB)
-            </Form.Text>
+            <FormField
+              className="mb-3 auth-luxury__field"
+              controlId="password"
+              label="Mật khẩu"
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Tối thiểu 6 ký tự"
+              required
+            />
 
-            {preview && (
-              <div className="mt-3">
-                <div className="text-center">
-                  <img
-                    src={preview}
-                    alt="Avatar preview"
-                    style={{
-                      maxWidth: '150px',
-                      maxHeight: '150px',
-                      borderRadius: '8px',
-                      objectFit: 'cover',
-                    }}
-                  />
+            <FormField
+              className="mb-3 auth-luxury__field"
+              controlId="confirmPassword"
+              label="Xác nhận mật khẩu"
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="Nhập lại mật khẩu"
+              required
+            />
+
+            <FormField
+              className="mb-3 auth-luxury__field"
+              controlId="avatar"
+              label="Ảnh đại diện"
+              type="file"
+              name="avatar"
+              accept="image/*"
+              onChange={handleAvatarChange}
+              disabled={isUploading}
+            >
+              <Form.Text>JPG, PNG, GIF — tối đa 5MB</Form.Text>
+
+              {preview && (
+                <div className="auth-luxury__avatar-preview">
+                  <img src={preview} alt="Xem trước avatar" />
+                  <button
+                    type="button"
+                    className="auth-luxury__avatar-remove"
+                    onClick={handleRemoveAvatar}
+                    disabled={isUploading}
+                  >
+                    Xóa ảnh
+                  </button>
                 </div>
-                <Button
-                  type="button"
-                  variant="danger"
-                  size="sm"
-                  className="w-100 mt-2"
-                  onClick={handleRemoveAvatar}
-                  disabled={isUploading}
-                >
-                  Xóa ảnh
-                </Button>
-              </div>
-            )}
-          </FormField>
+              )}
+            </FormField>
 
-          <Button
-            type="submit"
-            variant="primary"
-            className="w-100"
-            disabled={isUploading}
-          >
-            {isUploading ? 'Đang tải ảnh...' : 'Đăng ký'}
-          </Button>
-        </Form>
+            <button
+              type="submit"
+              className="lux-btn-primary auth-luxury__submit"
+              disabled={isUploading}
+            >
+              {isUploading ? 'Đang tải ảnh...' : 'Tạo tài khoản'}
+            </button>
+          </Form>
 
-        <p className="text-center mt-3">
-          Đã có tài khoản?{' '}
-          <Button variant="link" onClick={handleLogin}>
-            Đăng nhập ngay
-          </Button>
-        </p>
+          <p className="auth-luxury__footer">
+            Đã có tài khoản?
+            <button type="button" className="auth-luxury__link" onClick={() => navigate('/login')}>
+              Đăng nhập ngay
+            </button>
+          </p>
+
+          <div className="auth-luxury__back-home">
+            <button type="button" onClick={() => navigate('/')}>
+              ← Về trang chủ
+            </button>
+          </div>
+        </div>
       </div>
-    </Container>
+    </div>
   );
 };
 

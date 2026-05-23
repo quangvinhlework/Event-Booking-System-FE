@@ -1,0 +1,157 @@
+/* Shared luxury theme — used across Home, Auth, Event Detail, Modals */
+
+:root {
+  --lux-ink: #0c0c10;
+  --lux-ink-soft: #14141c;
+  --lux-surface: #1a1a24;
+  --lux-surface-elevated: #22222e;
+  --lux-border: rgba(255, 255, 255, 0.08);
+  --lux-gold: #c9a962;
+  --lux-gold-light: #e8d5a3;
+  --lux-gold-dim: rgba(201, 169, 98, 0.15);
+  --lux-cream: #f4efe6;
+  --lux-muted: rgba(244, 239, 230, 0.55);
+  --lux-font-display: 'Cormorant Garamond', Georgia, serif;
+  --lux-font-body: 'Outfit', system-ui, sans-serif;
+}
+
+.lux-page {
+  background: var(--lux-ink);
+  color: var(--lux-cream);
+  font-family: var(--lux-font-body);
+  min-height: calc(100vh - 72px);
+}
+
+.lux-page .lux-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--lux-gold);
+  margin-bottom: 0.5rem;
+}
+
+.lux-page .lux-display-title {
+  font-family: var(--lux-font-display);
+  font-weight: 500;
+  color: var(--lux-cream);
+  line-height: 1.1;
+}
+
+.lux-btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
+  background: transparent;
+  border: 1px solid var(--lux-border);
+  color: var(--lux-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.lux-btn-back:hover {
+  border-color: var(--lux-gold);
+  color: var(--lux-gold-light);
+  background: var(--lux-gold-dim);
+}
+
+.lux-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, var(--lux-gold) 0%, #a88b4a 100%);
+  border: none;
+  color: var(--lux-ink);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.lux-btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 36px rgba(201, 169, 98, 0.35);
+}
+
+.lux-btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.lux-btn-ghost {
+  background: transparent;
+  border: 1px solid var(--lux-border);
+  color: var(--lux-cream);
+  font-weight: 600;
+  padding: 0.85rem 1.5rem;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.lux-btn-ghost:hover {
+  border-color: var(--lux-gold);
+  color: var(--lux-gold-light);
+}
+
+.lux-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--lux-border);
+  color: var(--lux-gold-light);
+  background: rgba(12, 12, 16, 0.5);
+}
+
+.lux-badge--success {
+  border-color: rgba(31, 157, 122, 0.4);
+  color: #6ee7b7;
+}
+
+.lux-badge--warning {
+  border-color: rgba(244, 195, 91, 0.4);
+  color: #f4c35b;
+}
+
+.lux-badge--danger {
+  border-color: rgba(217, 77, 63, 0.4);
+  color: #f87171;
+}
+
+.lux-surface {
+  background: var(--lux-surface);
+  border: 1px solid var(--lux-border);
+}
+
+.lux-empty {
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.lux-empty p {
+  color: var(--lux-muted) !important;
+}
+
+.lux-page .spinner-border {
+  color: var(--lux-gold);
+}
+
+.lux-page .text-muted {
+  color: var(--lux-muted) !important;
+}
+
+.app-shell:has(.lux-page) {
+  background: var(--lux-ink);
+}

@@ -5,4 +5,11 @@ export const mapEventStatisticResponse = (eventStatistic) => ({
   totalViews: eventStatistic.totalViews,
   lastUpdated: eventStatistic.lastUpdated,
   createdAt: eventStatistic.createdAt,
+  event: eventStatistic.event
+    ? {
+        id: eventStatistic.event.id,
+        name: eventStatistic.event.name,
+        description: eventStatistic.event.description,
+      }
+    : null,
 });

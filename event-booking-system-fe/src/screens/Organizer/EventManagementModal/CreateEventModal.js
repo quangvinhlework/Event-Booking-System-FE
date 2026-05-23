@@ -87,7 +87,14 @@ const CreateEventModal = ({ show, onHide, onCreate, createLoading }) => {
     <>
       <LoadingOverlay loading={createLoading} text="Đang tạo sự kiện..." />
 
-      <Modal show={show} onHide={onHide} size="lg" centered>
+      <Modal
+        show={show}
+        onHide={onHide}
+        size="lg"
+        centered
+        className="organizer-modal-root"
+        dialogClassName="organizer-modal"
+      >
         <Modal.Header closeButton>
           <Modal.Title>Thêm sự kiện mới</Modal.Title>
         </Modal.Header>
