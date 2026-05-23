@@ -18,6 +18,7 @@ import Dashboard from './screens/Organizer/Dashboard';
 import EventManagement from './screens/Organizer/EventManagementPage';
 import Analytics from './screens/Organizer/AnalyticsPage';
 import TicketManagement from './screens/Organizer/TicketManagementPage';
+import EventComparison from './screens/Event/EventComparison';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
             <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
             <Route path="/events" element={<PublicRoute><EventPage /></PublicRoute>} />
+            <Route path="/events/comparison" element={<PublicRoute><EventComparison /></PublicRoute>} />
             <Route path="/event/:id" element={<PublicRoute><EventDetailPage /></PublicRoute>} />
             <Route path="/events/:id" element={<PublicRoute><EventDetailPage /></PublicRoute>} />
             <Route path="/organizer/dashboard" element={<OrganizerRoute><Dashboard /></OrganizerRoute>} />
