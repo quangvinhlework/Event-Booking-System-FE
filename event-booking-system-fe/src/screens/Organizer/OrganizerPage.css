@@ -1,4 +1,4 @@
-/* Organizer dashboard — luxury dark, sidebar layout */
+/* Organizer dashboard — dark sidebar layout */
 
 .organizer-shell {
   display: grid;
@@ -20,15 +20,15 @@
   display: flex;
   flex-direction: column;
   padding: 1.5rem 1rem;
-  background: var(--lux-ink-soft);
-  border-bottom: 1px solid var(--lux-border);
+  background: var(--theme-ink-soft);
+  border-bottom: 1px solid var(--theme-border);
 }
 
 @media (min-width: 992px) {
   .organizer-sidebar {
     min-height: calc(100vh - 72px);
     border-bottom: none;
-    border-right: 1px solid var(--lux-border);
+    border-right: 1px solid var(--theme-border);
     position: sticky;
     top: 72px;
     align-self: start;
@@ -38,7 +38,7 @@
 
 .organizer-sidebar__brand {
   padding: 0.5rem 0.75rem 1.5rem;
-  border-bottom: 1px solid var(--lux-border);
+  border-bottom: 1px solid var(--theme-border);
   margin-bottom: 1rem;
 }
 
@@ -47,15 +47,15 @@
   font-size: 0.65rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--lux-gold);
+  color: var(--theme-accent);
   margin-bottom: 0.35rem;
 }
 
 .organizer-sidebar__brand strong {
-  font-family: var(--lux-font-display);
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 1.25rem;
   font-weight: 500;
-  color: var(--lux-cream);
+  color: var(--theme-text);
 }
 
 .organizer-sidebar__nav {
@@ -80,7 +80,7 @@
   align-items: center;
   gap: 0.65rem;
   padding: 0.75rem 1rem;
-  color: var(--lux-muted);
+  color: var(--theme-muted);
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 600;
@@ -90,24 +90,24 @@
 }
 
 .organizer-sidebar__link:hover {
-  color: var(--lux-cream);
-  background: var(--lux-gold-dim);
+  color: var(--theme-text);
+  background: var(--theme-accent-dim);
 }
 
 .organizer-sidebar__link.is-active {
-  color: var(--lux-ink);
-  background: var(--lux-gold);
-  border-color: var(--lux-gold);
+  color: var(--theme-ink);
+  background: var(--theme-accent);
+  border-color: var(--theme-accent);
 }
 
 .organizer-sidebar__link.is-active svg {
-  stroke: var(--lux-ink);
+  stroke: var(--theme-ink);
 }
 
 .organizer-sidebar__footer {
   margin-top: auto;
   padding-top: 1rem;
-  border-top: 1px solid var(--lux-border);
+  border-top: 1px solid var(--theme-border);
   display: none;
 }
 
@@ -122,16 +122,16 @@
   padding: 0.6rem 0.75rem;
   margin-bottom: 1rem;
   background: transparent;
-  border: 1px solid var(--lux-border);
-  color: var(--lux-muted);
+  border: 1px solid var(--theme-border);
+  color: var(--theme-muted);
   font-size: 0.85rem;
   cursor: pointer;
   transition: border-color 0.2s, color 0.2s;
 }
 
 .organizer-sidebar__ghost:hover {
-  border-color: var(--lux-gold);
-  color: var(--lux-gold-light);
+  border-color: var(--theme-accent);
+  color: var(--theme-accent-light);
 }
 
 .organizer-sidebar__user {
@@ -142,7 +142,7 @@
 }
 
 .organizer-sidebar__user span {
-  color: var(--lux-cream);
+  color: var(--theme-text);
   font-weight: 600;
 }
 
@@ -184,28 +184,28 @@
   gap: 1.25rem;
   margin-bottom: 2rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--lux-border);
+  border-bottom: 1px solid var(--theme-border);
 }
 
 .organizer-page-header__eyebrow {
   font-size: 0.72rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--lux-gold);
+  color: var(--theme-accent);
   margin-bottom: 0.4rem;
 }
 
 .organizer-page-header__title {
-  font-family: var(--lux-font-display);
+  font-family: Arial, Helvetica, sans-serif;
   font-size: clamp(1.75rem, 3vw, 2.35rem);
   font-weight: 500;
   margin: 0 0 0.5rem;
-  color: var(--lux-cream);
+  color: var(--theme-text);
 }
 
 .organizer-page-header__subtitle {
   margin: 0;
-  color: var(--lux-muted);
+  color: var(--theme-muted);
   max-width: 36rem;
   line-height: 1.6;
 }
@@ -223,9 +223,9 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.7rem 1.25rem;
-  background: linear-gradient(135deg, var(--lux-gold), #a88b4a);
+  background: linear-gradient(135deg, var(--theme-accent), #a88b4a);
   border: none;
-  color: var(--lux-ink);
+  color: var(--theme-ink);
   font-weight: 700;
   font-size: 0.85rem;
   letter-spacing: 0.04em;
@@ -246,8 +246,8 @@
 .organizer-btn-outline {
   padding: 0.7rem 1.15rem;
   background: transparent;
-  border: 1px solid var(--lux-border);
-  color: var(--lux-cream);
+  border: 1px solid var(--theme-border);
+  color: var(--theme-text);
   font-weight: 600;
   font-size: 0.85rem;
   cursor: pointer;
@@ -255,8 +255,8 @@
 }
 
 .organizer-btn-outline:hover {
-  border-color: var(--lux-gold);
-  color: var(--lux-gold-light);
+  border-color: var(--theme-accent);
+  color: var(--theme-accent-light);
 }
 
 .organizer-btn-sm {
@@ -269,9 +269,9 @@
 }
 
 .organizer-btn-sm--gold {
-  background: var(--lux-gold-dim);
+  background: var(--theme-accent-dim);
   border-color: rgba(201, 169, 98, 0.4);
-  color: var(--lux-gold-light);
+  color: var(--theme-accent-light);
 }
 
 .organizer-btn-sm--danger {
@@ -297,12 +297,12 @@
 
 .organizer-stat-card {
   padding: 1.25rem 1.35rem;
-  background: var(--lux-surface);
-  border: 1px solid var(--lux-border);
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
 }
 
 .organizer-stat-card--gold .organizer-stat-card__value {
-  color: var(--lux-gold-light);
+  color: var(--theme-accent-light);
 }
 
 .organizer-stat-card__label {
@@ -310,30 +310,30 @@
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--lux-muted);
+  color: var(--theme-muted);
   margin-bottom: 0.5rem;
 }
 
 .organizer-stat-card__value {
   display: block;
-  font-family: var(--lux-font-display);
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 1.85rem;
   font-weight: 500;
-  color: var(--lux-cream);
+  color: var(--theme-text);
   line-height: 1.2;
 }
 
 .organizer-stat-card__hint {
   margin: 0.5rem 0 0;
   font-size: 0.8rem;
-  color: var(--lux-muted);
+  color: var(--theme-muted);
 }
 
 /* Panels */
 
 .organizer-panel {
-  background: var(--lux-surface);
-  border: 1px solid var(--lux-border);
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
   padding: 1.5rem;
   margin-bottom: 1.5rem;
   min-width: 0;
@@ -342,15 +342,15 @@
 }
 
 .organizer-panel__title {
-  font-family: var(--lux-font-display);
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 1.35rem;
   font-weight: 500;
   margin: 0 0 0.35rem;
-  color: var(--lux-cream);
+  color: var(--theme-text);
 }
 
 .organizer-panel__desc {
-  color: var(--lux-muted);
+  color: var(--theme-muted);
   font-size: 0.9rem;
   margin-bottom: 1.25rem;
 }
@@ -365,21 +365,21 @@
 
 .organizer-toolbar .form-select,
 .organizer-toolbar .form-control {
-  background: var(--lux-ink-soft);
-  border-color: var(--lux-border);
-  color: var(--lux-cream);
+  background: var(--theme-ink-soft);
+  border-color: var(--theme-border);
+  color: var(--theme-text);
   min-height: 42px;
   max-width: 100%;
 }
 
 .organizer-toolbar .form-select:focus,
 .organizer-toolbar .form-control:focus {
-  border-color: var(--lux-gold);
-  box-shadow: 0 0 0 2px var(--lux-gold-dim);
+  border-color: var(--theme-accent);
+  box-shadow: 0 0 0 2px var(--theme-accent-dim);
 }
 
 .organizer-toolbar .form-label {
-  color: var(--lux-muted);
+  color: var(--theme-muted);
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -389,8 +389,8 @@
 
 .organizer-table-wrap {
   overflow-x: auto;
-  border: 1px solid var(--lux-border);
-  background: var(--lux-surface);
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface);
 }
 
 .organizer-table {
@@ -407,16 +407,16 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--lux-gold);
-  background: var(--lux-ink-soft);
-  border-bottom: 1px solid var(--lux-border);
+  color: var(--theme-accent);
+  background: var(--theme-ink-soft);
+  border-bottom: 1px solid var(--theme-border);
   white-space: nowrap;
 }
 
 .organizer-table tbody td {
   padding: 1rem;
-  color: var(--lux-cream);
-  border-bottom: 1px solid var(--lux-border);
+  color: var(--theme-text);
+  border-bottom: 1px solid var(--theme-border);
   vertical-align: middle;
 }
 
@@ -431,7 +431,7 @@
 .organizer-table__empty {
   text-align: center;
   padding: 3rem 1rem !important;
-  color: var(--lux-muted);
+  color: var(--theme-muted);
 }
 
 .organizer-status {
@@ -441,7 +441,7 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   padding: 0.3rem 0.6rem;
-  border: 1px solid var(--lux-border);
+  border: 1px solid var(--theme-border);
 }
 
 .organizer-status--success {
@@ -455,7 +455,7 @@
 }
 
 .organizer-status--muted {
-  color: var(--lux-muted);
+  color: var(--theme-muted);
 }
 
 /* Alert */
@@ -499,8 +499,8 @@
 
 .organizer-chart-box {
   padding: 1.25rem;
-  background: var(--lux-ink-soft);
-  border: 1px solid var(--lux-border);
+  background: var(--theme-ink-soft);
+  border: 1px solid var(--theme-border);
   min-height: 300px;
   min-width: 0;
   max-width: 100%;
@@ -509,11 +509,11 @@
 
 
 .organizer-chart-box .small {
-  color: var(--lux-muted) !important;
+  color: var(--theme-muted) !important;
 }
 
 .organizer-chart-box .fw-semibold {
-  color: var(--lux-cream) !important;
+  color: var(--theme-text) !important;
 }
 
 .organizer-charts-row {
@@ -539,13 +539,13 @@
 
 .organizer-filters {
   padding: 1.25rem;
-  background: var(--lux-surface);
-  border: 1px solid var(--lux-border);
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
   margin-bottom: 1.25rem;
 }
 
 .organizer-filters .form-label {
-  color: var(--lux-muted);
+  color: var(--theme-muted);
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -554,13 +554,13 @@
 .organizer-filters .form-control,
 .organizer-filters .form-select,
 .organizer-filters .input-group-text {
-  background: var(--lux-ink-soft);
-  border-color: var(--lux-border);
-  color: var(--lux-cream);
+  background: var(--theme-ink-soft);
+  border-color: var(--theme-border);
+  color: var(--theme-text);
 }
 
 .organizer-filters .input-group-text {
-  color: var(--lux-gold);
+  color: var(--theme-accent);
 }
 
 /* Load more */
@@ -571,7 +571,7 @@
   margin-top: 1.5rem;
 }
 
-/* Modal — portaled to body; explicit colors (không phụ thuộc .lux-page) */
+/* Modal — portaled to body; explicit colors (không phụ thuộc .page-shell) */
 
 .modal.organizer-modal-root {
   z-index: 1060;
@@ -604,7 +604,7 @@
 }
 
 .modal-dialog.organizer-modal .modal-title {
-  font-family: var(--lux-font-display);
+  font-family: Arial, Helvetica, sans-serif;
   font-weight: 500;
   color: #f4efe6 !important;
 }
@@ -711,8 +711,8 @@
 
 .organizer-period-summary > div {
   padding: 1rem;
-  background: var(--lux-ink-soft);
-  border: 1px solid var(--lux-border);
+  background: var(--theme-ink-soft);
+  border: 1px solid var(--theme-border);
 }
 
 .organizer-period-summary span {
@@ -720,14 +720,14 @@
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--lux-muted);
+  color: var(--theme-muted);
   margin-bottom: 0.35rem;
 }
 
 .organizer-period-summary strong {
-  font-family: var(--lux-font-display);
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 1.5rem;
-  color: var(--lux-gold-light);
+  color: var(--theme-accent-light);
 }
 
 .organizer-row-actions {
@@ -737,7 +737,7 @@
 }
 
 .app-shell:has(.organizer-shell) {
-  background: var(--lux-ink);
+  background: var(--theme-ink);
 }
 
 .app-shell:has(.organizer-shell) .footer-app {
@@ -745,9 +745,9 @@
 }
 
 .organizer-shell .ticket-detail-block dt {
-  color: var(--lux-muted);
+  color: var(--theme-muted);
 }
 
 .organizer-shell .ticket-detail-block dd {
-  color: var(--lux-cream);
+  color: var(--theme-text);
 }

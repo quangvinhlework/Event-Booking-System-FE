@@ -5,7 +5,8 @@ import CreateEventModal from './EventManagementModal/CreateEventModal';
 import UpdateEventModal from './EventManagementModal/UpdateEventModal';
 import { useEventMotations } from '../../hooks/event/useEventMotations';
 import { eventFilters } from '../../filters/eventFilter';
-import OrganizerLayout from './OrganizerLayout';
+import { LoadingState } from '../../components';
+import OrganizerLayout from './layouts/OrganizerLayout';
 
 const EventManagement = () => {
   const [showModal, setShowModal] = useState(false);
@@ -17,11 +18,18 @@ const EventManagement = () => {
     [page]
   );
 
-  const { events, fetchEvents, event, getEventById, hasMore } = useOrganizerEvent(queryFilters, {
+  const {
+    events,
+    fetchEvents,
+    event,
+    getEventById,
+    hasMore,
+    loading: eventsLoading,
+  } = useOrganizerEvent(queryFilters, {
     autoFetch: true,
     append: page > 1,
   });
-  const { createEvent, updateEvent, deleteEvent, loading } = useEventMotations();
+  const { createEvent, updateEvent, deleteEvent, loading: mutationLoading } = useEventMotations();
 
   useEffect(() => {
     fetchEvents({ page });
@@ -84,6 +92,9 @@ const EventManagement = () => {
         </button>
       }
     >
+      {eventsLoading && events.length === 0 ? (
+        <LoadingState text="Đang tải danh sách sự kiện..." />
+      ) : (
       <div className="organizer-table-wrap">
         <table className="organizer-table">
           <thead>
@@ -139,6 +150,7 @@ const EventManagement = () => {
           </tbody>
         </table>
       </div>
+      )}
 
       {events.length > 0 && hasMore && (
         <div className="organizer-load-more">
@@ -146,9 +158,9 @@ const EventManagement = () => {
             type="button"
             className="organizer-btn-outline"
             onClick={handleLoadMore}
-            disabled={loading}
+            disabled={eventsLoading}
           >
-            {loading ? 'Đang tải...' : 'Tải thêm sự kiện'}
+            {eventsLoading ? 'Đang tải...' : 'Tải thêm sự kiện'}
           </button>
         </div>
       )}
@@ -157,14 +169,14 @@ const EventManagement = () => {
         show={showModal}
         onHide={() => setShowModal(false)}
         onCreate={handleCreateEvent}
-        createLoading={loading}
+        createLoading={mutationLoading}
       />
       <UpdateEventModal
         show={showModifyModal}
         onHide={() => setShowModifyModal(false)}
         eventData={event}
         onUpdate={handleUpdateEvent}
-        updateLoading={loading}
+        updateLoading={mutationLoading}
       />
     </OrganizerLayout>
   );

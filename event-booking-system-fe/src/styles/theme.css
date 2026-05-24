@@ -1,0 +1,157 @@
+/* Shared dark theme — Home, Auth, Event Detail, Organizer */
+
+:root {
+  --theme-ink: #0c0c10;
+  --theme-ink-soft: #14141c;
+  --theme-surface: #1a1a24;
+  --theme-surface-elevated: #22222e;
+  --theme-border: rgba(255, 255, 255, 0.08);
+  --theme-accent: #c9a962;
+  --theme-accent-light: #e8d5a3;
+  --theme-accent-dim: rgba(201, 169, 98, 0.15);
+  --theme-text: #f4efe6;
+  --theme-muted: rgba(244, 239, 230, 0.55);
+}
+
+.page-shell {
+  background: var(--theme-ink);
+  color: var(--theme-text);
+  font-family: Arial, Helvetica, sans-serif;
+  min-height: calc(100vh - 72px);
+}
+
+.page-shell .page-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--theme-accent);
+  margin-bottom: 0.5rem;
+}
+
+.page-shell .page-title-lg {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 500;
+  color: var(--theme-text);
+  line-height: 1.1;
+}
+
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
+  background: transparent;
+  border: 1px solid var(--theme-border);
+  color: var(--theme-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.btn-back:hover {
+  border-color: var(--theme-accent);
+  color: var(--theme-accent-light);
+  background: var(--theme-accent-dim);
+}
+
+.btn-primary-accent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, var(--theme-accent) 0%, #a88b4a 100%);
+  border: none;
+  color: var(--theme-ink);
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-primary-accent:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 36px rgba(201, 169, 98, 0.35);
+}
+
+.btn-primary-accent:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--theme-border);
+  color: var(--theme-text);
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 600;
+  padding: 0.85rem 1.5rem;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.btn-ghost:hover {
+  border-color: var(--theme-accent);
+  color: var(--theme-accent-light);
+}
+
+.badge-tag {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--theme-border);
+  color: var(--theme-accent-light);
+  background: rgba(12, 12, 16, 0.5);
+}
+
+.badge-tag--success {
+  border-color: rgba(31, 157, 122, 0.4);
+  color: #6ee7b7;
+}
+
+.badge-tag--warning {
+  border-color: rgba(244, 195, 91, 0.4);
+  color: #f4c35b;
+}
+
+.badge-tag--danger {
+  border-color: rgba(217, 77, 63, 0.4);
+  color: #f87171;
+}
+
+.surface-panel {
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+}
+
+.empty-section {
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.empty-section p {
+  color: var(--theme-muted) !important;
+}
+
+.page-shell .spinner-border {
+  color: var(--theme-accent);
+}
+
+.page-shell .text-muted {
+  color: var(--theme-muted) !important;
+}
+
+.app-shell:has(.page-shell) {
+  background: var(--theme-ink);
+}

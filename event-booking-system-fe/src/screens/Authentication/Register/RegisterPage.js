@@ -2,25 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form } from 'react-bootstrap';
 import { useAuth } from '../../../hooks/useAuth';
-import { uploadToCloudinary } from '../../../configs/CloudinaryConfig';
 import { FormField } from '../../../components';
 import AuthBrandPanel from '../AuthBrandPanel';
 import '../AuthPage.css';
-
+import LoadingState from '../../../components/feedback/LoadingState';
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     password: '',
     confirmPassword: '',
-    avatar: null,
-    avatarUrl: '',
+    role: '3', // 3: USER, 2: ORGANIZER, 1: ADMIN
+    avatar: null
   });
   const [preview, setPreview] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [isUploading, setIsUploading] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, register, registerLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,6 +26,14 @@ const RegisterPage = () => {
       navigate('/');
     }
   }, [isAuthenticated, navigate]);
+
+  if (registerLoading) {
+    return (
+      <div className="page-shell auth-layout d-flex align-items-center justify-content-center">
+        <LoadingState text="Đang đăng ký tài khoản..." />
+      </div>
+    );
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,10 +60,11 @@ const RegisterPage = () => {
     reader.onloadend = () => setPreview(reader.result);
     reader.readAsDataURL(file);
     setError('');
+    console.log(formData);
   };
 
   const handleRemoveAvatar = () => {
-    setFormData((prev) => ({ ...prev, avatar: null, avatarUrl: '' }));
+    setFormData((prev) => ({ ...prev, avatar: null }));
     setPreview('');
   };
 
@@ -75,43 +82,39 @@ const RegisterPage = () => {
       setError('Mật khẩu phải có ít nhất 6 ký tự');
       return;
     }
-
-    if (formData.avatar) {
-      setIsUploading(true);
-      try {
-        const avatarUrl = await uploadToCloudinary(formData.avatar);
-        setFormData((prev) => ({ ...prev, avatarUrl }));
-        setSuccess('Avatar đã được tải lên thành công');
-      } catch (err) {
-        setError(err.message || 'Không thể tải lên avatar');
-      } finally {
-        setIsUploading(false);
+    try {
+      const response = await register(formData);
+      if (!response) {
+        setError('Đăng ký thất bại');
+        return;
       }
-    } else {
       setSuccess('Đăng ký thành công!');
+      navigate('/login'); 
+    } catch (error) {
+      setError(error.message || 'Đăng ký thất bại');
     }
   };
 
   return (
-    <div className="lux-page auth-luxury">
+    <div className="page-shell auth-layout">
       <AuthBrandPanel
         title="Gia nhập"
         titleEmphasis="cộng đồng"
         description="Tạo tài khoản để khám phá và đặt vé những sự kiện được tuyển chọn."
       />
 
-      <div className="auth-luxury__form-side">
-        <div className="auth-luxury__card">
-          <span className="auth-luxury__mobile-eyebrow">Event Booking</span>
-          <h2 className="auth-luxury__card-title">Đăng ký</h2>
-          <p className="auth-luxury__card-subtitle">Tạo tài khoản mới của bạn</p>
+      <div className="auth-layout__form-side">
+        <div className="auth-layout__card">
+          <span className="auth-layout__mobile-eyebrow">Event Booking</span>
+          <h2 className="auth-layout__card-title">Đăng ký</h2>
+          <p className="auth-layout__card-subtitle">Tạo tài khoản mới của bạn</p>
 
-          {error && <div className="auth-luxury__alert auth-luxury__alert--danger">{error}</div>}
-          {success && <div className="auth-luxury__alert auth-luxury__alert--success">{success}</div>}
+          {error && <div className="auth-layout__alert auth-layout__alert--danger">{error}</div>}
+          {success && <div className="auth-layout__alert auth-layout__alert--success">{success}</div>}
 
           <Form onSubmit={handleSubmit}>
             <FormField
-              className="mb-3 auth-luxury__field"
+              className="mb-3 auth-layout__field"
               controlId="fullName"
               label="Họ và tên"
               name="fullName"
@@ -122,7 +125,7 @@ const RegisterPage = () => {
             />
 
             <FormField
-              className="mb-3 auth-luxury__field"
+              className="mb-3 auth-layout__field"
               controlId="email"
               label="Email"
               type="email"
@@ -134,7 +137,7 @@ const RegisterPage = () => {
             />
 
             <FormField
-              className="mb-3 auth-luxury__field"
+              className="mb-3 auth-layout__field"
               controlId="password"
               label="Mật khẩu"
               type="password"
@@ -146,7 +149,7 @@ const RegisterPage = () => {
             />
 
             <FormField
-              className="mb-3 auth-luxury__field"
+              className="mb-3 auth-layout__field"
               controlId="confirmPassword"
               label="Xác nhận mật khẩu"
               type="password"
@@ -158,25 +161,25 @@ const RegisterPage = () => {
             />
 
             <FormField
-              className="mb-3 auth-luxury__field"
+              className="mb-3 auth-layout__field"
               controlId="avatar"
               label="Ảnh đại diện"
               type="file"
               name="avatar"
               accept="image/*"
               onChange={handleAvatarChange}
-              disabled={isUploading}
+              disabled={registerLoading}
             >
               <Form.Text>JPG, PNG, GIF — tối đa 5MB</Form.Text>
 
               {preview && (
-                <div className="auth-luxury__avatar-preview">
+                <div className="auth-layout__avatar-preview">
                   <img src={preview} alt="Xem trước avatar" />
                   <button
                     type="button"
-                    className="auth-luxury__avatar-remove"
+                    className="auth-layout__avatar-remove"
                     onClick={handleRemoveAvatar}
-                    disabled={isUploading}
+                    disabled={registerLoading}
                   >
                     Xóa ảnh
                   </button>
@@ -186,21 +189,21 @@ const RegisterPage = () => {
 
             <button
               type="submit"
-              className="lux-btn-primary auth-luxury__submit"
-              disabled={isUploading}
+              className="btn-primary-accent auth-layout__submit"
+              disabled={registerLoading}
             >
-              {isUploading ? 'Đang tải ảnh...' : 'Tạo tài khoản'}
+              {registerLoading ? 'Đang tải ảnh...' : 'Tạo tài khoản'}
             </button>
           </Form>
 
-          <p className="auth-luxury__footer">
+          <p className="auth-layout__footer">
             Đã có tài khoản?
-            <button type="button" className="auth-luxury__link" onClick={() => navigate('/login')}>
+            <button type="button" className="auth-layout__link" onClick={() => navigate('/login')}>
               Đăng nhập ngay
             </button>
           </p>
 
-          <div className="auth-luxury__back-home">
+          <div className="auth-layout__back-home">
             <button type="button" onClick={() => navigate('/')}>
               ← Về trang chủ
             </button>

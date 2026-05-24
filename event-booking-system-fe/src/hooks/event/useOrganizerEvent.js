@@ -39,7 +39,7 @@ export const useOrganizerEvent = (filters = {}, options = {}) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await eventService.getEventById(id);
+      const response = await eventService.getOwnEventById(id);
       if (response.success) {
         const mappedEvent = mapEventResponse(response.data)
         setEvent(mappedEvent);

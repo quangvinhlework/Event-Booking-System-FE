@@ -8,6 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [registerLoading, setRegisterLoading] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -43,6 +44,20 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('token', response.data.accessToken);
   };
 
+  const register = async (userData) => {
+    setRegisterLoading(true);
+    try {
+      const response = await authService.register(userData);
+      if (!response.success) {
+        console.error('Register error:', response.message);
+        throw new Error(response.message || 'Đăng ký thất bại');
+      }
+      return response.data;
+    } finally {
+      setRegisterLoading(false);
+    }
+  };
+
   const logout = () => {
     setUser(null);
     setAccessToken(null);
@@ -58,8 +73,10 @@ export const AuthProvider = ({ children }) => {
         accessToken,
         isAuthenticated,
         loading,
+        registerLoading,
         login,
         logout,
+        register,
       }}
     >
       {children}

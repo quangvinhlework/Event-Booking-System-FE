@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Form, InputGroup, Modal, ProgressBar } from 'react-bootstrap';
 import EmptyState from '../../components/feedback/EmptyState';
 import { formatCurrency, formatNumber } from '../../utils/formatCurrency';
-import OrganizerLayout, { OrganizerStatCard } from './OrganizerLayout';
+import OrganizerLayout, { OrganizerStatCard } from './layouts/OrganizerLayout';
 
 const initialTickets = [
   {
@@ -325,11 +325,11 @@ const TicketManagement = () => {
                     <td className="fw-bold">{ticket.id}</td>
                     <td>
                       <div className="fw-semibold">{ticket.eventName}</div>
-                      <small style={{ color: 'var(--lux-muted)' }}>{ticket.eventId}</small>
+                      <small style={{ color: 'var(--theme-muted)' }}>{ticket.eventId}</small>
                     </td>
                     <td>
                       <div className="fw-semibold">{ticket.buyerName}</div>
-                      <small style={{ color: 'var(--lux-muted)' }}>{ticket.buyerEmail}</small>
+                      <small style={{ color: 'var(--theme-muted)' }}>{ticket.buyerEmail}</small>
                     </td>
                     <td>{ticket.seatType}</td>
                     <td>{formatNumber(ticket.quantity)}</td>
@@ -402,8 +402,8 @@ const TicketManagement = () => {
             <Modal.Body>
               <div className="row g-4">
                 <div className="col-md-7">
-                  <div className="ticket-detail-block" style={{ background: 'var(--lux-ink-soft)', borderColor: 'var(--lux-border)' }}>
-                    <h3 style={{ color: 'var(--lux-gold-light)' }}>Thông tin đơn</h3>
+                  <div className="ticket-detail-block" style={{ background: 'var(--theme-ink-soft)', borderColor: 'var(--theme-border)' }}>
+                    <h3 style={{ color: 'var(--theme-accent-light)' }}>Thông tin đơn</h3>
                     <dl>
                       <dt>Sự kiện</dt>
                       <dd>{selectedTicket.eventName}</dd>
@@ -419,8 +419,8 @@ const TicketManagement = () => {
                   </div>
                 </div>
                 <div className="col-md-5">
-                  <div className="ticket-detail-block" style={{ background: 'var(--lux-ink-soft)', borderColor: 'var(--lux-border)' }}>
-                    <h3 style={{ color: 'var(--lux-gold-light)' }}>Người mua</h3>
+                  <div className="ticket-detail-block" style={{ background: 'var(--theme-ink-soft)', borderColor: 'var(--theme-border)' }}>
+                    <h3 style={{ color: 'var(--theme-accent-light)' }}>Người mua</h3>
                     <dl>
                       <dt>Họ tên</dt>
                       <dd>{selectedTicket.buyerName}</dd>
@@ -435,9 +435,9 @@ const TicketManagement = () => {
                 </div>
               </div>
               {selectedTicket.note && (
-                <div className="ticket-note mt-4" style={{ background: 'var(--lux-ink-soft)', borderColor: 'var(--lux-border)' }}>
+                <div className="ticket-note mt-4" style={{ background: 'var(--theme-ink-soft)', borderColor: 'var(--theme-border)' }}>
                   <span>Ghi chú</span>
-                  <p style={{ color: 'var(--lux-cream)' }}>{selectedTicket.note}</p>
+                  <p style={{ color: 'var(--theme-text)' }}>{selectedTicket.note}</p>
                 </div>
               )}
             </Modal.Body>

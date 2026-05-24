@@ -22,10 +22,18 @@ html {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  font-family: Arial, Helvetica, sans-serif;
   background:
     radial-gradient(circle at top left, rgba(40, 75, 143, 0.1), transparent 34rem),
     linear-gradient(180deg, #ffffff 0%, var(--app-bg) 42%, #ffffff 100%);
   color: var(--app-ink);
+}
+
+.app-shell button,
+.app-shell input,
+.app-shell select,
+.app-shell textarea {
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .app-main,
@@ -169,7 +177,7 @@ html {
   border-top-color: var(--app-border);
 }
 
-.app-shell:has(.home-luxury) {
+.app-shell:has(.home-page) {
   background: #0c0c10;
 }
 
@@ -181,35 +189,35 @@ html {
   transition: background 0.35s ease, border-color 0.35s ease;
 }
 
-.navbar-app--luxury {
+.navbar-app--dark {
   background: rgba(12, 12, 16, 0.82);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow: none;
   backdrop-filter: blur(16px);
 }
 
-.navbar-app--luxury .navbar-brand-luxury {
+.navbar-app--dark .navbar-brand-dark {
   color: #f4efe6;
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 1.35rem;
   font-weight: 600;
   letter-spacing: 0.02em;
 }
 
-.navbar-app--luxury .nav-link-luxury {
+.navbar-app--dark .nav-link-dark {
   color: rgba(244, 239, 230, 0.65);
   font-weight: 500;
 }
 
-.navbar-app--luxury .nav-link-luxury:hover {
+.navbar-app--dark .nav-link-dark:hover {
   color: #e8d5a3;
 }
 
-.navbar-app--luxury .text-luxury-muted {
+.navbar-app--dark .text-nav-muted {
   color: rgba(244, 239, 230, 0.5) !important;
 }
 
-.navbar-app--luxury .btn-luxury-outline {
+.navbar-app--dark .btn-nav-outline {
   --bs-btn-color: #e8d5a3;
   --bs-btn-border-color: rgba(232, 213, 163, 0.4);
   --bs-btn-hover-bg: rgba(201, 169, 98, 0.15);
@@ -217,7 +225,7 @@ html {
   --bs-btn-hover-color: #f4efe6;
 }
 
-.navbar-app--luxury .btn-luxury-gold {
+.navbar-app--dark .btn-nav-accent {
   --bs-btn-bg: #c9a962;
   --bs-btn-border-color: #c9a962;
   --bs-btn-color: #0c0c10;
@@ -226,11 +234,11 @@ html {
   font-weight: 700;
 }
 
-.navbar-app--luxury .navbar-toggler {
+.navbar-app--dark .navbar-toggler {
   border-color: rgba(255, 255, 255, 0.2);
 }
 
-.navbar-app--luxury .navbar-toggler-icon {
+.navbar-app--dark .navbar-toggler-icon {
   filter: invert(1);
 }
 

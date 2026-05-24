@@ -7,8 +7,8 @@ import { useCategory } from '../../hooks/useCategory';
 import { EmptyState, LoadingState } from '../../components';
 import { eventFilters } from '../../filters/eventFilter';
 import EventFilters from '../Event/EventFilters';
-import LuxuryEventCard from './LuxuryEventCard';
-import LuxuryFeaturedEvent from './LuxuryFeaturedEvent';
+import EventCard from '../../components/event/EventCard';
+import FeaturedEvent from '../../components/event/FeaturedEvent';
 import './HomePage.css';
 
 const getStartOfDayTimestamp = (date) => {
@@ -179,7 +179,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="home-luxury lux-page">
+    <div className="home-page page-shell">
       <section className="home-hero">
         <div className="home-hero__bg" aria-hidden="true" />
         <div className="home-hero__grain" aria-hidden="true" />
@@ -271,7 +271,7 @@ const HomePage = () => {
           ) : (
             <>
               {featuredEvent && (
-                <LuxuryFeaturedEvent
+                <FeaturedEvent
                   event={featuredEvent}
                   categoryName={getCategoryName(featuredEvent.category)}
                   onViewDetails={handleViewDetails}
@@ -374,7 +374,7 @@ const HomePage = () => {
               {gridEvents.length > 0 ? (
                 <div className="home-grid">
                   {gridEvents.map((event, index) => (
-                    <LuxuryEventCard
+                    <EventCard
                       key={event.id}
                       event={event}
                       categoryName={getCategoryName(event.category)}

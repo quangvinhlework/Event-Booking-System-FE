@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import './styles/luxury-theme.css';
+import './styles/theme.css';
 
 import { AuthProvider } from './contexts/AuthContext';
 

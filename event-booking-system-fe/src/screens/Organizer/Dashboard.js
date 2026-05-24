@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Spinner } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
+import { LoadingState } from '../../components';
 import ColumnChart from '../../components/chart/ColumnChart';
 import { useEventStatistic } from '../../hooks/event/useEventStatistic';
 import { formatCurrency, formatNumber } from '../../utils/formatCurrency';
-import OrganizerLayout, { OrganizerStatCard } from './OrganizerLayout';
+import OrganizerLayout, { OrganizerStatCard } from './layouts/OrganizerLayout';
 
 const currentDate = new Date();
 const currentMonth = currentDate.getMonth() + 1;
@@ -78,7 +79,7 @@ const Dashboard = () => {
 
       {overviewLoading ? (
         <div className="organizer-loading">
-          <Spinner animation="border" />
+          <LoadingState text="Đang tải bảng điều khiển..." />
         </div>
       ) : (
         <>
@@ -156,8 +157,8 @@ const Dashboard = () => {
             )}
 
             {performanceLoading ? (
-              <div className="organizer-loading py-4">
-                <Spinner animation="border" size="sm" />
+              <div className="organizer-loading">
+                <LoadingState text="Đang tải dữ liệu theo kỳ..." className="text-center py-4" />
               </div>
             ) : (
               <>

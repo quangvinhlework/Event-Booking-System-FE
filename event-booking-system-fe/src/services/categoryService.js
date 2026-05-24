@@ -1,6 +1,6 @@
 import { handleApi } from '../api/apiHandler';
-import { axiosClientJson } from '../api/axiosClient';
+import { axiosClient } from '../api/axiosClient';
 
 export const getCategories = async () => {
-  return handleApi(() => axiosClientJson.get('/categories'));
+  return handleApi(() => axiosClient.get('/categories'));
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
-import './OrganizerPage.css';
+import { useAuth } from '../../../hooks/useAuth';
+import '../OrganizerPage.css';
 
 const NAV_ITEMS = [
   {
@@ -61,7 +61,7 @@ const OrganizerLayout = ({ eyebrow = 'Organizer', title, subtitle, actions, chil
   const { user, logout } = useAuth();
 
   return (
-    <div className="organizer-shell lux-page">
+    <div className="organizer-shell page-shell">
       <aside className="organizer-sidebar">
         <div className="organizer-sidebar__brand">
           <span className="organizer-sidebar__eyebrow">Event Booking</span>

@@ -40,17 +40,17 @@ const EventDetailPage = () => {
 
   const getStatusClass = (status) => {
     const normalized = String(status || '').toLowerCase();
-    if (normalized.includes('onsale') || normalized.includes('open')) return 'lux-badge--success';
-    if (normalized.includes('soldout')) return 'lux-badge--warning';
-    if (normalized.includes('cancel') || normalized.includes('close')) return 'lux-badge--danger';
+    if (normalized.includes('onsale') || normalized.includes('open')) return 'badge-tag--success';
+    if (normalized.includes('soldout')) return 'badge-tag--warning';
+    if (normalized.includes('cancel') || normalized.includes('close')) return 'badge-tag--danger';
     return '';
   };
 
   if (loading) {
     return (
-      <div className="lux-page event-detail-luxury">
+      <div className="page-shell event-detail">
         <Container>
-          <div className="event-detail-luxury__loading">
+          <div className="event-detail__loading">
             <LoadingState text="Đang tải chi tiết sự kiện..." />
           </div>
         </Container>
@@ -60,11 +60,11 @@ const EventDetailPage = () => {
 
   if (error || !event) {
     return (
-      <div className="lux-page event-detail-luxury">
+      <div className="page-shell event-detail">
         <Container>
-          <EmptyState description={error || 'Không tìm thấy sự kiện'} className="lux-empty" />
+          <EmptyState description={error || 'Không tìm thấy sự kiện'} className="empty-section" />
           <div className="text-center mt-3">
-            <button type="button" className="lux-btn-back" onClick={() => navigate('/')}>
+            <button type="button" className="btn-back" onClick={() => navigate('/')}>
               ← Quay lại trang chủ
             </button>
           </div>
@@ -74,17 +74,17 @@ const EventDetailPage = () => {
   }
 
   return (
-    <div className="lux-page event-detail-luxury">
+    <div className="page-shell event-detail">
       <Container>
-        <header className="event-detail-luxury__top">
-          <nav className="event-detail-luxury__breadcrumb" aria-label="Đường dẫn">
+        <header className="event-detail__top">
+          <nav className="event-detail__breadcrumb" aria-label="Đường dẫn">
             <button type="button" onClick={() => navigate('/')}>Trang chủ</button>
             <span>/</span>
             <span>Sự kiện</span>
             <span>/</span>
             <span aria-current="page">{event.name}</span>
           </nav>
-          <button type="button" className="lux-btn-back" onClick={() => navigate('/')}>
+          <button type="button" className="btn-back" onClick={() => navigate('/')}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
               <path d="M19 12H5M12 5l-7 7 7 7" />
             </svg>
@@ -92,31 +92,31 @@ const EventDetailPage = () => {
           </button>
         </header>
 
-        <div className="event-detail-luxury__layout">
+        <div className="event-detail__layout">
           <div>
-            <div className="event-detail-luxury__gallery lux-surface">
+            <div className="event-detail__gallery surface-panel">
               {mainMedia?.mediaType === 'VIDEO' ? (
                 <video
-                  className="event-detail-luxury__main-media"
+                  className="event-detail__main-media"
                   src={mainMedia.mediaUrl}
                   controls
                   poster={imageMedias[0]?.mediaUrl}
                 />
               ) : (
                 <img
-                  className="event-detail-luxury__main-media"
+                  className="event-detail__main-media"
                   src={mainMedia?.mediaUrl || 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80'}
                   alt={event.name}
                 />
               )}
 
               {allMedias.length > 1 && (
-                <div className="event-detail-luxury__thumbs">
+                <div className="event-detail__thumbs">
                   {allMedias.map((media, index) => (
                     <button
                       key={`${media.mediaUrl}-${index}`}
                       type="button"
-                      className={`event-detail-luxury__thumb${
+                      className={`event-detail__thumb${
                         selectedMedia?.mediaUrl === media.mediaUrl ? ' is-active' : ''
                       }`}
                       onClick={() => setSelectedMedia(media)}
@@ -133,23 +133,23 @@ const EventDetailPage = () => {
               )}
             </div>
 
-            <section className="event-detail-luxury__about lux-surface">
-              <p className="lux-eyebrow">Thông tin chi tiết</p>
+            <section className="event-detail__about surface-panel">
+              <p className="page-eyebrow">Thông tin chi tiết</p>
               <h2>Về sự kiện</h2>
               <p>{event.description || 'Sự kiện chưa có mô tả chi tiết.'}</p>
 
-              <div className="event-detail-luxury__divider" />
+              <div className="event-detail__divider" />
 
-              <div className="event-detail-luxury__highlights">
-                <div className="event-detail-luxury__highlight">
+              <div className="event-detail__highlights">
+                <div className="event-detail__highlight">
                   <strong>{soldTickets}</strong>
                   <span>Vé đã bán</span>
                 </div>
-                <div className="event-detail-luxury__highlight">
+                <div className="event-detail__highlight">
                   <strong>{availableTickets}</strong>
                   <span>Vé còn lại</span>
                 </div>
-                <div className="event-detail-luxury__highlight">
+                <div className="event-detail__highlight">
                   <strong>{totalTickets}</strong>
                   <span>Tổng vé</span>
                 </div>
@@ -157,17 +157,17 @@ const EventDetailPage = () => {
             </section>
           </div>
 
-          <aside className="event-detail-luxury__panel lux-surface">
-            <div className="event-detail-luxury__badges">
-              <span className="lux-badge">{event.category || 'Sự kiện'}</span>
-              <span className={`lux-badge ${getStatusClass(event.status)}`}>
+          <aside className="event-detail__panel surface-panel">
+            <div className="event-detail__badges">
+              <span className="badge-tag">{event.category || 'Sự kiện'}</span>
+              <span className={`badge-tag ${getStatusClass(event.status)}`}>
                 {event.status || 'Đang cập nhật'}
               </span>
             </div>
 
-            <h1 className="event-detail-luxury__title lux-display-title">{event.name}</h1>
+            <h1 className="event-detail__title page-title-lg">{event.name}</h1>
 
-            <p className="event-detail-luxury__location">
+            <p className="event-detail__location">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <path d="M12 21s7-4.35 7-10a7 7 0 1 0-14 0c0 5.65 7 10 7 10z" />
                 <circle cx="12" cy="11" r="2.5" />
@@ -175,35 +175,35 @@ const EventDetailPage = () => {
               {event.location || 'Đang cập nhật địa điểm'}
             </p>
 
-            <div className="event-detail-luxury__stats">
-              <div className="event-detail-luxury__stat">
+            <div className="event-detail__stats">
+              <div className="event-detail__stat">
                 <span>Bắt đầu</span>
                 <strong>{formatTimestamp(event.startTime) || '—'}</strong>
               </div>
-              <div className="event-detail-luxury__stat">
+              <div className="event-detail__stat">
                 <span>Kết thúc</span>
                 <strong>{formatTimestamp(event.endTime) || '—'}</strong>
               </div>
-              <div className="event-detail-luxury__stat event-detail-luxury__stat--price">
+              <div className="event-detail__stat event-detail__stat--price">
                 <span>Giá vé</span>
                 <strong>{formattedPrice} đ</strong>
               </div>
-              <div className="event-detail-luxury__stat">
+              <div className="event-detail__stat">
                 <span>Đã bán</span>
                 <strong>{soldTickets} vé</strong>
               </div>
             </div>
 
-            <div className="event-detail-luxury__tickets">
-              <div className="event-detail-luxury__tickets-header">
+            <div className="event-detail__tickets">
+              <div className="event-detail__tickets-header">
                 <span>Tình trạng vé</span>
                 <strong>
                   {availableTickets} / {totalTickets}
                 </strong>
               </div>
-              <div className="event-detail-luxury__progress">
+              <div className="event-detail__progress">
                 <div
-                  className="event-detail-luxury__progress-fill"
+                  className="event-detail__progress-fill"
                   style={{ width: `${ticketPercent}%` }}
                 />
               </div>
@@ -211,13 +211,13 @@ const EventDetailPage = () => {
 
             <button
               type="button"
-              className="lux-btn-primary"
+              className="btn-primary-accent"
               disabled={availableTickets <= 0}
             >
               {availableTickets > 0 ? 'Đặt vé ngay' : 'Hết vé'}
             </button>
 
-            <p className="event-detail-luxury__note">
+            <p className="event-detail__note">
               {availableTickets > 0
                 ? 'Xác nhận đặt vé an toàn · Hỗ trợ khách hàng 24/7'
                 : 'Sự kiện hiện đã hết vé. Vui lòng quay lại sau.'}

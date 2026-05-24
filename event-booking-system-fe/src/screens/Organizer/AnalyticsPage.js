@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import { Spinner } from 'react-bootstrap';
+import { LoadingState } from '../../components';
 import ColumnChart from '../../components/chart/ColumnChart';
 import { useEventStatistic } from '../../hooks/event/useEventStatistic';
 import { formatCurrency, formatNumber } from '../../utils/formatCurrency';
-import OrganizerLayout, { OrganizerStatCard } from './OrganizerLayout';
+import OrganizerLayout, { OrganizerStatCard } from './layouts/OrganizerLayout';
 
 const currentYear = new Date().getFullYear();
 
@@ -47,7 +47,7 @@ const Analytics = () => {
 
       {loading ? (
         <div className="organizer-loading">
-          <Spinner animation="border" />
+          <LoadingState text="Đang tải dữ liệu phân tích..." />
         </div>
       ) : (
         <>

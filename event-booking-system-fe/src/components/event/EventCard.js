@@ -1,15 +1,11 @@
 import React from 'react';
-import { Badge, Button, Card } from 'react-bootstrap';
 import { formatTimestamp } from '../../utils/dateConvert';
 
 const EventCard = ({
   event,
   categoryName,
-  categoryVariant = 'secondary',
   onViewDetails,
-  detailsLabel = 'View details',
-  ticketsLeftLabel = 'Tickets left',
-  currencyLabel = 'VND',
+  index = 0,
 }) => {
   const totalTickets = Number(event.totalTickets || 0);
   const availableTickets = Number(event.availableTickets || 0);
@@ -18,88 +14,75 @@ const EventCard = ({
     event.eventMedias?.find((media) => media.mediaType === 'IMAGE')?.mediaUrl ||
     event.eventMedias?.[0]?.mediaUrl ||
     event.image ||
-    'https://via.placeholder.com/400x200?text=No+Image';
+    'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80';
+  const price = Number(event.price || event.ticketPrice || 0).toLocaleString('vi-VN');
 
-  const handleCardClick = () => {
-    onViewDetails?.(event.id);
-  };
-
-  const handleButtonClick = (clickEvent) => {
-    clickEvent.stopPropagation();
-    onViewDetails?.(event.id);
-  };
+  const handleOpen = () => onViewDetails?.(event.id);
 
   return (
-    <Card
-      className="event-card h-100"
+    <article
+      className="event-card"
+      style={{ animationDelay: `${Math.min(index, 10) * 70}ms` }}
       role="button"
       tabIndex={0}
-      onClick={handleCardClick}
-      onKeyDown={(keyboardEvent) => {
-        if (keyboardEvent.key === 'Enter' || keyboardEvent.key === ' ') {
-          keyboardEvent.preventDefault();
-          handleCardClick();
+      onClick={handleOpen}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleOpen();
         }
       }}
     >
-      <div className="event-card__image-wrap">
-        <Card.Img
-          variant="top"
-          src={imageUrl}
-          alt={event.name || event.title}
-          className="event-card__image"
-        />
+      <div className="event-card__media">
+        <img src={imageUrl} alt={event.name || event.title} loading="lazy" />
+        <div className="event-card__overlay" />
+        {categoryName && <span className="event-card__tag">{categoryName}</span>}
       </div>
 
-      <Card.Body className="d-flex flex-column">
-        <div className="mb-2">
-          <Badge bg={categoryVariant} className="event-card-badge">
-            {categoryName || event.category}
-          </Badge>
-        </div>
+      <div className="event-card__body">
+        <h3 className="event-card__title">{event.name || event.title}</h3>
+        <p className="event-card__desc">{event.description}</p>
 
-        <Card.Title className="fw-bold text-truncate">
-          {event.name || event.title}
-        </Card.Title>
+        <ul className="event-card__meta">
+          <li>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <path d="M16 2v4M8 2v4M3 10h18" />
+            </svg>
+            {formatTimestamp(event.startTime)}
+          </li>
+          <li>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <path d="M12 21s7-4.35 7-10a7 7 0 1 0-14 0c0 5.65 7 10 7 10z" />
+              <circle cx="12" cy="11" r="2.5" />
+            </svg>
+            <span>{event.location}</span>
+          </li>
+        </ul>
 
-        <Card.Text className="event-card-description text-muted small">
-          {event.description}
-        </Card.Text>
-
-        <div className="mb-3 text-muted small">
-          <div className="mb-2">
-            {formatTimestamp(event.startTime)} - {formatTimestamp(event.endTime)}
-          </div>
-          <div className="mb-2">{event.location}</div>
-        </div>
-
-        <div className="mb-3">
-          <small className="text-muted d-block mb-1">
-            {ticketsLeftLabel}: <strong>{availableTickets}</strong> / {totalTickets}
-          </small>
-          <div className="progress" style={{ height: '6px' }}>
-            <div
-              className="progress-bar bg-success"
-              style={{ width: `${ticketPercent}%` }}
-            />
+        <div className="event-card__availability">
+          <span>
+            Vé còn <strong>{availableTickets}</strong> / {totalTickets}
+          </span>
+          <div className="event-card__bar">
+            <div className="event-card__bar-fill" style={{ width: `${ticketPercent}%` }} />
           </div>
         </div>
 
-        <div className="d-flex justify-content-between align-items-center mt-auto">
-          <h5 className="mb-0 text-danger fw-bold">
-            {(event.price || event.ticketPrice || 0).toLocaleString('vi-VN')} {currencyLabel}
-          </h5>
-          <Button
-            type="button"
-            variant="primary"
-            size="sm"
-            onClick={handleButtonClick}
-          >
-            {detailsLabel}
-          </Button>
+        <div className="event-card__footer">
+          <div className="event-card__price">
+            <small>Từ</small>
+            <span>{price} đ</span>
+          </div>
+          <span className="event-card__cta" aria-hidden="true">
+            Chi tiết
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </span>
         </div>
-      </Card.Body>
-    </Card>
+      </div>
+    </article>
   );
 };
 

@@ -8,7 +8,7 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isOrganizerArea = location.pathname.startsWith('/organizer');
-  const isLuxuryTheme =
+  const isDarkTheme =
     isOrganizerArea ||
     location.pathname === '/' ||
     location.pathname === '/login' ||
@@ -30,14 +30,14 @@ const Header = () => {
   return (
     <Navbar
       expand="lg"
-      className={`navbar-app sticky-top${isLuxuryTheme ? ' navbar-app--luxury' : ''}`}
+      className={`navbar-app sticky-top${isDarkTheme ? ' navbar-app--dark' : ''}`}
     >
       <Container>
         <Navbar.Brand
           onClick={() =>
             navigate(user?.role === 'ORGANIZER' ? '/organizer/dashboard' : '/')
           }
-          className="fw-bold navbar-brand-luxury"
+          className="fw-bold navbar-brand-dark"
         >
           Event Booking
         </Navbar.Brand>
@@ -53,10 +53,10 @@ const Header = () => {
               </>
             ) : user?.role !== 'ORGANIZER' ? (
               <>
-                <Nav.Link onClick={goHome} className={isLuxuryTheme ? 'nav-link-luxury' : ''}>
+                <Nav.Link onClick={goHome} className={isDarkTheme ? 'nav-link-dark' : ''}>
                   Trang chủ
                 </Nav.Link>
-                <Nav.Link onClick={() => navigate('/about')} className={isLuxuryTheme ? 'nav-link-luxury' : ''}>
+                <Nav.Link onClick={() => navigate('/about')} className={isDarkTheme ? 'nav-link-dark' : ''}>
                   Giới thiệu
                 </Nav.Link>
               </>
@@ -68,15 +68,15 @@ const Header = () => {
               <>
                 {user?.role === 'USER' && (
                   <Button
-                    variant={isLuxuryTheme ? 'outline-light' : 'outline-primary'}
+                    variant={isDarkTheme ? 'outline-light' : 'outline-primary'}
                     size="sm"
-                    className={isLuxuryTheme ? 'btn-luxury-outline' : ''}
+                    className={isDarkTheme ? 'btn-nav-outline' : ''}
                     onClick={() => navigate('/become-organizer')}
                   >
                     Trở thành tổ chức viên
                   </Button>
                 )}
-                <Navbar.Text className={isLuxuryTheme ? 'text-luxury-muted' : 'text-muted'}>
+                <Navbar.Text className={isDarkTheme ? 'text-nav-muted' : 'text-muted'}>
                   Xin chào, {user?.fullName}
                 </Navbar.Text>
                 <Button
@@ -90,17 +90,17 @@ const Header = () => {
             ) : (
               <>
                 <Button
-                  variant={isLuxuryTheme ? 'outline-light' : 'outline-primary'}
+                  variant={isDarkTheme ? 'outline-light' : 'outline-primary'}
                   size="sm"
-                  className={isLuxuryTheme ? 'btn-luxury-outline' : ''}
+                  className={isDarkTheme ? 'btn-nav-outline' : ''}
                   onClick={() => navigate('/login')}
                 >
                   Đăng nhập
                 </Button>
                 <Button
-                  variant={isLuxuryTheme ? 'warning' : 'primary'}
+                  variant={isDarkTheme ? 'warning' : 'primary'}
                   size="sm"
-                  className={isLuxuryTheme ? 'btn-luxury-gold' : ''}
+                  className={isDarkTheme ? 'btn-nav-accent' : ''}
                   onClick={() => navigate('/register')}
                 >
                   Đăng ký

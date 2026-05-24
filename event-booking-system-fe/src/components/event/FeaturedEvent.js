@@ -1,7 +1,7 @@
 import React from 'react';
 import { formatTimestamp } from '../../utils/dateConvert';
 
-const LuxuryFeaturedEvent = ({ event, categoryName, onViewDetails }) => {
+const FeaturedEvent = ({ event, categoryName, onViewDetails }) => {
   if (!event) return null;
 
   const imageUrl =
@@ -13,21 +13,21 @@ const LuxuryFeaturedEvent = ({ event, categoryName, onViewDetails }) => {
   const views = Number(event.views) || 0;
 
   return (
-    <article className="luxury-spotlight">
-      <div className="luxury-spotlight__visual">
+    <article className="featured-event">
+      <div className="featured-event__visual">
         <img src={imageUrl} alt={event.name || event.title} />
-        <div className="luxury-spotlight__visual-overlay" />
+        <div className="featured-event__visual-overlay" />
       </div>
 
-      <div className="luxury-spotlight__content">
-        <span className="luxury-spotlight__label">
+      <div className="featured-event__content">
+        <span className="featured-event__label">
           Sự kiện nổi bật{views > 0 ? ` · ${views.toLocaleString('vi-VN')} lượt xem` : ''}
         </span>
-        {categoryName && <span className="luxury-spotlight__category">{categoryName}</span>}
-        <h2 className="luxury-spotlight__title">{event.name || event.title}</h2>
-        <p className="luxury-spotlight__desc">{event.description}</p>
+        {categoryName && <span className="featured-event__category">{categoryName}</span>}
+        <h2 className="featured-event__title">{event.name || event.title}</h2>
+        <p className="featured-event__desc">{event.description}</p>
 
-        <div className="luxury-spotlight__details">
+        <div className="featured-event__details">
           <div>
             <small>Thời gian</small>
             <strong>{formatTimestamp(event.startTime)}</strong>
@@ -38,13 +38,13 @@ const LuxuryFeaturedEvent = ({ event, categoryName, onViewDetails }) => {
           </div>
           <div>
             <small>Giá vé</small>
-            <strong className="luxury-spotlight__price">{price} đ</strong>
+            <strong className="featured-event__price">{price} đ</strong>
           </div>
         </div>
 
         <button
           type="button"
-          className="luxury-spotlight__btn"
+          className="featured-event__btn"
           onClick={() => onViewDetails?.(event.id)}
         >
           Đặt vé ngay
@@ -54,4 +54,4 @@ const LuxuryFeaturedEvent = ({ event, categoryName, onViewDetails }) => {
   );
 };
 
-export default LuxuryFeaturedEvent;
+export default FeaturedEvent;

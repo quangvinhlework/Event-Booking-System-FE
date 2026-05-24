@@ -1,4 +1,5 @@
 import { Navigate } from "react-router-dom";
+import { LoadingState } from "../components";
 import { useAuth } from "../hooks/useAuth";
 
 const OrganizerRoute = ({ children }) => {
@@ -6,8 +7,8 @@ const OrganizerRoute = ({ children }) => {
 
   if (loading) {
     return (
-      <div className="lux-page d-flex align-items-center justify-content-center" style={{ minHeight: '50vh' }}>
-        <span style={{ color: 'rgba(244, 239, 230, 0.55)' }}>Đang tải...</span>
+      <div className="page-shell d-flex align-items-center justify-content-center" style={{ minHeight: '50vh' }}>
+        <LoadingState text="Đang tải..." />
       </div>
     );
   }
