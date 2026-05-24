@@ -3,20 +3,19 @@ import { useState, useEffect, useCallback } from 'react';
 import { mapEventResponse } from '../../mappers/eventMapper';
 import { buildEventQuery } from '../../filters/eventFilter';
 
-export const useOrganizerEvent = (filters = {}, options = {}) => {
+export const useEvents = (filters = {}, options = {}) => {
   const { autoFetch = true, append = false } = options;
   const [events, setEvents] = useState([]);
-  const [event, setEvent] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [hasMore, setHasMore] = useState(true);
-  
+
   const fetchEvents = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const params = buildEventQuery(filters);
-      const response = await eventService.getOrganizerEvents(params);
+      const response = await eventService.getEvents(params);
       if (response.success) {
         const mappedEvents = response.data.map(mapEventResponse);
         if (append && filters.page > 1) {
@@ -33,26 +32,12 @@ export const useOrganizerEvent = (filters = {}, options = {}) => {
     } finally {
       setLoading(false);
     }
-  }, [append, filters]);
+  }, [filters, append]);
 
-  const getEventById = async (id) => {
-    setLoading(true);
+  const clearEvents = useCallback(() => {
+    setEvents([]);
     setError(null);
-    try {
-      const response = await eventService.getOwnEventById(id);
-      if (response.success) {
-        const mappedEvent = mapEventResponse(response.data)
-        setEvent(mappedEvent);
-        console.log("abc" + event)
-      } else {
-        throw new Error(response.message || 'Failed to fetch event by id');
-      }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }
+  }, []);
 
   useEffect(() => {
     if (autoFetch) {
@@ -60,5 +45,5 @@ export const useOrganizerEvent = (filters = {}, options = {}) => {
     }
   }, [autoFetch, fetchEvents]);
 
-  return { events, event, loading, error, hasMore, fetchEvents, getEventById };
+  return { events, loading, error, hasMore, fetchEvents, clearEvents };
 };

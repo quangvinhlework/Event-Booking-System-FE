@@ -1,52 +1,41 @@
 import * as eventService from '../../services/eventService';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { mapEventResponse } from '../../mappers/eventMapper';
 
-export const useEvent = (name, cateId, options = {}) => {
-  const { autoFetch = true } = options;
-  const [events, setEvents] = useState([]);
+export const useEvent = (id, filters = {}) => {
   const [event, setEvent] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const fetchEvents = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await eventService.getEvents({ name: name, cateId: cateId });
-      if (response.success) {
-        setEvents(response.data.map(mapEventResponse));
-      } else {
-        throw new Error(response.message || 'Failed to fetch events');
-      }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [name, cateId]);
 
-  const getEventById = useCallback(async (id) => {
+  const getEventById = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const response = await eventService.getEventById(id);
       if (response.success) {
         setEvent(mapEventResponse(response.data));
+        return mapEventResponse(response.data);
       } else {
         throw new Error(response.message || 'Failed to fetch event by id');
       }
     } catch (err) {
       setError(err.message);
+      throw err;
     } finally {
       setLoading(false);
     }
+  }, [id]);
+
+  const clearEvent = useCallback(() => {
+    setEvent(null);
+    setError(null);
   }, []);
 
   useEffect(() => {
-    if (autoFetch) {
-      fetchEvents();
+    if (id) {
+      getEventById();
     }
-  }, [autoFetch, fetchEvents]);
+  }, [id, getEventById]);
 
-  return { events, event, loading, error, fetchEvents, getEventById };
+  return { event, loading, error, getEventById, clearEvent };
 };

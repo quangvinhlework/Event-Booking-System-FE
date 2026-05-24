@@ -146,7 +146,14 @@ const UpdateEventModal = ({
     <>
       <LoadingOverlay loading={updateLoading} text="Đang cập nhật sự kiện..." />
 
-      <Modal show={show} onHide={onHide} size="lg" centered>
+      <Modal
+        show={show}
+        onHide={onHide}
+        size="lg"
+        centered
+        className="organizer-modal-root"
+        dialogClassName="organizer-modal"
+      >
         <Modal.Header closeButton>
           <Modal.Title>Chỉnh sửa sự kiện</Modal.Title>
         </Modal.Header>

@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Form, Button, Alert } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { useAuth } from '../../../hooks/useAuth';
-import { FormField } from '../../../components';
+import { FormField, LoadingState } from '../../../components';
+import AuthBrandPanel from '../AuthBrandPanel';
+import '../AuthPage.css';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -20,63 +23,87 @@ const LoginPage = () => {
       return;
     }
 
+    setSubmitting(true);
     try {
       await login(email, password);
       navigate('/');
-    } catch (error) {
-      console.error('Đăng nhập thất bại:', error);
+    } catch (err) {
+      console.error('Đăng nhập thất bại:', err);
       setError('Đăng nhập thất bại. Vui lòng kiểm tra email hoặc mật khẩu.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const handleRegister = () => {
-    navigate('/register');
-  };
+  if (submitting) {
+    return (
+      <div className="page-shell auth-layout d-flex align-items-center justify-content-center">
+        <LoadingState text="Đang đăng nhập..." />
+      </div>
+    );
+  }
 
   return (
-    <Container className="auth-page justify-content-center">
-      <div className="auth-card">
-        <h2 className="text-center mb-4">Đăng nhập</h2>
-        {error && <Alert variant="danger">{error}</Alert>}
+    <div className="page-shell auth-layout">
+      <AuthBrandPanel
+        title="Trải nghiệm"
+        titleEmphasis="đẳng cấp"
+        description="Đăng nhập để đặt vé sự kiện yêu thích và quản lý hành trình của bạn."
+      />
 
-        <Form onSubmit={handleSubmit}>
-          <FormField
-            className="mb-3"
-            controlId="email"
-            label="Email:"
-            type="email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Nhập email của bạn"
-            required
-          />
+      <div className="auth-layout__form-side">
+        <div className="auth-layout__card">
+          <span className="auth-layout__mobile-eyebrow">Event Booking</span>
+          <h2 className="auth-layout__card-title">Đăng nhập</h2>
+          <p className="auth-layout__card-subtitle">Chào mừng bạn quay trở lại</p>
 
-          <FormField
-            className="mb-3"
-            controlId="password"
-            label="Mật khẩu:"
-            type="password"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Nhập mật khẩu"
-            required
-          />
+          {error && <div className="auth-layout__alert auth-layout__alert--danger">{error}</div>}
 
-          <Button type="submit" variant="primary" className="w-100">
-            Đăng nhập
-          </Button>
-        </Form>
+          <Form onSubmit={handleSubmit}>
+            <FormField
+              className="mb-3 auth-layout__field"
+              controlId="email"
+              label="Email"
+              type="email"
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="name@email.com"
+              required
+            />
 
-        <p className="text-center mt-3">
-          Chưa có tài khoản?{' '}
-          <Button variant="link" onClick={handleRegister}>
-            Đăng ký ngay
-          </Button>
-        </p>
+            <FormField
+              className="mb-4 auth-layout__field"
+              controlId="password"
+              label="Mật khẩu"
+              type="password"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+            />
+
+            <button type="submit" className="btn-primary-accent auth-layout__submit" disabled={submitting}>
+              {submitting ? 'Đang đăng nhập...' : 'Đăng nhập'}
+            </button>
+          </Form>
+
+          <p className="auth-layout__footer">
+            Chưa có tài khoản?
+            <button type="button" className="auth-layout__link" onClick={() => navigate('/register')}>
+              Đăng ký ngay
+            </button>
+          </p>
+
+          <div className="auth-layout__back-home">
+            <button type="button" onClick={() => navigate('/')}>
+              ← Về trang chủ
+            </button>
+          </div>
+        </div>
       </div>
-    </Container>
+    </div>
   );
 };
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import EventHeaderCard from '../../components/event/EventHeaderCard';
 import { handleApi } from '../../api/apiHandler';
-import { axiosClientJson } from '../../api/axiosClient';
+import { axiosClient } from '../../api/axiosClient';
 
 // ---COMPONENT CHÍNH ---
 const EventComparison = () => {
@@ -41,7 +41,7 @@ const EventComparison = () => {
 
             // Khởi chạy qua handleApi, tự động bóc tách và trả về cấu trúc chuẩn hóa
             const result = await handleApi(() =>
-                axiosClientJson.get(`/events/compare?ids=${idsParam}`)
+                axiosClient.get(`/events/compare?ids=${idsParam}`)
             );
 
             if (result.success) {

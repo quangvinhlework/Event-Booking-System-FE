@@ -1,145 +1,408 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Button, Card, Carousel } from 'react-bootstrap';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Container, Badge } from 'react-bootstrap';
+import { AuthContext } from '../../contexts/AuthContext';
+import { useEvents } from '../../hooks/event/useEvents';
+import { useCategory } from '../../hooks/useCategory';
+import { EmptyState, LoadingState } from '../../components';
+import { eventFilters } from '../../filters/eventFilter';
+import EventFilters from '../Event/EventFilters';
+import EventCard from '../../components/event/EventCard';
+import FeaturedEvent from '../../components/event/FeaturedEvent';
 import './HomePage.css';
+
+const getStartOfDayTimestamp = (date) => {
+  if (!date) return '';
+  return new Date(`${date}T00:00:00`).getTime();
+};
+
+const getEndOfDayTimestamp = (date) => {
+  if (!date) return '';
+  return new Date(`${date}T23:59:59.999`).getTime();
+};
+
+/** Sự kiện nổi bật = có lượt xem (views) cao nhất trong danh sách hiện tại */
+const pickFeaturedEventByViews = (eventList) => {
+  if (!eventList?.length) return null;
+
+  return eventList.reduce((best, event) => {
+    const views = Number(event.views) || 0;
+    const bestViews = Number(best.views) || 0;
+    return views > bestViews ? event : best;
+  });
+};
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+  const [searchParams] = useSearchParams();
+
+  const [searchTerm, setSearchTerm] = useState(() => searchParams.get('name') || '');
+  const [selectedCategory, setSelectedCategory] = useState(() => searchParams.get('cateId') || '');
+  const [location, setLocation] = useState(() => searchParams.get('location') || '');
+  const [startDate, setStartDate] = useState(() => searchParams.get('startDate') || '');
+  const [endDate, setEndDate] = useState(() => searchParams.get('endDate') || '');
+  const [minPrice, setMinPrice] = useState(() => searchParams.get('fromPrice') || '');
+  const [maxPrice, setMaxPrice] = useState(() => searchParams.get('toPrice') || '');
+  const [sortDirection, setSortDirection] = useState(() => searchParams.get('sortDirection') || 'asc');
+  const [page, setPage] = useState(() => {
+    const pageParam = Number(searchParams.get('page'));
+    return pageParam > 1 ? pageParam : 1;
+  });
+  const [showFilters, setShowFilters] = useState(false);
+
+  const queryFilters = useMemo(
+    () =>
+      eventFilters.combine(
+        eventFilters.byName(searchTerm),
+        eventFilters.byCategory(selectedCategory),
+        eventFilters.byLocation(location),
+        eventFilters.byDateRange(
+          getStartOfDayTimestamp(startDate),
+          getEndOfDayTimestamp(endDate)
+        ),
+        eventFilters.byPriceRange(minPrice, maxPrice),
+        eventFilters.bySort('startTime', sortDirection),
+        eventFilters.byPage(page)
+      ),
+    [
+      searchTerm,
+      selectedCategory,
+      location,
+      startDate,
+      endDate,
+      minPrice,
+      maxPrice,
+      sortDirection,
+      page,
+    ]
+  );
+
+  const { events, loading, error, hasMore } = useEvents(queryFilters, {
+    append: page > 1,
+  });
+  const { categories } = useCategory();
+
+  const categoryOptions = useMemo(
+    () => [
+      { label: 'Tất cả', value: '' },
+      ...categories.map((category) => ({
+        label: category.name,
+        value: category.id,
+      })),
+    ],
+    [categories]
+  );
+
+  const hasActiveFilters = Boolean(
+    searchTerm || selectedCategory || location || startDate || endDate || minPrice || maxPrice
+  );
+
+  const { featuredEvent, gridEvents } = useMemo(() => {
+    if (hasActiveFilters || page !== 1 || events.length === 0) {
+      return { featuredEvent: null, gridEvents: events };
+    }
+
+    const featured = pickFeaturedEventByViews(events);
+    if (!featured) {
+      return { featuredEvent: null, gridEvents: events };
+    }
+
+    return {
+      featuredEvent: featured,
+      gridEvents: events.filter((event) => event.id !== featured.id),
+    };
+  }, [events, hasActiveFilters, page]);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (searchTerm) params.set('name', searchTerm);
+    if (selectedCategory) params.set('cateId', selectedCategory);
+    if (location) params.set('location', location);
+    if (startDate) params.set('startDate', startDate);
+    if (endDate) params.set('endDate', endDate);
+    if (minPrice) params.set('fromPrice', minPrice);
+    if (maxPrice) params.set('toPrice', maxPrice);
+    if (sortDirection) params.set('sortDirection', sortDirection);
+    if (page > 1) params.set('page', page);
+
+    const search = params.toString();
+    navigate({ pathname: '/', search: search ? `?${search}` : '' }, { replace: true });
+  }, [
+    searchTerm,
+    selectedCategory,
+    location,
+    startDate,
+    endDate,
+    minPrice,
+    maxPrice,
+    sortDirection,
+    page,
+    navigate,
+  ]);
+
+  const getCategoryName = (categoryId) =>
+    categories.find((category) => category.id === categoryId)?.name || '';
+
+  const handleViewDetails = (eventId) => navigate(`/event/${eventId}`);
+
+  const handleLoadMore = () => setPage((current) => current + 1);
+
+  const handleResetFilters = () => {
+    setSearchTerm('');
+    setSelectedCategory('');
+    setLocation('');
+    setStartDate('');
+    setEndDate('');
+    setMinPrice('');
+    setMaxPrice('');
+    setSortDirection('asc');
+    setPage(1);
+  };
+
+  const handleCategoryChip = (categoryId) => {
+    setSelectedCategory(categoryId);
+    setPage(1);
+  };
+
+  const activeFilterCount = [
+    selectedCategory,
+    location,
+    startDate,
+    endDate,
+    minPrice,
+    maxPrice,
+  ].filter(Boolean).length;
+
+  const scrollToCatalog = () => {
+    document.getElementById('events-catalog')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   return (
-    <div className="home-page">
-      <section className="hero-section">
-        <Container>
-          <Row>
-            <Col lg={8}>
-              <div className="section-eyebrow text-white-50">Event Booking</div>
-              <h1 className="hero-title">Đặt vé sự kiện nhanh, rõ ràng và đáng tin cậy</h1>
-              <p className="hero-subtitle">
-                Khám phá sự kiện nổi bật, đặt vé thuận tiện và quản lý trải
-                nghiệm tham dự trong một nền tảng thống nhất.
-              </p>
-              <div className="hero-buttons">
-                <Button variant="primary" size="lg" onClick={() => navigate('/events')}>
-                  Khám phá sự kiện
-                </Button>
-                <Button variant="outline-light" size="lg" onClick={() => navigate('/register')}>
-                  Tạo tài khoản
-                </Button>
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </section>
+    <div className="home-page page-shell">
+      <section className="home-hero">
+        <div className="home-hero__bg" aria-hidden="true" />
+        <div className="home-hero__grain" aria-hidden="true" />
+        <div className="home-hero__orb home-hero__orb--1" aria-hidden="true" />
+        <div className="home-hero__orb home-hero__orb--2" aria-hidden="true" />
 
-      <section className="featured-events">
-        <Container>
-          <div className="section-heading text-center">
-            <div className="section-eyebrow">Nổi bật</div>
-            <h2 className="section-title">Sự kiện đáng chú ý</h2>
-            <p className="section-subtitle mx-auto">
-              Những trải nghiệm được chọn lọc cho âm nhạc, hội thảo, triển lãm
-              và các hoạt động cộng đồng.
+        <Container className="home-hero__inner">
+          <div className="home-hero__copy">
+            <p className="home-hero__eyebrow">Premium Event Experience</p>
+            <h1 className="home-hero__title">
+              Đặt vé sự kiện
+              <em> đẳng cấp</em>
+            </h1>
+            <p className="home-hero__lead">
+              Khám phá những trải nghiệm được tuyển chọn — từ concert, gala đến hội thảo
+              và triển lãm nghệ thuật. Tất cả ngay tại trang chủ.
             </p>
+
+            {!user && (
+              <div className="home-hero__auth">
+                <button type="button" className="home-hero__btn home-hero__btn--gold" onClick={() => navigate('/register')}>
+                  Bắt đầu hành trình
+                </button>
+                <button type="button" className="home-hero__btn home-hero__btn--ghost" onClick={() => navigate('/login')}>
+                  Đăng nhập
+                </button>
+              </div>
+            )}
           </div>
 
-          <Carousel>
-            <Carousel.Item>
-              <img
-                className="d-block w-100"
-                src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=2070&q=80"
-                alt="Concert"
+          <div className="home-hero__search-panel">
+            <label className="home-hero__search-label" htmlFor="home-search">
+              Tìm sự kiện
+            </label>
+            <div className="home-hero__search-row">
+              <span className="home-hero__search-icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <circle cx="11" cy="11" r="7" />
+                  <path d="m20 20-3.5-3.5" />
+                </svg>
+              </span>
+              <input
+                id="home-search"
+                type="search"
+                className="home-hero__search-input"
+                placeholder="Tên sự kiện, địa điểm..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setPage(1);
+                }}
+                onKeyDown={(e) => e.key === 'Enter' && scrollToCatalog()}
               />
-              <Carousel.Caption>
-                <h3>Concert mùa hè</h3>
-                <p>Không gian âm nhạc sôi động với các nghệ sĩ được yêu thích.</p>
-                <Button variant="primary" onClick={() => navigate('/events')}>
-                  Đặt vé ngay
-                </Button>
-              </Carousel.Caption>
-            </Carousel.Item>
+              <button type="button" className="home-hero__search-submit" onClick={scrollToCatalog}>
+                Khám phá
+              </button>
+            </div>
 
-            <Carousel.Item>
-              <img
-                className="d-block w-100"
-                src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=2070&q=80"
-                alt="Technology conference"
-              />
-              <Carousel.Caption>
-                <h3>Hội thảo công nghệ</h3>
-                <p>Cập nhật xu hướng mới và kết nối với cộng đồng chuyên môn.</p>
-                <Button variant="primary" onClick={() => navigate('/events')}>
-                  Xem chi tiết
-                </Button>
-              </Carousel.Caption>
-            </Carousel.Item>
-
-            <Carousel.Item>
-              <img
-                className="d-block w-100"
-                src="https://images.unsplash.com/photo-1460661411084-41d2db419c91?auto=format&fit=crop&w=2070&q=80"
-                alt="Art exhibition"
-              />
-              <Carousel.Caption>
-                <h3>Triển lãm nghệ thuật</h3>
-                <p>Khám phá các tác phẩm đương đại trong không gian giàu cảm hứng.</p>
-                <Button variant="primary" onClick={() => navigate('/events')}>
-                  Khám phá
-                </Button>
-              </Carousel.Caption>
-            </Carousel.Item>
-          </Carousel>
+            <div className="home-hero__quick-stats">
+              <div>
+                <strong>{events.length || '—'}</strong>
+                <span>Sự kiện</span>
+              </div>
+              <div>
+                <strong>{categories.length || '—'}</strong>
+                <span>Lĩnh vực</span>
+              </div>
+              <div>
+                <strong>24/7</strong>
+                <span>Hỗ trợ</span>
+              </div>
+            </div>
+          </div>
         </Container>
+
+        <button type="button" className="home-hero__scroll-hint" onClick={scrollToCatalog} aria-label="Cuộn xuống danh sách sự kiện">
+          <span />
+        </button>
       </section>
 
-      <section className="features">
+      <main className="home-main" id="events-catalog">
         <Container>
-          <div className="section-heading text-center">
-            <div className="section-eyebrow">Trải nghiệm</div>
-            <h2 className="section-title">Tối ưu cho người tham dự và nhà tổ chức</h2>
-          </div>
+          {loading && page === 1 ? (
+            <div className="home-loading">
+              <LoadingState text="Đang tải sự kiện..." />
+            </div>
+          ) : error ? (
+            <EmptyState description={`Lỗi: ${error}`} className="home-empty text-center py-5" />
+          ) : (
+            <>
+              {featuredEvent && (
+                <FeaturedEvent
+                  event={featuredEvent}
+                  categoryName={getCategoryName(featuredEvent.category)}
+                  onViewDetails={handleViewDetails}
+                />
+              )}
 
-          <Row className="g-4">
-            <Col md={4}>
-              <Card className="feature-card">
-                <Card.Body className="p-4">
-                  <div className="feature-icon mb-3 text-primary fw-bold">01</div>
-                  <Card.Title>Đặt vé dễ dàng</Card.Title>
-                  <Card.Text className="text-muted">
-                    Tìm sự kiện, xem thông tin quan trọng và hoàn tất đặt vé
-                    trong vài bước.
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            </Col>
+              <header className="home-catalog__header">
+                <div>
+                  <p className="home-catalog__eyebrow">Bộ sưu tập</p>
+                  <h2 className="home-catalog__title">Sự kiện đang mở bán</h2>
+                </div>
+                <p className="home-catalog__count">
+                  {events.length > 0
+                    ? `${events.length}${hasMore ? '+' : ''} trải nghiệm`
+                    : 'Chưa có sự kiện'}
+                </p>
+              </header>
 
-            <Col md={4}>
-              <Card className="feature-card">
-                <Card.Body className="p-4">
-                  <div className="feature-icon mb-3 text-primary fw-bold">02</div>
-                  <Card.Title>Sự kiện đa dạng</Card.Title>
-                  <Card.Text className="text-muted">
-                    Âm nhạc, thể thao, hội thảo và triển lãm được trình bày
-                    nhất quán, dễ so sánh.
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            </Col>
+              <div className="home-toolbar">
+                <button
+                  type="button"
+                  className={`home-toolbar__filter${showFilters ? ' is-active' : ''}`}
+                  onClick={() => setShowFilters((v) => !v)}
+                  aria-expanded={showFilters}
+                >
+                  Bộ lọc nâng cao
+                  {activeFilterCount > 0 && <Badge className="home-toolbar__badge">{activeFilterCount}</Badge>}
+                </button>
+                {hasActiveFilters && (
+                  <button type="button" className="home-toolbar__clear" onClick={handleResetFilters}>
+                    Xóa lọc
+                  </button>
+                )}
+              </div>
 
-            <Col md={4}>
-              <Card className="feature-card">
-                <Card.Body className="p-4">
-                  <div className="feature-icon mb-3 text-primary fw-bold">03</div>
-                  <Card.Title>Quản lý rõ ràng</Card.Title>
-                  <Card.Text className="text-muted">
-                    Nhà tổ chức có khu vực riêng để theo dõi sự kiện, vé và
-                    hiệu quả vận hành.
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
+              {categories.length > 0 && (
+                <div className="home-chips" role="tablist" aria-label="Lọc theo lĩnh vực">
+                  {categoryOptions.map((option) => (
+                    <button
+                      key={option.value || 'all'}
+                      type="button"
+                      role="tab"
+                      aria-selected={selectedCategory === option.value}
+                      className={`home-chip${selectedCategory === option.value ? ' is-active' : ''}`}
+                      onClick={() => handleCategoryChip(option.value)}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {showFilters && (
+                <div className="home-filters">
+                  <EventFilters
+                    id="event-filters"
+                    selectedCategory={selectedCategory}
+                    location={location}
+                    startDate={startDate}
+                    endDate={endDate}
+                    minPrice={minPrice}
+                    maxPrice={maxPrice}
+                    sortDirection={sortDirection}
+                    categoryOptions={categoryOptions.map((o) =>
+                      o.value === '' ? { ...o, label: 'Tất cả lĩnh vực' } : o
+                    )}
+                    onCategoryChange={(e) => {
+                      setSelectedCategory(e.target.value);
+                      setPage(1);
+                    }}
+                    onLocationChange={(e) => {
+                      setLocation(e.target.value);
+                      setPage(1);
+                    }}
+                    onStartDateChange={(e) => {
+                      setStartDate(e.target.value);
+                      setPage(1);
+                    }}
+                    onEndDateChange={(e) => {
+                      setEndDate(e.target.value);
+                      setPage(1);
+                    }}
+                    onMinPriceChange={(e) => {
+                      setMinPrice(e.target.value);
+                      setPage(1);
+                    }}
+                    onMaxPriceChange={(e) => {
+                      setMaxPrice(e.target.value);
+                      setPage(1);
+                    }}
+                    onSortDirectionChange={(e) => {
+                      setSortDirection(e.target.value);
+                      setPage(1);
+                    }}
+                    onResetFilters={handleResetFilters}
+                  />
+                </div>
+              )}
+
+              {gridEvents.length > 0 ? (
+                <div className="home-grid">
+                  {gridEvents.map((event, index) => (
+                    <EventCard
+                      key={event.id}
+                      event={event}
+                      categoryName={getCategoryName(event.category)}
+                      onViewDetails={handleViewDetails}
+                      index={index}
+                    />
+                  ))}
+                </div>
+              ) : !featuredEvent ? (
+                <EmptyState description="Không tìm thấy sự kiện phù hợp" className="home-empty text-center py-5" />
+              ) : null}
+
+              {events.length > 0 && hasMore && (
+                <div className="home-load-more">
+                  <button
+                    type="button"
+                    className="home-load-more__btn"
+                    onClick={handleLoadMore}
+                    disabled={loading}
+                  >
+                    {loading ? 'Đang tải...' : 'Xem thêm sự kiện'}
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </Container>
-      </section>
+      </main>
     </div>
   );
 };

@@ -1,196 +1,231 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Badge, Button, Col, Container, Image, Row } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { EmptyState, LoadingState } from '../../components';
 import { useEvent } from '../../hooks/event/useEvent';
 import { formatTimestamp } from '../../utils/dateConvert';
+import './EventDetailPage.css';
 
 const EventDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [selectedMedia, setSelectedMedia] = useState(null);
-  const { event, loading, error, getEventById } = useEvent(undefined, undefined, {
-    autoFetch: false,
-  });
-
-  useEffect(() => {
-    if (id) {
-      getEventById(id);
-    }
-  }, [id, getEventById]);
+  const { event, loading, error } = useEvent(id);
 
   useEffect(() => {
     setSelectedMedia(event?.eventMedias?.[0] || null);
   }, [event]);
 
-  const imageMedias = useMemo(() => {
-    return event?.eventMedias?.filter((media) => media.mediaType === 'IMAGE') || [];
-  }, [event]);
+  const imageMedias = useMemo(
+    () => event?.eventMedias?.filter((media) => media.mediaType === 'IMAGE') || [],
+    [event]
+  );
 
-  const videoMedias = useMemo(() => {
-    return event?.eventMedias?.filter((media) => media.mediaType === 'VIDEO') || [];
-  }, [event]);
+  const videoMedias = useMemo(
+    () => event?.eventMedias?.filter((media) => media.mediaType === 'VIDEO') || [],
+    [event]
+  );
+
+  const allMedias = useMemo(
+    () => [...imageMedias, ...videoMedias],
+    [imageMedias, videoMedias]
+  );
 
   const mainMedia = selectedMedia || imageMedias[0] || event?.eventMedias?.[0];
   const totalTickets = Number(event?.totalTickets || 0);
   const availableTickets = Number(event?.availableTickets || 0);
   const soldTickets = Math.max(totalTickets - availableTickets, 0);
   const ticketPercent = totalTickets > 0 ? (availableTickets / totalTickets) * 100 : 0;
-  const formattedPrice = Number(event?.ticketPrice || 0).toLocaleString('vi-VN');
+  const formattedPrice = Number(event?.ticketPrice || event?.price || 0).toLocaleString('vi-VN');
 
-  const getStatusVariant = (status) => {
-    const normalizedStatus = String(status || '').toLowerCase();
-
-    if (normalizedStatus.includes('ONSALE') || normalizedStatus.includes('open')) {
-      return 'success';
-    }
-
-    if (normalizedStatus.includes('SOLDOUT')) {
-      return 'warning';
-    }
-
-    if (normalizedStatus.includes('CANCLLED') || normalizedStatus.includes('close')) {
-      return 'danger';
-    }
-
-    return 'secondary';
+  const getStatusClass = (status) => {
+    const normalized = String(status || '').toLowerCase();
+    if (normalized.includes('onsale') || normalized.includes('open')) return 'badge-tag--success';
+    if (normalized.includes('soldout')) return 'badge-tag--warning';
+    if (normalized.includes('cancel') || normalized.includes('close')) return 'badge-tag--danger';
+    return '';
   };
 
   if (loading) {
     return (
-      <Container className="app-page">
-        <LoadingState text="Đang tải chi tiết sự kiện..." />
-      </Container>
+      <div className="page-shell event-detail">
+        <Container>
+          <div className="event-detail__loading">
+            <LoadingState text="Đang tải chi tiết sự kiện..." />
+          </div>
+        </Container>
+      </div>
     );
   }
 
   if (error || !event) {
     return (
-      <Container className="app-page">
-        <EmptyState description={error || 'Không tìm thấy sự kiện'} />
-        <Button className="mt-3" variant="outline-primary" onClick={() => navigate('/events')}>
-          Quay lại danh sách
-        </Button>
-      </Container>
+      <div className="page-shell event-detail">
+        <Container>
+          <EmptyState description={error || 'Không tìm thấy sự kiện'} className="empty-section" />
+          <div className="text-center mt-3">
+            <button type="button" className="btn-back" onClick={() => navigate('/')}>
+              ← Quay lại trang chủ
+            </button>
+          </div>
+        </Container>
+      </div>
     );
   }
 
   return (
-    <Container className="app-page event-detail-page">
-      <Button
-        className="mb-4"
-        variant="outline-primary"
-        onClick={() => navigate('/events')}
-      >
-        Quay lại danh sách
-      </Button>
+    <div className="page-shell event-detail">
+      <Container>
+        <header className="event-detail__top">
+          <nav className="event-detail__breadcrumb" aria-label="Đường dẫn">
+            <button type="button" onClick={() => navigate('/')}>Trang chủ</button>
+            <span>/</span>
+            <span>Sự kiện</span>
+            <span>/</span>
+            <span aria-current="page">{event.name}</span>
+          </nav>
+          <button type="button" className="btn-back" onClick={() => navigate('/')}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <path d="M19 12H5M12 5l-7 7 7 7" />
+            </svg>
+            Quay lại danh sách
+          </button>
+        </header>
 
-      <Row className="g-4 align-items-start">
-        <Col lg={7}>
-          <div className="event-detail-media">
-            {mainMedia?.mediaType === 'VIDEO' ? (
-              <video className="event-detail-main-media" src={mainMedia.mediaUrl} controls />
-            ) : (
-              <Image
-                className="event-detail-main-media"
-                src={mainMedia?.mediaUrl || 'https://via.placeholder.com/900x520?text=No+Image'}
-                alt={event.name}
-              />
-            )}
+        <div className="event-detail__layout">
+          <div>
+            <div className="event-detail__gallery surface-panel">
+              {mainMedia?.mediaType === 'VIDEO' ? (
+                <video
+                  className="event-detail__main-media"
+                  src={mainMedia.mediaUrl}
+                  controls
+                  poster={imageMedias[0]?.mediaUrl}
+                />
+              ) : (
+                <img
+                  className="event-detail__main-media"
+                  src={mainMedia?.mediaUrl || 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80'}
+                  alt={event.name}
+                />
+              )}
+
+              {allMedias.length > 1 && (
+                <div className="event-detail__thumbs">
+                  {allMedias.map((media, index) => (
+                    <button
+                      key={`${media.mediaUrl}-${index}`}
+                      type="button"
+                      className={`event-detail__thumb${
+                        selectedMedia?.mediaUrl === media.mediaUrl ? ' is-active' : ''
+                      }`}
+                      onClick={() => setSelectedMedia(media)}
+                      aria-label={`Xem media ${index + 1}`}
+                    >
+                      {media.mediaType === 'VIDEO' ? (
+                        <span>Video</span>
+                      ) : (
+                        <img src={media.mediaUrl} alt="" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <section className="event-detail__about surface-panel">
+              <p className="page-eyebrow">Thông tin chi tiết</p>
+              <h2>Về sự kiện</h2>
+              <p>{event.description || 'Sự kiện chưa có mô tả chi tiết.'}</p>
+
+              <div className="event-detail__divider" />
+
+              <div className="event-detail__highlights">
+                <div className="event-detail__highlight">
+                  <strong>{soldTickets}</strong>
+                  <span>Vé đã bán</span>
+                </div>
+                <div className="event-detail__highlight">
+                  <strong>{availableTickets}</strong>
+                  <span>Vé còn lại</span>
+                </div>
+                <div className="event-detail__highlight">
+                  <strong>{totalTickets}</strong>
+                  <span>Tổng vé</span>
+                </div>
+              </div>
+            </section>
           </div>
 
-          {(imageMedias.length > 1 || videoMedias.length > 0) && (
-            <div className="event-detail-thumbnails">
-              {[...imageMedias, ...videoMedias].map((media, index) => (
-                <button
-                  key={`${media.mediaUrl}-${index}`}
-                  type="button"
-                  className={`event-detail-thumbnail ${
-                    selectedMedia?.mediaUrl === media.mediaUrl ? 'active' : ''
-                  }`}
-                  onClick={() => setSelectedMedia(media)}
-                  aria-label={`Xem media ${index + 1}`}
-                >
-                  {media.mediaType === 'VIDEO' ? (
-                    <span>Video</span>
-                  ) : (
-                    <img src={media.mediaUrl} alt={`${event.name} ${index + 1}`} />
-                  )}
-                </button>
-              ))}
-            </div>
-          )}
-        </Col>
-
-        <Col lg={5}>
-          <div className="surface-card event-detail-summary">
-            <div className="d-flex flex-wrap gap-2 mb-3">
-              <Badge bg="primary" className="event-card-badge">
-                {event.category || 'Sự kiện'}
-              </Badge>
-              <Badge bg={getStatusVariant(event.status)} className="event-card-badge">
+          <aside className="event-detail__panel surface-panel">
+            <div className="event-detail__badges">
+              <span className="badge-tag">{event.category || 'Sự kiện'}</span>
+              <span className={`badge-tag ${getStatusClass(event.status)}`}>
                 {event.status || 'Đang cập nhật'}
-              </Badge>
+              </span>
             </div>
 
-            <h1 className="event-detail-title">{event.name}</h1>
-            <p className="event-detail-location">{event.location || 'Đang cập nhật địa điểm'}</p>
+            <h1 className="event-detail__title page-title-lg">{event.name}</h1>
 
-            <div className="event-detail-info-grid">
-              <div>
+            <p className="event-detail__location">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <path d="M12 21s7-4.35 7-10a7 7 0 1 0-14 0c0 5.65 7 10 7 10z" />
+                <circle cx="12" cy="11" r="2.5" />
+              </svg>
+              {event.location || 'Đang cập nhật địa điểm'}
+            </p>
+
+            <div className="event-detail__stats">
+              <div className="event-detail__stat">
                 <span>Bắt đầu</span>
-                <strong>{formatTimestamp(event.startTime) || 'Đang cập nhật'}</strong>
+                <strong>{formatTimestamp(event.startTime) || '—'}</strong>
               </div>
-              <div>
+              <div className="event-detail__stat">
                 <span>Kết thúc</span>
-                <strong>{formatTimestamp(event.endTime) || 'Đang cập nhật'}</strong>
+                <strong>{formatTimestamp(event.endTime) || '—'}</strong>
               </div>
-              <div>
+              <div className="event-detail__stat event-detail__stat--price">
                 <span>Giá vé</span>
-                <strong className="text-danger">{formattedPrice} đ</strong>
+                <strong>{formattedPrice} đ</strong>
               </div>
-              <div>
+              <div className="event-detail__stat">
                 <span>Đã bán</span>
                 <strong>{soldTickets} vé</strong>
               </div>
             </div>
 
-            <div className="event-detail-ticket-box">
-              <div className="d-flex justify-content-between mb-2">
-                <span>Vé còn lại</span>
+            <div className="event-detail__tickets">
+              <div className="event-detail__tickets-header">
+                <span>Tình trạng vé</span>
                 <strong>
                   {availableTickets} / {totalTickets}
                 </strong>
               </div>
-              <div className="progress" style={{ height: '8px' }}>
+              <div className="event-detail__progress">
                 <div
-                  className="progress-bar bg-success"
+                  className="event-detail__progress-fill"
                   style={{ width: `${ticketPercent}%` }}
                 />
               </div>
             </div>
 
-            <Button
-              className="w-100"
-              size="lg"
+            <button
+              type="button"
+              className="btn-primary-accent"
               disabled={availableTickets <= 0}
             >
               {availableTickets > 0 ? 'Đặt vé ngay' : 'Hết vé'}
-            </Button>
-          </div>
-        </Col>
-      </Row>
+            </button>
 
-      <Row className="mt-4">
-        <Col lg={8}>
-          <section className="surface-card event-detail-description">
-            <div className="section-eyebrow">Thông tin</div>
-            <h2 className="section-title">Mô tả sự kiện</h2>
-            <p>{event.description || 'Sự kiện chưa có mô tả.'}</p>
-          </section>
-        </Col>
-      </Row>
-    </Container>
+            <p className="event-detail__note">
+              {availableTickets > 0
+                ? 'Xác nhận đặt vé an toàn · Hỗ trợ khách hàng 24/7'
+                : 'Sự kiện hiện đã hết vé. Vui lòng quay lại sau.'}
+            </p>
+          </aside>
+        </div>
+      </Container>
+    </div>
   );
 };
 

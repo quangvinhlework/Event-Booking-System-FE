@@ -14,4 +14,5 @@ export const mapEventResponse = (event) => ({
   availableTickets: event.availableTickets,
   status: event.status,
   category: event.category,
+  views: event.views,
 });
