@@ -1,0 +1,164 @@
+.organizer-application-page .section-heading {
+  margin-bottom: 2rem;
+}
+
+.organizer-application-page .section-title {
+  color: var(--theme-text);
+  font-weight: 500;
+}
+
+.organizer-application-page .section-subtitle {
+  color: var(--theme-muted);
+}
+
+.organizer-application-page .section-eyebrow {
+  color: var(--theme-accent);
+}
+
+.organizer-application-form,
+.organizer-application-summary {
+  padding: 1.5rem;
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  box-shadow: none;
+}
+
+.organizer-application-page .application-section {
+  padding-bottom: 1.4rem;
+  margin-bottom: 1.4rem;
+  border-bottom: 1px solid var(--theme-border);
+}
+
+.organizer-application-page .application-section:last-of-type {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.organizer-application-page .application-section h2,
+.organizer-application-summary h2 {
+  color: var(--theme-accent-light);
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.organizer-application-summary {
+  position: sticky;
+  top: 96px;
+}
+
+.organizer-application-summary ul {
+  color: var(--theme-muted);
+  line-height: 1.7;
+  padding-left: 1.2rem;
+  margin-bottom: 1.25rem;
+}
+
+.organizer-application-page .form-label {
+  color: var(--theme-muted);
+  font-size: 0.8rem;
+}
+
+.organizer-application-page .form-control,
+.organizer-application-page .form-select,
+.organizer-application-page textarea.form-control {
+  background: var(--theme-ink-soft);
+  border-color: var(--theme-border);
+  color: var(--theme-text);
+}
+
+.organizer-application-page .form-control:focus,
+.organizer-application-page .form-select:focus,
+.organizer-application-page textarea.form-control:focus {
+  background: var(--theme-ink-soft);
+  border-color: var(--theme-accent);
+  color: var(--theme-text);
+  box-shadow: 0 0 0 0.2rem var(--theme-accent-dim);
+}
+
+.organizer-application-page .form-text,
+.organizer-application-page .text-muted {
+  color: var(--theme-muted) !important;
+}
+
+.organizer-application-alert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid var(--theme-border);
+  font-size: 0.9rem;
+}
+
+.organizer-application-alert--success {
+  background: rgba(31, 157, 122, 0.12);
+  border-color: rgba(31, 157, 122, 0.35);
+  color: #6ee7b7;
+}
+
+.organizer-application-alert--danger {
+  background: rgba(217, 77, 63, 0.12);
+  border-color: rgba(217, 77, 63, 0.35);
+  color: #fca5a5;
+}
+
+.organizer-application-alert button {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.application-file-counter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-ink-soft);
+}
+
+.application-file-counter span {
+  color: var(--theme-muted);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.application-file-counter strong {
+  color: var(--theme-accent-light);
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.organizer-application-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.organizer-application-page .organizer-application-form .border.rounded {
+  background: var(--theme-ink-soft);
+  border-color: var(--theme-border) !important;
+  color: var(--theme-text);
+}
+
+.organizer-application-page .organizer-application-form .btn-outline-danger {
+  --bs-btn-color: #fca5a5;
+  --bs-btn-border-color: rgba(217, 77, 63, 0.45);
+  --bs-btn-hover-bg: rgba(217, 77, 63, 0.15);
+  --bs-btn-hover-border-color: #f87171;
+  --bs-btn-hover-color: #fecaca;
+}
+
+@media (max-width: 991.98px) {
+  .organizer-application-summary {
+    position: static;
+  }
+}

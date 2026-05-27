@@ -35,4 +35,11 @@ const authAxiosClientMultipart = (token) => {
   return instance;
 }
 
-export { axiosClient, authAxiosClient, authAxiosClientMultipart, axiosClientMultipart };
+const axiosClientJsonBody = axios.create({
+  baseURL: "http://localhost:8080/nvtt_lqv/api",
+  headers: {
+    "Content-Type": "application/json",
+  }
+});
+
+export { axiosClient, authAxiosClient, authAxiosClientMultipart, axiosClientMultipart, axiosClientJsonBody };

@@ -1,8 +1,7 @@
 import { handleApi } from '../api/apiHandler';
 import { authAxiosClient } from '../api/axiosClient';
 import { buildEventStatisticQuery } from '../filters/eventStatisticFilter';
-
-const getToken = () => localStorage.getItem('token');
+import { getToken } from '../utils/authUtils';
 
 export const getEventStatistics = async (filters = {}) => {
   const query = buildEventStatisticQuery(filters);

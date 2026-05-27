@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import { Alert, Button, Col, Container, Form, Row } from 'react-bootstrap';
+import { Col, Container, Form, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { FilePickerWithList, FormField, LoadingOverlay } from '../../components';
 import { submitOrganizerApplication } from '../../services/organizerApplicationService';
+import './OrganizerApplicationPage.css';
 
 const initialApplication = {
   organizationName: '',
@@ -126,13 +127,13 @@ const OrganizerApplicationPage = () => {
   };
 
   return (
-    <main className="app-page organizer-application-page">
+    <main className="page-shell app-page organizer-application-page">
       <LoadingOverlay loading={loading} text="Đang gửi hồ sơ..." />
 
       <Container>
         <div className="section-heading">
-          <p className="section-eyebrow">Organizer Application</p>
-          <h1 className="section-title">Đăng ký trở thành tổ chức viên</h1>
+          <p className="section-eyebrow page-eyebrow">Organizer Application</p>
+          <h1 className="section-title page-title-lg h2">Đăng ký trở thành tổ chức viên</h1>
           <p className="section-subtitle">
             Cung cấp thông tin về đơn vị, người đại diện và tài liệu xác minh để
             đội ngũ quản trị xét duyệt quyền tạo sự kiện.
@@ -141,9 +142,23 @@ const OrganizerApplicationPage = () => {
 
         <Row className="g-4 align-items-start">
           <Col lg={8}>
-            <div className="surface-card organizer-application-form">
-              {error && <Alert variant="danger">{error}</Alert>}
-              {success && <Alert variant="success">{success}</Alert>}
+            <div className="organizer-application-form">
+              {error && (
+                <div className="organizer-application-alert organizer-application-alert--danger">
+                  <span>{error}</span>
+                  <button type="button" onClick={() => setError('')} aria-label="Đóng">
+                    ×
+                  </button>
+                </div>
+              )}
+              {success && (
+                <div className="organizer-application-alert organizer-application-alert--success">
+                  <span>{success}</span>
+                  <button type="button" onClick={() => setSuccess('')} aria-label="Đóng">
+                    ×
+                  </button>
+                </div>
+              )}
 
               <Form onSubmit={handleSubmit}>
                 <section className="application-section">
@@ -345,25 +360,25 @@ const OrganizerApplicationPage = () => {
                   </Row>
                 </section>
 
-                <div className="d-flex flex-column flex-sm-row gap-2 justify-content-end">
-                  <Button
+                <div className="organizer-application-actions">
+                  <button
                     type="button"
-                    variant="outline-primary"
+                    className="btn-ghost"
                     onClick={() => navigate('/')}
                     disabled={loading}
                   >
                     Hủy
-                  </Button>
-                  <Button type="submit" variant="primary" disabled={loading}>
+                  </button>
+                  <button type="submit" className="btn-primary-accent" style={{ width: 'auto' }} disabled={loading}>
                     {loading ? 'Đang gửi...' : 'Gửi hồ sơ xét duyệt'}
-                  </Button>
+                  </button>
                 </div>
               </Form>
             </div>
           </Col>
 
           <Col lg={4}>
-            <aside className="surface-card organizer-application-summary">
+            <aside className="organizer-application-summary">
               <h2>Hồ sơ nên có</h2>
               <ul>
                 <li>Thông tin tổ chức rõ ràng và có thể liên hệ.</li>

@@ -1,15 +1,27 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Container, Badge } from 'react-bootstrap';
-import { AuthContext } from '../../contexts/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 import { useEvents } from '../../hooks/event/useEvents';
 import { useCategory } from '../../hooks/useCategory';
 import { EmptyState, LoadingState } from '../../components';
 import { eventFilters } from '../../filters/eventFilter';
-import EventFilters from '../Event/EventFilters';
+import EventFilterPanel from '../Event/EventFilterPanel';
 import EventCard from '../../components/event/EventCard';
 import FeaturedEvent from '../../components/event/FeaturedEvent';
+import { ROUTES } from '../../config/routes';
 import './HomePage.css';
+
+const COMPARE_STORAGE_KEY = 'compareList';
+const MAX_COMPARE_EVENTS = 3;
+
+const readCompareList = () => {
+  try {
+    return JSON.parse(localStorage.getItem(COMPARE_STORAGE_KEY) || '[]');
+  } catch {
+    return [];
+  }
+};
 
 const getStartOfDayTimestamp = (date) => {
   if (!date) return '';
@@ -21,7 +33,7 @@ const getEndOfDayTimestamp = (date) => {
   return new Date(`${date}T23:59:59.999`).getTime();
 };
 
-/** Sự kiện nổi bật = có lượt xem (views) cao nhất trong danh sách hiện tại */
+
 const pickFeaturedEventByViews = (eventList) => {
   if (!eventList?.length) return null;
 
@@ -34,7 +46,7 @@ const pickFeaturedEventByViews = (eventList) => {
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const [searchParams] = useSearchParams();
 
   const [searchTerm, setSearchTerm] = useState(() => searchParams.get('name') || '');
@@ -50,6 +62,16 @@ const HomePage = () => {
     return pageParam > 1 ? pageParam : 1;
   });
   const [showFilters, setShowFilters] = useState(false);
+
+  const [compareList, setCompareList] = useState(readCompareList);
+
+  useEffect(() => {
+    if (compareList.length) {
+      localStorage.setItem(COMPARE_STORAGE_KEY, JSON.stringify(compareList));
+    } else {
+      localStorage.removeItem(COMPARE_STORAGE_KEY);
+    }
+  }, [compareList]);
 
   const queryFilters = useMemo(
     () =>
@@ -82,6 +104,14 @@ const HomePage = () => {
     append: page > 1,
   });
   const { categories } = useCategory();
+
+  const categoryIdByName = useMemo(() => {
+    const map = new Map();
+    categories.forEach((category) => {
+      map.set(String(category.name).trim().toLowerCase(), Number(category.id));
+    });
+    return map;
+  }, [categories]);
 
   const categoryOptions = useMemo(
     () => [
@@ -141,9 +171,6 @@ const HomePage = () => {
     navigate,
   ]);
 
-  const getCategoryName = (categoryId) =>
-    categories.find((category) => category.id === categoryId)?.name || '';
-
   const handleViewDetails = (eventId) => navigate(`/event/${eventId}`);
 
   const handleLoadMore = () => setPage((current) => current + 1);
@@ -163,6 +190,46 @@ const HomePage = () => {
   const handleCategoryChip = (categoryId) => {
     setSelectedCategory(categoryId);
     setPage(1);
+  };
+
+  const getCategoryId = (event) =>
+    categoryIdByName.get(String(event?.category || '').trim().toLowerCase()) ?? null;
+
+  const handleToggleCompare = (event) => {
+    const id = Number(event.id);
+    if (!id) return;
+
+    if (compareList.some((item) => item.id === id)) {
+      setCompareList(compareList.filter((item) => item.id !== id));
+      return;
+    }
+
+    const category_id = getCategoryId(event);
+    if (!category_id) {
+      window.alert('Không xác định được lĩnh vực của sự kiện này để so sánh.');
+      return;
+    }
+    if (compareList.length >= MAX_COMPARE_EVENTS) {
+      window.alert('Bạn chỉ có thể so sánh tối đa 3 sự kiện.');
+      return;
+    }
+    if (compareList.length && compareList[0].category_id !== category_id) {
+      window.alert('Chỉ cho phép so sánh các sự kiện thuộc cùng một lĩnh vực.');
+      return;
+    }
+
+    setCompareList([
+      ...compareList,
+      { id, name: event.name || event.title || '', category_id },
+    ]);
+  };
+
+  const handleGoToComparison = () => {
+    if (compareList.length < 2) {
+      window.alert('Vui lòng chọn từ 2 đến 3 sự kiện để tiến hành so sánh.');
+      return;
+    }
+    navigate(ROUTES.EVENT_COMPARISON);
   };
 
   const activeFilterCount = [
@@ -191,10 +258,9 @@ const HomePage = () => {
             <p className="home-hero__eyebrow">Premium Event Experience</p>
             <h1 className="home-hero__title">
               Đặt vé sự kiện
-              <em> đẳng cấp</em>
             </h1>
             <p className="home-hero__lead">
-              Khám phá những trải nghiệm được tuyển chọn — từ concert, gala đến hội thảo
+              Khám phá những trải nghiệm được tuyển chọn - từ concert, gala đến hội thảo
               và triển lãm nghệ thuật. Tất cả ngay tại trang chủ.
             </p>
 
@@ -273,7 +339,7 @@ const HomePage = () => {
               {featuredEvent && (
                 <FeaturedEvent
                   event={featuredEvent}
-                  categoryName={getCategoryName(featuredEvent.category)}
+                  categoryName={featuredEvent.category || ''}
                   onViewDetails={handleViewDetails}
                 />
               )}
@@ -305,6 +371,16 @@ const HomePage = () => {
                     Xóa lọc
                   </button>
                 )}
+                {compareList.length > 0 && (
+                  <button
+                    type="button"
+                    className="home-toolbar__compare"
+                    onClick={handleGoToComparison}
+                    disabled={compareList.length < 2}
+                  >
+                    So sánh ({compareList.length}/3)
+                  </button>
+                )}
               </div>
 
               {categories.length > 0 && (
@@ -326,7 +402,7 @@ const HomePage = () => {
 
               {showFilters && (
                 <div className="home-filters">
-                  <EventFilters
+                  <EventFilterPanel
                     id="event-filters"
                     selectedCategory={selectedCategory}
                     location={location}
@@ -377,9 +453,11 @@ const HomePage = () => {
                     <EventCard
                       key={event.id}
                       event={event}
-                      categoryName={getCategoryName(event.category)}
+                      categoryName={event.category || ''}
                       onViewDetails={handleViewDetails}
                       index={index}
+                      onToggleCompare={handleToggleCompare}
+                      isCompared={compareList.some((item) => item.id === event.id)}
                     />
                   ))}
                 </div>

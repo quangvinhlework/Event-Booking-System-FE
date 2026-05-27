@@ -7,9 +7,11 @@ const SORT_OPTIONS = [
   { label: 'Ngày diễn ra giảm dần', value: 'desc' },
 ];
 
-const EventFilters = ({
+/** UI bộ lọc sự kiện (không nhầm với `filters/eventFilter.js` — query API) */
+const EventFilterPanel = ({
   id,
   selectedCategory,
+  selectedStatus,
   location,
   startDate,
   endDate,
@@ -17,7 +19,9 @@ const EventFilters = ({
   maxPrice,
   sortDirection,
   categoryOptions,
+  statusOptions,
   onCategoryChange,
+  onStatusChange,
   onLocationChange,
   onStartDateChange,
   onEndDateChange,
@@ -25,9 +29,23 @@ const EventFilters = ({
   onMaxPriceChange,
   onSortDirectionChange,
   onResetFilters,
+  className = 'surface-card p-3 p-md-4 mb-4 g-3',
 }) => {
   return (
-    <Row id={id} className="surface-card p-3 p-md-4 mb-4 g-3">
+    <Row id={id} className={className}>
+      {statusOptions && (
+        <Col md={6} lg={4}>
+          <FormField
+            labelClassName="fw-bold"
+            label="Trạng thái"
+            name="selectedStatus"
+            value={selectedStatus}
+            onChange={onStatusChange}
+            options={statusOptions}
+          />
+        </Col>
+      )}
+
       <Col md={6} lg={4}>
         <FormField
           labelClassName="fw-bold"
@@ -120,4 +138,4 @@ const EventFilters = ({
   );
 };
 
-export default EventFilters;
+export default EventFilterPanel;

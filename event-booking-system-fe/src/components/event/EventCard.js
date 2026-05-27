@@ -6,6 +6,8 @@ const EventCard = ({
   categoryName,
   onViewDetails,
   index = 0,
+  onToggleCompare,
+  isCompared = false,
 }) => {
   const totalTickets = Number(event.totalTickets || 0);
   const availableTickets = Number(event.availableTickets || 0);
@@ -27,6 +29,7 @@ const EventCard = ({
       tabIndex={0}
       onClick={handleOpen}
       onKeyDown={(e) => {
+        if (e.target !== e.currentTarget) return;
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           handleOpen();
@@ -37,6 +40,18 @@ const EventCard = ({
         <img src={imageUrl} alt={event.name || event.title} loading="lazy" />
         <div className="event-card__overlay" />
         {categoryName && <span className="event-card__tag">{categoryName}</span>}
+        <button
+          type="button"
+          className={`event-card__compare-btn${isCompared ? ' is-selected' : ''}`}
+          aria-pressed={isCompared}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onToggleCompare?.(event);
+          }}
+        >
+          {isCompared ? 'Đã chọn' : 'So sánh'}
+        </button>
       </div>
 
       <div className="event-card__body">

@@ -1,7 +1,10 @@
-import { handleApi } from "../api/apiHandler";
-import { authAxiosClient } from "../api/axiosClient";
+import { handleApi } from '../api/apiHandler';
+import { authAxiosClient } from '../api/axiosClient';
+import { getToken } from '../utils/authUtils';
 
-export const submitOrganizerApplication = async (applicationData) => {
-  const token = localStorage.getItem('token');
-  return handleApi(() => authAxiosClient(token).post('/secure/organizer-application', applicationData));
-}
+export const submitOrganizerApplication = (applicationData) => {
+  const token = getToken();
+  return handleApi(() =>
+    authAxiosClient(token).post('/secure/organizer-application', applicationData)
+  );
+};

@@ -2,117 +2,76 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Form, Button, Row, Col } from 'react-bootstrap';
 import { useCategory } from '../../../hooks/useCategory';
 import {
-  dateToTimestamp,
-  timestampToDateForUpdateModal,
-} from '../../../utils/dateConvert';
-import {
   FilePickerWithList,
   FormField,
   LoadingOverlay,
   MediaPreviewList,
 } from '../../../components';
-
-const initialState = {
-  id: null,
-  name: '',
-  description: '',
-  startTime: '',
-  endTime: '',
-  location: '',
-  totalTickets: '',
-  ticketPrice: '',
-  category: '',
-  existingImageUrls: [],
-  existingVideoUrls: [],
-  newImages: [],
-  newVideos: [],
-  deletedMediaUrls: [],
-};
+import ConfirmCard from '../../../components/confirmation/ConfirmCard';
+import {
+  EMPTY_EVENT_FORM,
+  eventToFormState,
+  formStateToUpdatePayload,
+  getEditableFields,
+} from '../../../utils/eventUpdateForm';
+import { EVENT_STATUS } from '../../../constants/statuses/eventStatus';
 
 const UpdateEventModal = ({
   show,
   onHide,
   onUpdate,
+  onPublish,
+  onEnd,
   updateLoading,
   eventData,
 }) => {
-  const [modifyEvent, setModifyEvent] = useState(initialState);
+  const [form, setForm] = useState(EMPTY_EVENT_FORM);
+  const [showConfirmPublishCard, setShowConfirmPublishCard] = useState(false);
+  const [showConfirmEndCard, setShowConfirmEndCard] = useState(false);
   const { categories } = useCategory();
+
+  const editableFields = getEditableFields(eventData?.status);
+  const isEditable = (field) => editableFields.includes(field);
+  const readOnlyClass = (field) => (!isEditable(field) ? 'opacity-50' : '');
 
   const categoryOptions = categories.map((category) => ({
     label: category.name,
     value: category.name,
   }));
 
-  const mapEventToField = (event) => {
-    const images =
-      event.eventMedias
-        ?.filter((media) => media.mediaType === 'IMAGE')
-        .map((media) => media.mediaUrl) || [];
-
-    const videos =
-      event.eventMedias
-        ?.filter((media) => media.mediaType === 'VIDEO')
-        .map((media) => media.mediaUrl) || [];
-
-    return {
-      id: event.id,
-      name: event.name || '',
-      description: event.description || '',
-      startTime: timestampToDateForUpdateModal(event.startTime),
-      endTime: timestampToDateForUpdateModal(event.endTime),
-      location: event.location || '',
-      totalTickets: event.totalTickets || '',
-      ticketPrice: event.ticketPrice || '',
-      category: event.category || '',
-      existingImageUrls: images,
-      existingVideoUrls: videos,
-      newImages: [],
-      newVideos: [],
-      deletedMediaUrls: [],
-    };
-  };
-
   useEffect(() => {
     if (!show) {
-      setModifyEvent(initialState);
+      setForm(EMPTY_EVENT_FORM);
       return;
     }
-
     if (eventData) {
-      setModifyEvent(mapEventToField(eventData));
+      setForm(eventToFormState(eventData));
     }
   }, [show, eventData]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-
-    setModifyEvent((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = (event) => {
     const { name, files } = event.target;
-
-    setModifyEvent((prev) => ({
+    setForm((prev) => ({
       ...prev,
       [name]: [...prev[name], ...Array.from(files)],
     }));
   };
 
   const removeNewFile = (fieldName, indexToRemove) => {
-    setModifyEvent((prev) => ({
+    setForm((prev) => ({
       ...prev,
       [fieldName]: prev[fieldName].filter((_, index) => index !== indexToRemove),
     }));
   };
 
   const removeExistingFile = (fieldName, indexToRemove) => {
-    setModifyEvent((prev) => {
+    setForm((prev) => {
       const deletedUrl = prev[fieldName][indexToRemove];
-
       return {
         ...prev,
         [fieldName]: prev[fieldName].filter((_, index) => index !== indexToRemove),
@@ -123,29 +82,56 @@ const UpdateEventModal = ({
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    const preparedData = {
-      ...modifyEvent,
-      totalTickets: modifyEvent.totalTickets ? Number(modifyEvent.totalTickets) : 0,
-      ticketPrice: modifyEvent.ticketPrice ? Number(modifyEvent.ticketPrice) : 0,
-      startTime: modifyEvent.startTime
-        ? dateToTimestamp(modifyEvent.startTime)
-        : null,
-      endTime: modifyEvent.endTime
-        ? dateToTimestamp(modifyEvent.endTime)
-        : null,
-    };
-
-    await onUpdate?.(preparedData, preparedData.id);
+    const payload = formStateToUpdatePayload(form, eventData?.status);
+    await onUpdate?.(payload, payload.id);
     if (updateLoading === false) {
       onHide();
+    }
+  };
+
+  const handlePublishEvent = async () => {
+    if (!eventData?.id) return;
+    try {
+      await onPublish?.(eventData.id);
+      if (updateLoading === false) {
+        setShowConfirmPublishCard(false);
+        onHide();
+      }
+    } catch (err) {
+      console.error('Error publishing event:', err);
+    }
+  };
+
+  const handleEndEvent = async () => {
+    if (!eventData?.id) return;
+    try {
+      await onEnd?.(eventData.id);
+      if (updateLoading === false) {
+        setShowConfirmEndCard(false);
+        onHide();
+      }
+    } catch (err) {
+      console.error('Error publishing event:', err);
     }
   };
 
   return (
     <>
       <LoadingOverlay loading={updateLoading} text="Đang cập nhật sự kiện..." />
-
+      <ConfirmCard
+        show={showConfirmPublishCard}
+        title="Đăng sự kiện"
+        message="Bạn có chắc chắn muốn đăng sự kiện này?"
+        onConfirm={handlePublishEvent}
+        onCancel={() => setShowConfirmPublishCard(false)}
+      />
+      <ConfirmCard
+        show={showConfirmEndCard}
+        title="Đăng sự kiện"
+        message="Bạn có chắc chắn muốn đăng sự kiện này?"
+        onConfirm={handleEndEvent}
+        onCancel={() => setShowConfirmEndCard(false)}
+      />
       <Modal
         show={show}
         onHide={onHide}
@@ -165,9 +151,11 @@ const UpdateEventModal = ({
                 <FormField
                   label="Tên sự kiện"
                   name="name"
-                  value={modifyEvent.name}
+                  value={form.name}
                   onChange={handleInputChange}
                   required
+                  disabled={!isEditable('name')}
+                  className={readOnlyClass('name')}
                 />
               </Col>
 
@@ -177,9 +165,11 @@ const UpdateEventModal = ({
                   as="textarea"
                   rows={3}
                   name="description"
-                  value={modifyEvent.description}
+                  value={form.description}
                   onChange={handleInputChange}
                   required
+                  disabled={!isEditable('description')}
+                  className={readOnlyClass('description')}
                 />
               </Col>
 
@@ -188,9 +178,11 @@ const UpdateEventModal = ({
                   label="Thời gian bắt đầu"
                   type="datetime-local"
                   name="startTime"
-                  value={modifyEvent.startTime}
+                  value={form.startTime}
                   onChange={handleInputChange}
                   required
+                  disabled={!isEditable('startTime')}
+                  className={readOnlyClass('startTime')}
                 />
               </Col>
 
@@ -199,9 +191,11 @@ const UpdateEventModal = ({
                   label="Thời gian kết thúc"
                   type="datetime-local"
                   name="endTime"
-                  value={modifyEvent.endTime}
+                  value={form.endTime}
                   onChange={handleInputChange}
                   required
+                  disabled={!isEditable('endTime')}
+                  className={readOnlyClass('endTime')}
                 />
               </Col>
 
@@ -209,9 +203,11 @@ const UpdateEventModal = ({
                 <FormField
                   label="Địa điểm"
                   name="location"
-                  value={modifyEvent.location}
+                  value={form.location}
                   onChange={handleInputChange}
                   required
+                  disabled={!isEditable('location')}
+                  className={readOnlyClass('location')}
                 />
               </Col>
 
@@ -219,9 +215,11 @@ const UpdateEventModal = ({
                 <FormField
                   label="Danh mục"
                   name="category"
-                  value={modifyEvent.category}
+                  value={form.category}
                   onChange={handleInputChange}
                   options={categoryOptions}
+                  disabled={!isEditable('category')}
+                  className={readOnlyClass('category')}
                 />
               </Col>
 
@@ -231,9 +229,11 @@ const UpdateEventModal = ({
                   type="number"
                   min="0"
                   name="totalTickets"
-                  value={modifyEvent.totalTickets}
+                  value={form.totalTickets}
                   onChange={handleInputChange}
                   required
+                  disabled={!isEditable('totalTickets')}
+                  className={readOnlyClass('totalTickets')}
                 />
               </Col>
 
@@ -243,9 +243,11 @@ const UpdateEventModal = ({
                   type="number"
                   min="0"
                   name="ticketPrice"
-                  value={modifyEvent.ticketPrice}
+                  value={form.ticketPrice}
                   onChange={handleInputChange}
                   required
+                  disabled={!isEditable('ticketPrice')}
+                  className={readOnlyClass('ticketPrice')}
                 />
               </Col>
 
@@ -254,22 +256,25 @@ const UpdateEventModal = ({
                   <Form.Label>Ảnh hiện tại</Form.Label>
                   <div className="mb-3">
                     <MediaPreviewList
-                      items={modifyEvent.existingImageUrls}
+                      items={form.existingImageUrls}
                       type="image"
                       onRemove={(index) =>
                         removeExistingFile('existingImageUrls', index)
                       }
+                      disabled={!isEditable('deletedMediaUrls')}
+                      className={readOnlyClass('deletedMediaUrls')}
                     />
                   </div>
-
-                  <FilePickerWithList
-                    label="Ảnh mới"
-                    name="newImages"
-                    files={modifyEvent.newImages}
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    onRemove={removeNewFile}
-                  />
+                  {isEditable('newImages') && (
+                    <FilePickerWithList
+                      label="Ảnh mới"
+                      name="newImages"
+                      files={form.newImages}
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      onRemove={removeNewFile}
+                    />
+                  )}
                 </div>
               </Col>
 
@@ -278,28 +283,42 @@ const UpdateEventModal = ({
                   <Form.Label>Video hiện tại</Form.Label>
                   <div className="mb-3">
                     <MediaPreviewList
-                      items={modifyEvent.existingVideoUrls}
+                      items={form.existingVideoUrls}
                       type="video"
                       onRemove={(index) =>
                         removeExistingFile('existingVideoUrls', index)
                       }
+                      disabled={!isEditable('deletedMediaUrls')}
+                      className={readOnlyClass('deletedMediaUrls')}
                     />
                   </div>
-
-                  <FilePickerWithList
-                    label="Video mới"
-                    name="newVideos"
-                    files={modifyEvent.newVideos}
-                    accept="video/*"
-                    onChange={handleFileChange}
-                    onRemove={removeNewFile}
-                  />
+                  {isEditable('newVideos') && (
+                    <FilePickerWithList
+                      label="Video mới"
+                      name="newVideos"
+                      files={form.newVideos}
+                      accept="video/*"
+                      onChange={handleFileChange}
+                      onRemove={removeNewFile}
+                    />
+                  )}
                 </div>
               </Col>
             </Row>
           </Modal.Body>
 
           <Modal.Footer>
+            {EVENT_STATUS.DRAFT === eventData?.status && (
+              <Button variant="success" onClick={() => setShowConfirmPublishCard(true)} disabled={updateLoading}>
+                Đăng sự kiện
+              </Button>
+            )}
+            {EVENT_STATUS.ONSALE === eventData?.status && (
+              <Button variant="danger" onClick={() => setShowConfirmEndCard(true)} disabled={updateLoading}>
+                Dừng sự kiện
+              </Button>
+            )}
+            
             <Button variant="secondary" onClick={onHide}>
               Hủy
             </Button>

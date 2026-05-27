@@ -1,3 +1,7 @@
+import { buildQuery, combineFilters, removeEmptyValues } from '../utils/queryFilter';
+
+export const EMPTY_EVENT_FILTERS = Object.freeze({});
+
 export const EVENT_FILTER_FIELDS = {
   name: 'name',
   cateId: 'cateId',
@@ -12,36 +16,18 @@ export const EVENT_FILTER_FIELDS = {
   sortDirection: 'sortDir',
 };
 
-const removeEmptyValues = (filters) => {
-  return Object.entries(filters).reduce((query, [field, value]) => {
-    if (value !== undefined && value !== null && value !== '') {
-      query[field] = value;
-    }
-
-    return query;
-  }, {});
-};
-
 export const eventFilters = {
   byName: (name) =>
-    removeEmptyValues({
-      [EVENT_FILTER_FIELDS.name]: name,
-    }),
+    removeEmptyValues({ [EVENT_FILTER_FIELDS.name]: name }),
 
   byCategory: (cateId) =>
-    removeEmptyValues({
-      [EVENT_FILTER_FIELDS.cateId]: cateId,
-    }),
+    removeEmptyValues({ [EVENT_FILTER_FIELDS.cateId]: cateId }),
 
   byPage: (page) =>
-    removeEmptyValues({
-      [EVENT_FILTER_FIELDS.page]: page,
-    }),
+    removeEmptyValues({ [EVENT_FILTER_FIELDS.page]: page }),
 
   byStatus: (status) =>
-    removeEmptyValues({
-      [EVENT_FILTER_FIELDS.status]: status,
-    }),
+    removeEmptyValues({ [EVENT_FILTER_FIELDS.status]: status }),
 
   byDateRange: (startDate, endDate) =>
     removeEmptyValues({
@@ -50,9 +36,7 @@ export const eventFilters = {
     }),
 
   byLocation: (location) =>
-    removeEmptyValues({
-      [EVENT_FILTER_FIELDS.location]: location,
-    }),
+    removeEmptyValues({ [EVENT_FILTER_FIELDS.location]: location }),
 
   byPriceRange: (fromPrice, toPrice) =>
     removeEmptyValues({
@@ -66,12 +50,7 @@ export const eventFilters = {
       [EVENT_FILTER_FIELDS.sortDirection]: sortDirection,
     }),
 
-  combine: (...filters) =>
-    removeEmptyValues(
-      filters.reduce((result, filter) => ({ ...result, ...filter }), {})
-    ),
+  combine: combineFilters,
 };
 
-export const buildEventQuery = (filters = {}) => {
-  return removeEmptyValues(filters);
-};
+export const buildEventQuery = buildQuery;

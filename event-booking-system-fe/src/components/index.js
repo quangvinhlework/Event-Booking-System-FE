@@ -1,3 +1,4 @@
+export { default as ConfirmCard } from './confirmation/ConfirmCard';
 export { default as EmptyState } from './feedback/EmptyState';
 export { default as LoadingState } from './feedback/LoadingState';
 export { default as EventCard } from './event/EventCard';

@@ -13,7 +13,10 @@ const Header = () => {
     location.pathname === '/' ||
     location.pathname === '/login' ||
     location.pathname === '/register' ||
-    location.pathname.startsWith('/event/');
+    location.pathname === '/account' ||
+    location.pathname === '/become-organizer' ||
+    location.pathname.startsWith('/event/') ||
+    location.pathname.startsWith('/events/');
 
   const handleLogoutClick = () => {
     logout();
@@ -35,7 +38,7 @@ const Header = () => {
       <Container>
         <Navbar.Brand
           onClick={() =>
-            navigate(user?.role === 'ORGANIZER' ? '/organizer/dashboard' : '/')
+            navigate(user?.roleName === 'ORGANIZER' || user?.role === 'ORGANIZER' ? '/organizer/dashboard' : '/')
           }
           className="fw-bold navbar-brand-dark"
         >
@@ -45,13 +48,13 @@ const Header = () => {
         <Navbar.Toggle aria-controls="main-navbar-nav" />
         <Navbar.Collapse id="main-navbar-nav">
           <Nav className="me-auto">
-            {user?.role === 'ORGANIZER' && !isOrganizerArea ? (
+            {(user?.roleName === 'ORGANIZER' || user?.role === 'ORGANIZER') && !isOrganizerArea ? (
               <>
                 <Nav.Link onClick={() => navigate('/organizer/dashboard')}>
                   Bảng điều khiển
                 </Nav.Link>
               </>
-            ) : user?.role !== 'ORGANIZER' ? (
+            ) : user?.roleName !== 'ORGANIZER' && user?.role !== 'ORGANIZER' ? (
               <>
                 <Nav.Link onClick={goHome} className={isDarkTheme ? 'nav-link-dark' : ''}>
                   Trang chủ
@@ -66,7 +69,7 @@ const Header = () => {
           <Nav className="align-items-lg-center gap-2">
             {isAuthenticated ? (
               <>
-                {user?.role === 'USER' && (
+                {(user?.roleName === 'USER' || user?.role === 'USER') && (
                   <Button
                     variant={isDarkTheme ? 'outline-light' : 'outline-primary'}
                     size="sm"
@@ -76,6 +79,14 @@ const Header = () => {
                     Trở thành tổ chức viên
                   </Button>
                 )}
+                <Button
+                  variant={isDarkTheme ? 'outline-light' : 'outline-secondary'}
+                  size="sm"
+                  className={isDarkTheme ? 'btn-nav-outline' : ''}
+                  onClick={() => navigate('/account')}
+                >
+                  Tài khoản
+                </Button>
                 <Navbar.Text className={isDarkTheme ? 'text-nav-muted' : 'text-muted'}>
                   Xin chào, {user?.fullName}
                 </Navbar.Text>

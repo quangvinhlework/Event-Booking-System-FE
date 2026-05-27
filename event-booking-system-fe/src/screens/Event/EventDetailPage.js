@@ -3,6 +3,7 @@ import { Container } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { EmptyState, LoadingState } from '../../components';
 import { useEvent } from '../../hooks/event/useEvent';
+import { useOrder } from '../../hooks/order/useOrder';
 import { formatTimestamp } from '../../utils/dateConvert';
 import './EventDetailPage.css';
 
@@ -11,6 +12,8 @@ const EventDetailPage = () => {
   const navigate = useNavigate();
   const [selectedMedia, setSelectedMedia] = useState(null);
   const { event, loading, error } = useEvent(id);
+  const [quantity, setQuantity] = useState(1);
+  const { createOrder, loading: ordering, error: orderError } = useOrder(id);
 
   useEffect(() => {
     setSelectedMedia(event?.eventMedias?.[0] || null);
@@ -44,6 +47,18 @@ const EventDetailPage = () => {
     if (normalized.includes('soldout')) return 'badge-tag--warning';
     if (normalized.includes('cancel') || normalized.includes('close')) return 'badge-tag--danger';
     return '';
+  };
+
+  const handleOrder = async () => {
+    if (availableTickets <= 0 || ordering) return;
+
+    try {
+      await createOrder(quantity);
+    } catch (err) {
+      // Thông báo đơn giản, có thể thay bằng toast sau này
+      // eslint-disable-next-line no-alert
+      alert(err.message || 'Đặt vé thất bại');
+    }
   };
 
   if (loading) {
@@ -209,12 +224,61 @@ const EventDetailPage = () => {
               </div>
             </div>
 
+            <div className="event-detail__quantity">
+              <div className="event-detail__quantity-header">
+                <span>Số lượng vé</span>
+                <strong>Tối đa: {availableTickets}</strong>
+              </div>
+              <div className="event-detail__quantity-control" role="group" aria-label="Chọn số lượng vé">
+                <button
+                  type="button"
+                  className="event-detail__quantity-btn"
+                  onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
+                  disabled={ordering || quantity <= 1}
+                  aria-label="Giảm số lượng"
+                >
+                  −
+                </button>
+                <input
+                  className="event-detail__quantity-input"
+                  type="number"
+                  inputMode="numeric"
+                  min={1}
+                  max={availableTickets || 1}
+                  value={quantity}
+                  onChange={(e) => {
+                    const value = Number(e.target.value) || 1;
+                    const clamped = Math.max(1, Math.min(availableTickets || 1, value));
+                    setQuantity(clamped);
+                  }}
+                  disabled={ordering || availableTickets <= 0}
+                  aria-label="Số lượng vé"
+                />
+                <button
+                  type="button"
+                  className="event-detail__quantity-btn"
+                  onClick={() => setQuantity((prev) => Math.min(availableTickets || 1, prev + 1))}
+                  disabled={ordering || quantity >= (availableTickets || 1)}
+                  aria-label="Tăng số lượng"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            {orderError && (
+              <p className="event-detail__error">
+                {orderError}
+              </p>
+            )}
+
             <button
               type="button"
               className="btn-primary-accent"
-              disabled={availableTickets <= 0}
+              disabled={availableTickets <= 0 || ordering}
+              onClick={handleOrder}
             >
-              {availableTickets > 0 ? 'Đặt vé ngay' : 'Hết vé'}
+              {availableTickets > 0 ? (ordering ? 'Đang xử lý...' : 'Đặt vé ngay') : 'Hết vé'}
             </button>
 
             <p className="event-detail__note">

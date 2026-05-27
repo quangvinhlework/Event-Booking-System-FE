@@ -28,7 +28,7 @@ const LoadingOverlay = ({
     >
       <div
         className="
-          bg-white
+          bg-dark
           rounded
           shadow
           p-4

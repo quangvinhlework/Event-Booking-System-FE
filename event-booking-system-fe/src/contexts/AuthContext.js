@@ -1,7 +1,7 @@
-import { createContext, useState, useEffect } from "react";
-import * as authService from "../services/authService";
+import { createContext, useState, useEffect, useCallback } from 'react';
+import * as authService from '../services/authService';
 
-export const AuthContext = createContext();
+export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -10,38 +10,45 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [registerLoading, setRegisterLoading] = useState(false);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    console.log('Token from localStorage:', token);
+  const loadSession = useCallback(async () => {
+    const token = localStorage.getItem('token');
 
-    if (token) {
-      authService.getMyInfo(token)
-        .then(response => {
-          console.log('User info fetched successfully: ', response.data);
-          setUser(response.data);
-        })
-        .catch(error => {
-          console.error('Error fetching user info:', error);
-        });
-      setAccessToken(token);
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    setAccessToken(token);
+    const response = await authService.getMyInfo();
+
+    if (response.success) {
+      setUser(response.data);
       setIsAuthenticated(true);
+    } else {
+      localStorage.removeItem('token');
+      setAccessToken(null);
+      setIsAuthenticated(false);
     }
 
     setLoading(false);
   }, []);
 
+  useEffect(() => {
+    loadSession();
+  }, [loadSession]);
+
   const login = async (email, password) => {
     const response = await authService.login(email, password);
 
     if (!response.success) {
-      console.error('Login error:', response.message);
       throw new Error(response.message || 'Đăng nhập thất bại');
     }
 
-    setUser(response.data.user);
-    setAccessToken(response.data.accessToken);
+    const { user: userData, accessToken: token } = response.data;
+    setUser(userData);
+    setAccessToken(token);
     setIsAuthenticated(true);
-    localStorage.setItem('token', response.data.accessToken);
+    localStorage.setItem('token', token);
   };
 
   const register = async (userData) => {
@@ -49,7 +56,6 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await authService.register(userData);
       if (!response.success) {
-        console.error('Register error:', response.message);
         throw new Error(response.message || 'Đăng ký thất bại');
       }
       return response.data;
@@ -62,8 +68,32 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setAccessToken(null);
     setIsAuthenticated(false);
+    localStorage.removeItem('token');
+  };
 
-    localStorage.removeItem("token");
+  const updateMyInfo = async (userData) => {
+    setLoading(true);
+    try {
+      const response = await authService.updateMyInfo(userData);
+      if (!response.success) {
+        throw new Error(response.message || 'Cập nhật thất bại');
+      }
+      if (response.data) {
+        setUser(response.data);
+      }
+      return response.data;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const refreshUser = async () => {
+    const response = await authService.getMyInfo();
+    if (response.success) {
+      setUser(response.data);
+      setIsAuthenticated(true);
+    }
+    return response.data;
   };
 
   return (
@@ -77,6 +107,8 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         register,
+        refreshUser,
+        updateMyInfo,
       }}
     >
       {children}

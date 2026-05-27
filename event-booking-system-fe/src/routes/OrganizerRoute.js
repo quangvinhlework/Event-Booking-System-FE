@@ -17,7 +17,7 @@ const OrganizerRoute = ({ children }) => {
     return <Navigate to="/login" replace />;
   }
 
-  if (user?.role !== 'ORGANIZER') {
+  if (user?.roleName !== 'ORGANIZER') {
     return <Navigate to="/" replace />;
   }
 
