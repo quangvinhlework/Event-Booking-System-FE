@@ -29,7 +29,7 @@ export const useEvents = (filters = EMPTY_EVENT_FILTERS, options = {}) => {
 
         setHasMore(mappedEvents.length > 0);
       } else {
-        throw new Error(response.message || 'Không thể tải danh sách sự kiện');
+        setError(response.message || 'Không thể tải danh sách sự kiện');
       }
     } catch (err) {
       setError(err.message);

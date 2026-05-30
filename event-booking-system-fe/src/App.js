@@ -11,6 +11,7 @@ import Footer from './layouts/Footer';
 import PublicRoute from './routes/PublicRoute';
 import ProtectedRoute from './routes/ProtectedRoute';
 import OrganizerRoute from './routes/OrganizerRoute';
+import ToastNotification from './components/ToastNotification';
 
 const ROUTE_GUARDS = {
   public: PublicRoute,
@@ -23,6 +24,7 @@ function App() {
     <AuthProvider>
       <Router>
         <div className="App app-shell">
+          <ToastNotification />
           <Header />
           <Routes>
             {APP_ROUTES.map(({ path, page: Page, guard }) => {

@@ -20,7 +20,7 @@ export const useMyTickets = (filters = EMPTY_TICKET_FILTERS, options = {}) => {
       if (response.success) {
         setTickets(response.data.map(mapTicketResponse));
       } else {
-        throw new Error(response.message || 'Không thể tải danh sách vé');
+        setError(response.message || 'Không thể tải danh sách vé');
       }
     } catch (err) {
       setError(err.message);

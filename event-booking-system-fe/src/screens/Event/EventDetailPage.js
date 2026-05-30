@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { EmptyState, LoadingState } from '../../components';
+import ChatBox from '../../components/chat/chatBox';
 import { useEvent } from '../../hooks/event/useEvent';
 import { useOrder } from '../../hooks/order/useOrder';
 import { formatTimestamp } from '../../utils/dateConvert';
@@ -55,6 +56,10 @@ const EventDetailPage = () => {
     try {
       await createOrder(quantity);
     } catch (err) {
+      if (err.message === 'Vui lòng đăng nhập để đặt vé') {
+        navigate('/login', { state: { from: `/event/${id}` } });
+        return;
+      }
       // Thông báo đơn giản, có thể thay bằng toast sau này
       // eslint-disable-next-line no-alert
       alert(err.message || 'Đặt vé thất bại');
@@ -289,6 +294,9 @@ const EventDetailPage = () => {
           </aside>
         </div>
       </Container>
+
+      {/* Chat widget — fixed bottom-right */}
+      <ChatBox eventId={id} eventName={event.name} />
     </div>
   );
 };

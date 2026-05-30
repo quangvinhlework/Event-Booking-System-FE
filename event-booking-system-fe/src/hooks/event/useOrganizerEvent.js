@@ -31,7 +31,7 @@ export const useOrganizerEvent = (filters = EMPTY_EVENT_FILTERS, options = {}) =
 
         setHasMore(mappedEvents.length > 0);
       } else {
-        throw new Error(response.message || 'Không thể tải sự kiện của bạn');
+        setError(response.message || 'Không thể tải sự kiện của bạn');
       }
     } catch (err) {
       setError(err.message);
@@ -48,12 +48,13 @@ export const useOrganizerEvent = (filters = EMPTY_EVENT_FILTERS, options = {}) =
         const mappedEvent = mapEventResponse(response.data);
         setEvent(mappedEvent);
         return mappedEvent;
+      } else {
+        setEvent(null);
+        setError(response.message || 'Không thể tải chi tiết sự kiện');
       }
-
-      throw new Error(response.message || 'Không thể tải chi tiết sự kiện');
     } catch (err) {
       setEvent(null);
-      throw new Error(getApiErrorMessage(err, 'Không thể tải chi tiết sự kiện'));
+      setError(getApiErrorMessage(err, 'Không thể tải chi tiết sự kiện'));
     }
   };
 

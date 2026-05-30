@@ -9,6 +9,8 @@ import OrganizerDashboardPage from '../screens/Organizer/Dashboard';
 import OrganizerEventsPage from '../screens/Organizer/EventManagementPage';
 import OrganizerAnalyticsPage from '../screens/Organizer/AnalyticsPage';
 import OrganizerTicketsPage from '../screens/Organizer/TicketManagementPage';
+import OrganizerChatPage from '../screens/Organizer/OrganizerChatPage';
+import NotFoundPage from '../screens/NotFound/NotFoundPage';
 
 export const ROUTES = {
   HOME: '/',
@@ -23,6 +25,7 @@ export const ROUTES = {
   ORGANIZER_EVENTS: '/organizer/events',
   ORGANIZER_ANALYTICS: '/organizer/analytics',
   ORGANIZER_TICKETS: '/organizer/tickets',
+  ORGANIZER_CHAT: '/organizer/chat',
 };
 
 /** guard: 'public' | 'protected' | 'organizer' */
@@ -39,5 +42,6 @@ export const APP_ROUTES = [
   { path: ROUTES.ORGANIZER_EVENTS, page: OrganizerEventsPage, guard: 'organizer' },
   { path: ROUTES.ORGANIZER_ANALYTICS, page: OrganizerAnalyticsPage, guard: 'organizer' },
   { path: ROUTES.ORGANIZER_TICKETS, page: OrganizerTicketsPage, guard: 'organizer' },
-  { path: '*', page: HomePage, guard: 'public' },
+  { path: ROUTES.ORGANIZER_CHAT, page: OrganizerChatPage, guard: 'organizer' },
+  { path: '*', page: NotFoundPage, guard: 'public' },
 ];

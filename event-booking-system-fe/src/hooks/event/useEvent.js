@@ -21,14 +21,14 @@ export const useEvent = (id) => {
         const mapped = mapEventResponse(response.data);
         setEvent(mapped);
         return mapped;
+      } else {
+        setError(response.message || 'Không thể tải sự kiện');
+        setEvent(null);
       }
-
-      throw new Error(response.message || 'Không thể tải sự kiện');
     } catch (err) {
       const message = getApiErrorMessage(err, 'Không thể tải sự kiện');
       setError(message);
       setEvent(null);
-      throw new Error(message);
     } finally {
       setLoading(false);
     }

@@ -13,7 +13,7 @@ const PublicRoute = ({ children }) => {
     );
   }
 
-  if (user?.roleName === 'ORGANIZER') {
+  if (user?.roleName === 'ROLE_ORGANIZER') {
     return <Navigate to="/organizer/dashboard" replace />;
   }
 

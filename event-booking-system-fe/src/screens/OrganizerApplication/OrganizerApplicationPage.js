@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Col, Container, Form, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { FilePickerWithList, FormField, LoadingOverlay } from '../../components';
+import { showErrorToast } from '../../utils/toast';
 import { submitOrganizerApplication } from '../../services/organizerApplicationService';
 import './OrganizerApplicationPage.css';
 
@@ -32,7 +33,6 @@ const organizationTypeOptions = [
 const OrganizerApplicationPage = () => {
   const [application, setApplication] = useState(initialApplication);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
@@ -104,12 +104,11 @@ const OrganizerApplicationPage = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError('');
     setSuccess('');
 
     const validationError = validateApplication();
     if (validationError) {
-      setError(validationError);
+      showErrorToast(validationError);
       return;
     }
 
@@ -118,7 +117,7 @@ const OrganizerApplicationPage = () => {
     setLoading(false);
 
     if (!response.success) {
-      setError(response.message || 'Không thể gửi hồ sơ. Vui lòng thử lại.');
+      // apiHandler already dispatched error toast
       return;
     }
 
@@ -143,14 +142,6 @@ const OrganizerApplicationPage = () => {
         <Row className="g-4 align-items-start">
           <Col lg={8}>
             <div className="organizer-application-form">
-              {error && (
-                <div className="organizer-application-alert organizer-application-alert--danger">
-                  <span>{error}</span>
-                  <button type="button" onClick={() => setError('')} aria-label="Đóng">
-                    ×
-                  </button>
-                </div>
-              )}
               {success && (
                 <div className="organizer-application-alert organizer-application-alert--success">
                   <span>{success}</span>

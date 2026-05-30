@@ -1,8 +1,6 @@
 export const getApiErrorMessage = (err, fallback = 'Đã có lỗi xảy ra') => {
-  const messageFromResponse =
-    err?.response?.data?.message ||
-    err?.response?.data?.error ||
-    err?.message;
+  const responseData = err?.response?.data;
+  const messageFromResponse = responseData?.message || responseData?.error || err?.message;
 
   if (typeof messageFromResponse === 'string' && messageFromResponse.trim()) {
     return messageFromResponse;

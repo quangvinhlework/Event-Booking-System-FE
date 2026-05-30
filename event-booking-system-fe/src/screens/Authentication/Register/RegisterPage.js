@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Form } from 'react-bootstrap';
 import { useAuth } from '../../../hooks/useAuth';
 import { FormField } from '../../../components';
+import { showErrorToast } from '../../../utils/toast';
 import AuthBrandPanel from '../AuthBrandPanel';
 import '../AuthPage.css';
 import LoadingState from '../../../components/feedback/LoadingState';
@@ -16,10 +17,10 @@ const RegisterPage = () => {
     avatar: null
   });
   const [preview, setPreview] = useState('');
-  const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const { isAuthenticated, register, registerLoading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -45,12 +46,12 @@ const RegisterPage = () => {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      setError('Vui lòng chọn một file ảnh');
+      showErrorToast('Vui lòng chọn một file ảnh');
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      setError('Kích thước ảnh không được vượt quá 5MB');
+      showErrorToast('Kích thước ảnh không được vượt quá 5MB');
       return;
     }
 
@@ -59,7 +60,6 @@ const RegisterPage = () => {
     const reader = new FileReader();
     reader.onloadend = () => setPreview(reader.result);
     reader.readAsDataURL(file);
-    setError('');
     console.log(formData);
   };
 
@@ -70,28 +70,27 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     setSuccess('');
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Mật khẩu không khớp');
+      showErrorToast('Mật khẩu không khớp');
       return;
     }
 
     if (formData.password.length < 6) {
-      setError('Mật khẩu phải có ít nhất 6 ký tự');
+      showErrorToast('Mật khẩu phải có ít nhất 6 ký tự');
       return;
     }
     try {
       const response = await register(formData);
       if (!response) {
-        setError('Đăng ký thất bại');
+        // api_error has been dispatched
         return;
       }
       setSuccess('Đăng ký thành công!');
-      navigate('/login'); 
+      navigate('/login', { state: location.state }); 
     } catch (error) {
-      setError(error.message || 'Đăng ký thất bại');
+      // apiHandler already dispatched error, do nothing here
     }
   };
 
@@ -109,7 +108,6 @@ const RegisterPage = () => {
           <h2 className="auth-layout__card-title">Đăng ký</h2>
           <p className="auth-layout__card-subtitle">Tạo tài khoản mới của bạn</p>
 
-          {error && <div className="auth-layout__alert auth-layout__alert--danger">{error}</div>}
           {success && <div className="auth-layout__alert auth-layout__alert--success">{success}</div>}
 
           <Form onSubmit={handleSubmit}>
@@ -198,7 +196,7 @@ const RegisterPage = () => {
 
           <p className="auth-layout__footer">
             Đã có tài khoản?
-            <button type="button" className="auth-layout__link" onClick={() => navigate('/login')}>
+            <button type="button" className="auth-layout__link" onClick={() => navigate('/login', { state: location.state })}>
               Đăng nhập ngay
             </button>
           </p>

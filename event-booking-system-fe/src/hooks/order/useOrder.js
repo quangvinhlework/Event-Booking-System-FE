@@ -46,7 +46,6 @@ export const useOrder = (eventId) => {
       } catch (err) {
         const message = getApiErrorMessage(err, 'Không thể tạo đơn thanh toán');
         setError(message);
-        throw new Error(message);
       } finally {
         setLoading(false);
       }

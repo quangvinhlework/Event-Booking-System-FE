@@ -1,35 +1,37 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Form } from 'react-bootstrap';
 import { useAuth } from '../../../hooks/useAuth';
 import { FormField, LoadingState } from '../../../components';
+import { showErrorToast } from '../../../utils/toast';
 import AuthBrandPanel from '../AuthBrandPanel';
 import '../AuthPage.css';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
 
     if (!email || !password) {
-      setError('Vui lòng nhập đầy đủ thông tin');
+      showErrorToast('Vui lòng nhập đầy đủ thông tin');
       return;
     }
 
     setSubmitting(true);
     try {
       await login(email, password);
-      navigate('/');
+      
+      const from = location.state?.from || '/';
+      navigate(from, { replace: true });
     } catch (err) {
       console.error('Đăng nhập thất bại:', err);
-      setError('Đăng nhập thất bại. Vui lòng kiểm tra email hoặc mật khẩu.');
+      // apiHandler/useAuth already dispatched the error toast, so we don't need to do it here
     } finally {
       setSubmitting(false);
     }
@@ -56,8 +58,6 @@ const LoginPage = () => {
           <span className="auth-layout__mobile-eyebrow">Event Booking</span>
           <h2 className="auth-layout__card-title">Đăng nhập</h2>
           <p className="auth-layout__card-subtitle">Chào mừng bạn quay trở lại</p>
-
-          {error && <div className="auth-layout__alert auth-layout__alert--danger">{error}</div>}
 
           <Form onSubmit={handleSubmit}>
             <FormField
@@ -91,7 +91,7 @@ const LoginPage = () => {
 
           <p className="auth-layout__footer">
             Chưa có tài khoản?
-            <button type="button" className="auth-layout__link" onClick={() => navigate('/register')}>
+            <button type="button" className="auth-layout__link" onClick={() => navigate('/register', { state: location.state })}>
               Đăng ký ngay
             </button>
           </p>

@@ -13,9 +13,8 @@ import { EMPTY_TICKET_FILTERS } from '../../filters/ticketFilter';
 import { useMyTickets } from '../../hooks/ticket/useMyTickets';
 
 import { useAuth } from '../../hooks/useAuth';
-
+import { showErrorToast } from '../../utils/toast';
 import { formatTimestamp } from '../../utils/dateConvert';
-
 import './MyAccountPage.css';
 
 
@@ -42,11 +41,11 @@ const TAB_ITEMS = [
 
 const ROLE_LABELS = {
 
-  USER: 'Người dùng',
+  ROLE_USER: 'Người dùng',
 
-  ORGANIZER: 'Tổ chức viên',
+  ROLE_ORGANIZER: 'Tổ chức viên',
 
-  ADMIN: 'Quản trị viên',
+  ROLE_ADMIN: 'Quản trị viên',
 
 };
 
@@ -101,13 +100,10 @@ const MyAccountPage = () => {
 
   const [notice, setNotice] = useState('');
 
-  const [error, setError] = useState('');
-
-
-
   useEffect(() => {
 
     if (!user) return;
+
 
     setFullName(user.fullName || '');
 
@@ -123,7 +119,7 @@ const MyAccountPage = () => {
 
   const displayAvatar = avatarPreview || user?.avatarUrl || '';
 
-  const isUserRole = user?.roleName === 'USER';
+  const isUserRole = user?.roleName === 'ROLE_USER';
 
 
 
@@ -154,26 +150,18 @@ const MyAccountPage = () => {
 
 
     if (!file.type.startsWith('image/')) {
-
-      setError('Vui lòng chọn file ảnh (JPG, PNG, GIF).');
-
+      showErrorToast('Vui lòng chọn file ảnh (JPG, PNG, GIF).');
       return;
-
     }
 
 
 
     if (file.size > 5 * 1024 * 1024) {
-
-      setError('Ảnh đại diện không được vượt quá 5MB.');
-
+      showErrorToast('Ảnh đại diện không được vượt quá 5MB.');
       return;
-
     }
 
 
-
-    setError('');
 
     setAvatarFile(file);
 
@@ -190,19 +178,13 @@ const MyAccountPage = () => {
   const handleSaveProfile = async (event) => {
 
     event.preventDefault();
-
-    setError('');
-
     setNotice('');
 
 
 
     if (!fullName.trim()) {
-
-      setError('Họ và tên không được để trống.');
-
+      showErrorToast('Họ và tên không được để trống.');
       return;
-
     }
 
 
@@ -226,9 +208,7 @@ const MyAccountPage = () => {
       setNotice('Cập nhật thông tin tài khoản thành công.');
 
     } catch (err) {
-
-      setError(err.message || 'Không thể cập nhật thông tin tài khoản.');
-
+      // Error handled by apiHandler
     } finally {
 
       setSaving(false);
@@ -318,24 +298,6 @@ const MyAccountPage = () => {
             <span>{notice}</span>
 
             <button type="button" onClick={() => setNotice('')} aria-label="Đóng thông báo">
-
-              ×
-
-            </button>
-
-          </div>
-
-        )}
-
-
-
-        {error && (
-
-          <div className="my-account-alert my-account-alert--danger">
-
-            <span>{error}</span>
-
-            <button type="button" onClick={() => setError('')} aria-label="Đóng lỗi">
 
               ×
 

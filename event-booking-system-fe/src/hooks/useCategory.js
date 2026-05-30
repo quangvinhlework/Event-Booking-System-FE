@@ -18,7 +18,7 @@ export const useCategory = () => {
         if (response.success) {
           setCategories(response.data.map(mapCategoryResponse));
         } else {
-          throw new Error(response.message || 'Không thể tải danh mục');
+          setError(response.message || 'Không thể tải danh mục');
         }
       } catch (err) {
         setError(err.message);

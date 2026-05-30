@@ -43,7 +43,7 @@ const Analytics = () => {
       title="Phân tích"
       subtitle={`Tổng hợp hiệu suất năm ${currentYear} — doanh thu, vé bán và lượt xem theo sự kiện.`}
     >
-      {error && <div className="organizer-alert organizer-alert--danger">{error}</div>}
+
 
       {loading ? (
         <div className="organizer-loading">

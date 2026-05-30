@@ -10,7 +10,7 @@ const Header = () => {
   const isOrganizerArea = location.pathname.startsWith('/organizer');
   const isDarkTheme =
     isOrganizerArea ||
-    location.pathname === '/' ||
+    location.pathname.startsWith('/') ||
     location.pathname === '/login' ||
     location.pathname === '/register' ||
     location.pathname === '/account' ||
@@ -38,7 +38,7 @@ const Header = () => {
       <Container>
         <Navbar.Brand
           onClick={() =>
-            navigate(user?.roleName === 'ORGANIZER' || user?.role === 'ORGANIZER' ? '/organizer/dashboard' : '/')
+            navigate(user?.roleName === 'ROLE_ORGANIZER' || user?.role === 'ROLE_ORGANIZER' ? '/organizer/dashboard' : '/')
           }
           className="fw-bold navbar-brand-dark"
         >
@@ -48,13 +48,13 @@ const Header = () => {
         <Navbar.Toggle aria-controls="main-navbar-nav" />
         <Navbar.Collapse id="main-navbar-nav">
           <Nav className="me-auto">
-            {(user?.roleName === 'ORGANIZER' || user?.role === 'ORGANIZER') && !isOrganizerArea ? (
+            {(user?.roleName === 'ROLE_ORGANIZER' || user?.role === 'ROLE_ORGANIZER') && !isOrganizerArea ? (
               <>
                 <Nav.Link onClick={() => navigate('/organizer/dashboard')}>
                   Bảng điều khiển
                 </Nav.Link>
               </>
-            ) : user?.roleName !== 'ORGANIZER' && user?.role !== 'ORGANIZER' ? (
+            ) : user?.roleName !== 'ROLE_ORGANIZER' && user?.role !== 'ROLE_ORGANIZER' ? (
               <>
                 <Nav.Link onClick={goHome} className={isDarkTheme ? 'nav-link-dark' : ''}>
                   Trang chủ
@@ -69,7 +69,7 @@ const Header = () => {
           <Nav className="align-items-lg-center gap-2">
             {isAuthenticated ? (
               <>
-                {(user?.roleName === 'USER' || user?.role === 'USER') && (
+                {(user?.roleName === 'ROLE_USER' || user?.role === 'ROLE_USER') && (
                   <Button
                     variant={isDarkTheme ? 'outline-light' : 'outline-primary'}
                     size="sm"

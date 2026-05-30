@@ -16,14 +16,14 @@ export const useEventStatistic = () => {
     try {
       const response = await eventStatisticService.getEventStatistics(filters);
 
-      if (!response.success) {
-        throw new Error(response.message || 'Failed to fetch event statistics');
+      if (response.success) {
+        const mappedStatistics = response.data.map(mapEventStatisticResponse);
+        setEventStatistics(mappedStatistics);
+        return mappedStatistics;
+      } else {
+        setError(response.message || 'Failed to fetch event statistics');
+        return [];
       }
-
-      const mappedStatistics = response.data.map(mapEventStatisticResponse);
-
-      setEventStatistics(mappedStatistics);
-      return mappedStatistics;
     } catch (err) {
       setError(err.message);
       return [];
@@ -39,14 +39,14 @@ export const useEventStatistic = () => {
     try {
       const response = await eventStatisticService.getEventStatisticsByMonth(month, year, filters);
 
-      if (!response.success) {
-        throw new Error(response.message || 'Failed to fetch event statistics by month');
+      if (response.success) {
+        const mappedStatistics = response.data.map(mapEventStatisticResponse);
+        setEventStatistics(mappedStatistics);
+        return mappedStatistics;
+      } else {
+        setError(response.message || 'Failed to fetch event statistics by month');
+        return [];
       }
-
-      const mappedStatistics = response.data.map(mapEventStatisticResponse);
-
-      setEventStatistics(mappedStatistics);
-      return mappedStatistics;
     } catch (err) {
       setError(err.message);
       return [];
@@ -62,14 +62,14 @@ export const useEventStatistic = () => {
     try {
       const response = await eventStatisticService.getEventStatisticsByQuarter(quarter, year, filters);
 
-      if (!response.success) {
-        throw new Error(response.message || 'Failed to fetch event statistics by quarter');
+      if (response.success) {
+        const mappedStatistics = response.data.map(mapEventStatisticResponse);
+        setEventStatistics(mappedStatistics);
+        return mappedStatistics;
+      } else {
+        setError(response.message || 'Failed to fetch event statistics by quarter');
+        return [];
       }
-
-      const mappedStatistics = response.data.map(mapEventStatisticResponse);
-
-      setEventStatistics(mappedStatistics);
-      return mappedStatistics;
     } catch (err) {
       setError(err.message);
       return [];
@@ -85,14 +85,14 @@ export const useEventStatistic = () => {
     try {
       const response = await eventStatisticService.getEventStatisticsByYear(year, filters);
 
-      if (!response.success) {
-        throw new Error(response.message || 'Failed to fetch event statistics by year');
+      if (response.success) {
+        const mappedStatistics = response.data.map(mapEventStatisticResponse);
+        setEventStatistics(mappedStatistics);
+        return mappedStatistics;
+      } else {
+        setError(response.message || 'Failed to fetch event statistics by year');
+        return [];
       }
-
-      const mappedStatistics = response.data.map(mapEventStatisticResponse);
-
-      setEventStatistics(mappedStatistics);
-      return mappedStatistics;
     } catch (err) {
       setError(err.message);
       return [];
@@ -108,14 +108,14 @@ export const useEventStatistic = () => {
     try {
       const response = await eventStatisticService.getEventStatisticByEventId(eventId);
 
-      if (!response.success) {
-        throw new Error(response.message || 'Failed to fetch event statistic by event id');
+      if (response.success) {
+        const mappedStatistic = mapEventStatisticResponse(response.data);
+        setEventStatistic(mappedStatistic);
+        return mappedStatistic;
+      } else {
+        setError(response.message || 'Failed to fetch event statistic by event id');
+        return null;
       }
-
-      const mappedStatistic = mapEventStatisticResponse(response.data);
-
-      setEventStatistic(mappedStatistic);
-      return mappedStatistic;
     } catch (err) {
       setError(err.message);
       return null;

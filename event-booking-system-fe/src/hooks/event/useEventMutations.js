@@ -19,13 +19,12 @@ export const useEventMutations = () => {
         const mapped = mapEventResponse(response.data);
         setResult(mapped);
         return mapped;
+      } else {
+        setError(response.message || 'Không thể tạo sự kiện');
       }
-
-      throw new Error(response.message || 'Không thể tạo sự kiện');
     } catch (err) {
       const message = getApiErrorMessage(err, 'Không thể tạo sự kiện');
       setError(message);
-      throw new Error(message);
     } finally {
       setLoading(false);
     }
@@ -42,13 +41,12 @@ export const useEventMutations = () => {
         const mapped = mapEventResponse(response.data);
         setResult(mapped);
         return mapped;
+      } else {
+        setError(response.message || 'Không thể cập nhật sự kiện');
       }
-
-      throw new Error(response.message || 'Không thể cập nhật sự kiện');
     } catch (err) {
       const message = getApiErrorMessage(err, 'Không thể cập nhật sự kiện');
       setError(message);
-      throw new Error(message);
     } finally {
       setLoading(false);
     }
@@ -64,13 +62,12 @@ export const useEventMutations = () => {
       if (response.success) {
         setResult(null);
         return response.data;
+      } else {
+        setError(response.message || 'Không thể xóa sự kiện');
       }
-
-      throw new Error(response.message || 'Không thể xóa sự kiện');
     } catch (err) {
       const message = getApiErrorMessage(err, 'Không thể xóa sự kiện');
       setError(message);
-      throw new Error(message);
     } finally {
       setLoading(false);
     }
@@ -85,13 +82,12 @@ export const useEventMutations = () => {
 
       if (response.success) {
         return response.data;
+      } else {
+        setError(response.message || 'Không thể mở bán sự kiện');
       }
-
-      throw new Error(response.message || 'Không thể mở bán sự kiện');
     } catch (err) {
       const message = getApiErrorMessage(err, 'Không thể mở bán sự kiện');
       setError(message);
-      throw new Error(message);
     } finally {
       setLoading(false);
     }
@@ -106,13 +102,12 @@ export const useEventMutations = () => {
 
       if (response.success) {
         return response.data;
+      } else {
+        setError(response.message || 'Không thể kết thúc sự kiện');
       }
-
-      throw new Error(response.message || 'Không thể kết thúc sự kiện');
     } catch (err) {
       const message = getApiErrorMessage(err, 'Không thể kết thúc sự kiện');
       setError(message);
-      throw new Error(message);
     } finally {
       setLoading(false);
     }

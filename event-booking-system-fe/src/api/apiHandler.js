@@ -11,31 +11,24 @@ export const handleApi = async (apiCall) => {
     };
 
   } catch (error) {
+    let errorMessage = "Something went wrong";
+    let status = null;
 
     if (error.response) {
-
-      return {
-        success: false,
-        status: error.response.data.statusCode,
-        message:
-          error.response.data.message ||
-          "Something went wrong",
-      };
-
+      errorMessage = error.response.data.message || errorMessage;
+      status = error.response.data.statusCode;
+    } else if (error.request) {
+      errorMessage = "Cannot connect to server";
+    } else {
+      errorMessage = error.message;
     }
 
-    if (error.request) {
-
-      return {
-        success: false,
-        message: "Cannot connect to server",
-      };
-
-    }
+    window.dispatchEvent(new CustomEvent('api_error', { detail: { message: errorMessage, status } }));
 
     return {
       success: false,
-      message: error.message,
+      status: status,
+      message: errorMessage,
     };
   }
 };

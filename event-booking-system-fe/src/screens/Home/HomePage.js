@@ -37,11 +37,13 @@ const getEndOfDayTimestamp = (date) => {
 const pickFeaturedEventByViews = (eventList) => {
   if (!eventList?.length) return null;
 
-  return eventList.reduce((best, event) => {
-    const views = Number(event.views) || 0;
-    const bestViews = Number(best.views) || 0;
-    return views > bestViews ? event : best;
-  });
+  let best = eventList[0];
+  for (let i = 1; i < eventList.length; i++) {
+    if ((Number(eventList[i].views) || 0) > (Number(best.views) || 0)) {
+      best = eventList[i];
+    }
+  }
+  return best;
 };
 
 const HomePage = () => {
@@ -372,14 +374,23 @@ const HomePage = () => {
                   </button>
                 )}
                 {compareList.length > 0 && (
-                  <button
-                    type="button"
-                    className="home-toolbar__compare"
-                    onClick={handleGoToComparison}
-                    disabled={compareList.length < 2}
-                  >
-                    So sánh ({compareList.length}/3)
-                  </button>
+                  <>
+                    <button
+                      type="button"
+                      className="home-toolbar__compare"
+                      onClick={handleGoToComparison}
+                      disabled={compareList.length < 2}
+                    >
+                      So sánh ({compareList.length}/3)
+                    </button>
+                    <button
+                      type="button"
+                      className="home-toolbar__clear"
+                      onClick={() => setCompareList([])}
+                    >
+                      Bỏ chọn tất cả so sánh
+                    </button>
+                  </>
                 )}
               </div>
 
