@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import EventHeaderCard from '../../components/event/EventHeaderCard';
 import { handleApi } from '../../api/apiHandler';
 import { axiosClient } from '../../api/axiosClient';
+import { useNavigate } from 'react-router-dom';
 
 // ---COMPONENT CHÍNH ---
 const EventComparison = () => {
@@ -10,6 +11,8 @@ const EventComparison = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [categoryName, setCategoryName] = useState('');
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         // 1. Đọc danh sách từ localStorage
@@ -132,6 +135,8 @@ const EventComparison = () => {
         localStorage.removeItem('compareList');
         window.location.reload();
     };
+
+    const handleViewDetails = (eventId) => navigate(`/event/${eventId}`);
 
     if (loading) return <div className="text-center my-5"><div className="spinner-border text-primary" role="status"></div><p className="mt-2">Đang tải dữ liệu đối chiếu...</p></div>;
     if (error) return <div className="container my-5"><div className="alert alert-danger shadow-sm text-center">{error}</div><button className="btn btn-primary d-block mx-auto" onClick={handleGoBack}>Quay lại</button></div>;
@@ -302,7 +307,7 @@ const EventComparison = () => {
                             <td className="bg-light-subtle"></td>
                             {events.map(event => (
                                 <td key={event.id} className="p-3">
-                                    <button className="btn btn-outline-dark w-100 py-2 fw-bold shadow-sm" style={{ borderRadius: '8px' }}>
+                                    <button onClick={() => handleViewDetails(event.id)} className="btn btn-outline-dark w-100 py-2 fw-bold shadow-sm" style={{ borderRadius: '8px' }}>
                                         Mua vé ngay
                                     </button>
                                 </td>
