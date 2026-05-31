@@ -27,7 +27,7 @@ const PaymentFail = () => {
                                 Giao dịch không được hoàn tất hoặc đã bị hủy.
                             </p>
 
-                            <div 
+                            <div
                                 className="mb-4 p-3 rounded"
                                 style={{
                                     backgroundColor: "rgba(248, 113, 113, 0.1)",

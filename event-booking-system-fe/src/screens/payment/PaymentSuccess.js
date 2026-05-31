@@ -28,7 +28,7 @@ const PaymentSuccess = () => {
                                 công.
                             </p>
 
-                            <div 
+                            <div
                                 className="mb-4 p-3 rounded"
                                 style={{
                                     backgroundColor: "rgba(110, 231, 183, 0.1)",
