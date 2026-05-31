@@ -11,6 +11,8 @@ import OrganizerAnalyticsPage from '../screens/Organizer/AnalyticsPage';
 import OrganizerTicketsPage from '../screens/Organizer/TicketManagementPage';
 import OrganizerChatPage from '../screens/Organizer/OrganizerChatPage';
 import NotFoundPage from '../screens/NotFound/NotFoundPage';
+import PaymentSuccess from '../screens/payment/PaymentSuccess';
+import PaymentFail from '../screens/payment/PaymentFail';
 
 export const ROUTES = {
   HOME: '/',
@@ -21,6 +23,8 @@ export const ROUTES = {
   EVENT_DETAIL_ALT: '/events/:id',
   BECOME_ORGANIZER: '/become-organizer',
   ACCOUNT: '/account',
+  PAYMENT_SUCCESS: '/payment/success',
+  PAYMENT_FAIL: '/payment/fail',
   ORGANIZER_DASHBOARD: '/organizer/dashboard',
   ORGANIZER_EVENTS: '/organizer/events',
   ORGANIZER_ANALYTICS: '/organizer/analytics',
@@ -38,6 +42,8 @@ export const APP_ROUTES = [
   { path: ROUTES.EVENT_DETAIL_ALT, page: EventDetailPage, guard: 'public' },
   { path: ROUTES.BECOME_ORGANIZER, page: OrganizerApplicationPage, guard: 'protected' },
   { path: ROUTES.ACCOUNT, page: MyAccountPage, guard: 'protected' },
+  { path: ROUTES.PAYMENT_SUCCESS, page: PaymentSuccess, guard: 'public' },
+  { path: ROUTES.PAYMENT_FAIL, page: PaymentFail, guard: 'public' },
   { path: ROUTES.ORGANIZER_DASHBOARD, page: OrganizerDashboardPage, guard: 'organizer' },
   { path: ROUTES.ORGANIZER_EVENTS, page: OrganizerEventsPage, guard: 'organizer' },
   { path: ROUTES.ORGANIZER_ANALYTICS, page: OrganizerAnalyticsPage, guard: 'organizer' },

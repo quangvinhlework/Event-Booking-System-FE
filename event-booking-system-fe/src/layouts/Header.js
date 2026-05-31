@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { useAuth } from '../hooks/useAuth';
+import ConfirmCard from '../components/confirmation/ConfirmCard';
 
 const Header = () => {
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const isOrganizerArea = location.pathname.startsWith('/organizer');
   const isDarkTheme =
     isOrganizerArea ||
@@ -19,7 +21,16 @@ const Header = () => {
     location.pathname.startsWith('/events/');
 
   const handleLogoutClick = () => {
+    setShowLogoutConfirm(true);
+  };
+
+  const handleLogoutConfirm = () => {
+    setShowLogoutConfirm(false);
     logout();
+  };
+
+  const handleLogoutCancel = () => {
+    setShowLogoutConfirm(false);
   };
 
   const goHome = () => {
@@ -31,6 +42,7 @@ const Header = () => {
   };
 
   return (
+  <>
     <Navbar
       expand="lg"
       className={`navbar-app sticky-top${isDarkTheme ? ' navbar-app--dark' : ''}`}
@@ -122,6 +134,15 @@ const Header = () => {
         </Navbar.Collapse>
       </Container>
     </Navbar>
+
+    <ConfirmCard
+      show={showLogoutConfirm}
+      title="Xác nhận đăng xuất"
+      message="Bạn có chắc chắn muốn đăng xuất không?"
+      onConfirm={handleLogoutConfirm}
+      onCancel={handleLogoutCancel}
+    />
+  </>
   );
 };
 

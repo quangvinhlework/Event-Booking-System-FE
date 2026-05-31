@@ -1,47 +1,34 @@
 import React from 'react';
+import { Modal, Button } from 'react-bootstrap';
 
 const ConfirmCard = ({ show, title, message, onConfirm, onCancel }) => {
-  if (!show) return null;
-
   return (
-    <div
-      className="
-        position-fixed
-        top-0
-        start-0
-        w-100
-        h-100
-        bg-dark
-        bg-opacity-50
-        d-flex
-        justify-content-center
-        align-items-center
-      "
-      style={{ zIndex: 9999 }}
+    <Modal
+      show={show}
+      onHide={onCancel}
+      centered
+      backdrop="static"
+      contentClassName="bg-dark text-light border-secondary"
+      data-bs-theme="dark"
+      style={{
+        zIndex: 9999,
+      }}
     >
-      <div
-        className="
-          bg-dark
-          rounded
-          shadow
-          p-4
-          d-flex
-          flex-column
-          align-items-center
-        "
-      >
-        <h5 className="confirm-card-title">{title}</h5>
-        <p className="confirm-card-message">{message}</p>
-        <div className="confirm-card-buttons">
-          <button type="button" className="confirm-card-button" onClick={onConfirm}>
-            Confirm
-          </button>
-          <button type="button" className="confirm-card-button" onClick={onCancel}>
-            Cancel
-          </button>
-        </div>
-      </div>
-    </div>
+      <Modal.Header closeButton className="border-secondary">
+        <Modal.Title>{title}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <p className="mb-0">{message}</p>
+      </Modal.Body>
+      <Modal.Footer className="border-secondary">
+        <Button variant="outline-light" onClick={onCancel}>
+          Hủy
+        </Button>
+        <Button variant="danger" onClick={onConfirm}>
+          Xác nhận
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 
