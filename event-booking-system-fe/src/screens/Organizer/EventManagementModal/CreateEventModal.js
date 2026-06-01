@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Form, Button, Row, Col } from 'react-bootstrap';
-import { useCategory } from '../../../hooks/useCategory';
+
 import { dateToTimestamp } from '../../../utils/dateConvert';
 import {
   FilePickerWithList,
@@ -21,9 +21,9 @@ const initialState = {
   videos: [],
 };
 
-const CreateEventModal = ({ show, onHide, onCreate, createLoading }) => {
+const CreateEventModal = ({ show, onHide, onCreate, createLoading, categories = [] }) => {
   const [newEvent, setNewEvent] = useState(initialState);
-  const { categories } = useCategory();
+
 
   const categoryOptions = categories.map((category) => ({
     label: category.name,

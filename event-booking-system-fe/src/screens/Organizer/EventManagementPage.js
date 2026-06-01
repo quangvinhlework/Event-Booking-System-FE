@@ -421,6 +421,7 @@ const EventManagement = () => {
         onHide={() => setShowModal(false)}
         onCreate={handleCreateEvent}
         createLoading={mutationLoading}
+        categories={categories}
       />
       <UpdateEventModal
         show={showModifyModal}
@@ -430,6 +431,7 @@ const EventManagement = () => {
         updateLoading={mutationLoading}
         onPublish={handleClickPublishButton}
         onEnd={handleClickEndButton}
+        categories={categories}
       />
     </OrganizerLayout>
   );

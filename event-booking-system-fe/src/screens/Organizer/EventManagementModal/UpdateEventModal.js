@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Form, Button, Row, Col } from 'react-bootstrap';
-import { useCategory } from '../../../hooks/useCategory';
+
 import {
   FilePickerWithList,
   FormField,
@@ -24,11 +24,12 @@ const UpdateEventModal = ({
   onEnd,
   updateLoading,
   eventData,
+  categories = []
 }) => {
   const [form, setForm] = useState(EMPTY_EVENT_FORM);
   const [showConfirmPublishCard, setShowConfirmPublishCard] = useState(false);
   const [showConfirmEndCard, setShowConfirmEndCard] = useState(false);
-  const { categories } = useCategory();
+
 
   const editableFields = getEditableFields(eventData?.status);
   const isEditable = (field) => editableFields.includes(field);
