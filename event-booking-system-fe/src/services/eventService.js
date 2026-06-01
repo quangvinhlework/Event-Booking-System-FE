@@ -53,3 +53,10 @@ export const endEvent = async (eventId) => {
   formData.append('eventId', eventId);
   return handleApi(() => authAxiosClient(token).put(`/v1/organizer/end-event`, formData));
 }
+
+export const compareEvents = async (filters) => {
+  const token = getToken();
+  return handleApi(() => authAxiosClient(token).get('/v1/public/events/compare', {
+    params: filters,
+  }));
+}
