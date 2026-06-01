@@ -5,6 +5,6 @@ import { getToken } from '../utils/authUtils';
 export const submitOrganizerApplication = (applicationData) => {
   const token = getToken();
   return handleApi(() =>
-    authAxiosClient(token).post('/secure/organizer-application', applicationData)
+    authAxiosClient(token).post('/v1/me/organizer-application', applicationData)
   );
 };

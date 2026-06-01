@@ -5,13 +5,13 @@ import { getToken } from '../utils/authUtils';
 export const getOrganizerTickets = (params) => {
   const token = getToken();
   return handleApi(() =>
-    authAxiosClient(token).get('/secure/organizer/tickets', { params })
+    authAxiosClient(token).get('/v1/organizer/tickets', { params })
   );
 };
 
 export const getMyTickets = (params) => {
   const token = getToken();
   return handleApi(() =>
-    authAxiosClient(token).get('/secure/my-tickets', { params })
+    authAxiosClient(token).get('/v1/me/my-tickets', { params })
   );
 };
