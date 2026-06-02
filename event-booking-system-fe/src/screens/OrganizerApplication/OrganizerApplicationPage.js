@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { Col, Container, Form, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { FormField, LoadingOverlay } from '../../components';
@@ -34,18 +34,6 @@ const OrganizerApplicationPage = () => {
   const [application, setApplication] = useState(initialApplication);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-  const selectedFileCount = useMemo(
-    () =>
-      application.businessLicense.length +
-      application.identityDocuments.length +
-      application.portfolioFiles.length,
-    [
-      application.businessLicense.length,
-      application.identityDocuments.length,
-      application.portfolioFiles.length,
-    ]
-  );
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -100,13 +88,13 @@ const OrganizerApplicationPage = () => {
           </p>
         </div>
 
-        <Row className="g-4 align-items-start">
-          <Col lg={8}>
-            <div className="organizer-application-form">
+        <Row className="justify-content-center">
+          <Col lg={10} xl={8}>
+            <div className="organizer-application-form glass-panel">
               <Form onSubmit={handleSubmit}>
                 <section className="application-section">
                   <h2>Thông tin tổ chức</h2>
-                  <Row className="g-3">
+                  <Row className="g-4">
                     <Col md={8}>
                       <FormField
                         controlId="organizationName"
@@ -196,23 +184,6 @@ const OrganizerApplicationPage = () => {
                 </div>
               </Form>
             </div>
-          </Col>
-
-          <Col lg={4}>
-            <aside className="organizer-application-summary">
-              <h2>Hồ sơ nên có</h2>
-              <ul>
-                <li>Thông tin tổ chức rõ ràng và có thể liên hệ.</li>
-                <li>Tài liệu xác minh còn hiệu lực.</li>
-                <li>Mô tả kinh nghiệm tổ chức sự kiện thực tế.</li>
-                <li>Loại sự kiện dự kiến phù hợp với nền tảng.</li>
-              </ul>
-
-              <div className="application-file-counter">
-                <span>Tài liệu đã chọn</span>
-                <strong>{selectedFileCount}</strong>
-              </div>
-            </aside>
           </Col>
         </Row>
       </Container>
