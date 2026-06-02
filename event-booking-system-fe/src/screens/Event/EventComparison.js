@@ -5,25 +5,26 @@ import { handleApi } from '../../api/apiHandler';
 import { axiosClient } from '../../api/axiosClient';
 import { EmptyState, LoadingState } from '../../components';
 import { showErrorToast } from '../../utils/toast';
+import * as eventService from '../../services/eventService';
 
-// ---COMPONENT CHÍNH ---
+
 const EventComparison = () => {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [categoryName, setCategoryName] = useState('');
 
     useEffect(() => {
-        // 1. Đọc danh sách từ localStorage
+
         const compareList = JSON.parse(localStorage.getItem('compareList')) || [];
 
-        // 2. Kiểm tra điều kiện số lượng (từ 2 đến 3)
+
         if (compareList.length < 2 || compareList.length > 3) {
             showErrorToast('Vui lòng chọn từ 2 đến 3 sự kiện để tiến hành so sánh.');
             window.history.back();
             return;
         }
 
-        // 3. Kiểm tra điều kiện phải cùng lĩnh vực
+
         const firstCategoryId = compareList[0]?.category_id;
         const isSameCategory = compareList.every(item => item.category_id === firstCategoryId);
 
@@ -33,27 +34,24 @@ const EventComparison = () => {
             return;
         }
 
-        // Gộp chuỗi ID để gửi lên server
+
         const idsParam = compareList.map(item => item.id).join(',');
 
-        // 4. Định nghĩa hàm gọi API thông qua Axios Client & handleApi wrapper
+
         const fetchComparisonData = async () => {
             setLoading(true);
 
-            // Khởi chạy qua handleApi, tự động bóc tách và trả về cấu trúc chuẩn hóa
-            const result = await handleApi(() =>
-                axiosClient.get(`/events/compare?ids=${idsParam}`)
-            );
 
+            const result = await eventService.compareEvents({ ids: idsParam });
             if (result.success) {
-                // result.data chính là response.data.data từ Backend của bạn
+
                 const data = result.data || [];
                 setEvents(data);
                 if (data.length > 0) {
                     setCategoryName(data[0].category?.name || 'Sự kiện');
                 }
             } else {
-                // handleApi already showed the error toast
+
                 window.history.back();
             }
             setLoading(false);
@@ -62,32 +60,32 @@ const EventComparison = () => {
         fetchComparisonData();
     }, []);
 
-    // Tìm mức giá thấp nhất phục vụ nhãn "Giá tốt nhất"
+
     const minPrice = events.length > 0 ? Math.min(...events.map(e => Number(e.ticket_price || 0))) : 0;
 
-    // Định dạng hiển thị tiền tệ VNĐ
+
     const formatCurrency = (value) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value).replace('₫', 'đ');
     };
 
-    // Định dạng ngày giờ hiển thị
+
     const formatDateTime = (startStr, endStr) => {
         const parseVNDate = (dateStr) => {
             if (!dateStr) return null;
 
-            // Tách ngày và giờ
+
             const [datePart, timePart] = dateStr.split(' ');
 
-            // dd/MM/yy
+
             const [day, month, year] = datePart.split('/');
 
-            // HH:mm:ss
+
             const [hour, minute, second] = timePart.split(':');
 
-            // Convert thành Date object
+
             return new Date(
-                2000 + Number(year), // yy -> 20yy
-                Number(month) - 1,   // month bắt đầu từ 0
+                2000 + Number(year),
+                Number(month) - 1,
                 Number(day),
                 Number(hour),
                 Number(minute),
@@ -252,10 +250,10 @@ const EventComparison = () => {
                                                 <div
                                                     className={`progress-bar ${isUrgent ? 'bg-danger' : 'bg-success'}`}
                                                     role="progressbar"
-                                                    style={{ 
+                                                    style={{
                                                         width: `${percent}%`,
-                                                        background: isUrgent 
-                                                            ? 'linear-gradient(90deg, #ef4444, #f87171)' 
+                                                        background: isUrgent
+                                                            ? 'linear-gradient(90deg, #ef4444, #f87171)'
                                                             : 'linear-gradient(90deg, #10b981, #34d399)'
                                                     }}
                                                 ></div>
@@ -323,8 +321,8 @@ const EventComparison = () => {
                                 <td className="table-criteria-cell"></td>
                                 {events.map(event => (
                                     <td key={event.id} className="p-3">
-                                        <button 
-                                            className="btn-primary-accent w-100 py-2 fw-bold text-uppercase" 
+                                        <button
+                                            className="btn-primary-accent w-100 py-2 fw-bold text-uppercase"
                                             style={{ borderRadius: '8px', fontSize: '0.8rem', letterSpacing: '0.05em' }}
                                             onClick={() => window.location.href = `/event/${event.id}`}
                                         >
@@ -341,16 +339,16 @@ const EventComparison = () => {
                 {/* FOOTER ĐIỀU HƯỚNG */}
                 <div className="d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 mt-4">
                     <span className="text-muted small">Muốn thêm sự kiện khác vào so sánh?</span>
-                    <button 
-                        className="btn-ghost btn-sm rounded-3 py-2 px-3" 
-                        onClick={handleGoBack} 
+                    <button
+                        className="btn-ghost btn-sm rounded-3 py-2 px-3"
+                        onClick={handleGoBack}
                         style={{ fontSize: '0.85rem', fontWeight: '600' }}
                     >
                         + Thêm sự kiện ↗
                     </button>
-                    <button 
-                        className="btn btn-outline-danger btn-sm rounded-3 py-2 px-3" 
-                        onClick={handleClearCompare} 
+                    <button
+                        className="btn btn-outline-danger btn-sm rounded-3 py-2 px-3"
+                        onClick={handleClearCompare}
                         style={{ fontSize: '0.85rem', fontWeight: '600', borderColor: 'rgba(220, 53, 69, 0.4)', color: '#f87171' }}
                     >
                         Xóa & so sánh lại
