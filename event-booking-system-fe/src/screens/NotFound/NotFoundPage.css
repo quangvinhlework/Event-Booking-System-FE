@@ -3,8 +3,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  min-height: calc(100vh - 72px); /* Fallback for page-shell */
-}
+  min-height: calc(100vh - 72px); }
 
 .not-found-content {
   max-width: 600px;

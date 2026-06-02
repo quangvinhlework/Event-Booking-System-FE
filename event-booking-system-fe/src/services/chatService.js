@@ -1,11 +1,6 @@
 import { ref, push, onValue, query, orderByChild } from "firebase/database";
 import { db } from "../firebase/firebase";
 
-/**
- * Gửi một tin nhắn vào phòng chat.
- * @param {string} roomId  – ID phòng chat (vd: "event_123")
- * @param {object} message – { senderId, senderName, text, createdAt }
- */
 export const sendMessage = async (roomId, message) => {
   if (!roomId) {
     throw new Error("roomId is required to send a message");
@@ -15,15 +10,6 @@ export const sendMessage = async (roomId, message) => {
   await push(messagesRef, message);
 };
 
-/**
- * Lắng nghe real-time danh sách tin nhắn trong phòng chat.
- * Messages được sắp xếp theo `createdAt` tăng dần.
- *
- * @param {string}   roomId   – ID phòng chat
- * @param {function} onData   – callback nhận mảng messages
- * @param {function} onError  – callback nhận lỗi (nếu có)
- * @returns {function|null}   – hàm unsubscribe, hoặc null nếu roomId rỗng
- */
 export const subscribeMessages = (roomId, onData, onError) => {
   if (!roomId) {
     onData([]);
@@ -48,7 +34,7 @@ export const subscribeMessages = (roomId, onData, onError) => {
           id,
           ...value,
         }))
-        // Đảm bảo sắp xếp theo thời gian tăng dần (cũ → mới)
+        
         .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
 
       onData(messages);
@@ -64,16 +50,6 @@ export const subscribeMessages = (roomId, onData, onError) => {
   return unsubscribe;
 };
 
-/**
- * Lắng nghe tất cả phòng chat dưới node `chats/`.
- * Trả về mảng { roomId, lastMessage, lastTimestamp, messageCount }
- * Dùng cho organizer để xem danh sách các phòng chat theo event.
- *
- * @param {string[]}  eventIds  – danh sách event IDs của organizer
- * @param {function}  onData    – callback nhận mảng rooms
- * @param {function}  onError   – callback nhận lỗi
- * @returns {function|null}     – hàm unsubscribe
- */
 export const subscribeChatRooms = (eventIds, onData, onError) => {
   if (!eventIds || eventIds.length === 0) {
     onData([]);
@@ -94,7 +70,7 @@ export const subscribeChatRooms = (eventIds, onData, onError) => {
 
       const rooms = Object.entries(data)
         .filter(([roomId]) => {
-          // roomId format: "event_{eventId}"
+          
           const eventId = roomId.replace("event_", "");
           return eventIds.includes(eventId) || eventIds.includes(Number(eventId));
         })

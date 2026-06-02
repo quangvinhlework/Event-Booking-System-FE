@@ -32,7 +32,7 @@ export const ROUTES = {
   ORGANIZER_CHAT: '/organizer/chat',
 };
 
-/** guard: 'public' | 'protected' | 'organizer' */
+
 export const APP_ROUTES = [
   { path: ROUTES.HOME, page: HomePage, guard: 'public' },
   { path: ROUTES.LOGIN, page: LoginPage, guard: 'public' },

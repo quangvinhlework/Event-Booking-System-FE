@@ -12,9 +12,9 @@ const ToastNotification = () => {
       setToasts((prev) => [...prev, { id, message, status, type: 'error' }]);
     };
     
-    // apiHandler.js only dispatches api_error globally. 
-    // We keep success toast available for manual dispatches if needed, 
-    // but the main focus is aligning with apiHandler's error structure.
+    
+    
+    
     const handleApiSuccess = (event) => {
       const { message } = event.detail;
       const id = new Date().getTime() + Math.random();

@@ -1,4 +1,4 @@
-/* Organizer dashboard — dark sidebar layout */
+
 
 .organizer-shell {
   display: grid;
@@ -14,7 +14,7 @@
   }
 }
 
-/* Sidebar */
+
 
 .organizer-sidebar {
   display: flex;
@@ -156,7 +156,7 @@
   cursor: pointer;
 }
 
-/* Main */
+
 
 .organizer-main {
   padding: 1.5rem 1.25rem 3rem;
@@ -216,7 +216,7 @@
   gap: 0.65rem;
 }
 
-/* Buttons */
+
 
 .organizer-btn-primary {
   display: inline-flex;
@@ -286,7 +286,7 @@
   color: #6ee7b7;
 }
 
-/* Stat cards */
+
 
 .organizer-stat-grid {
   display: grid;
@@ -329,7 +329,7 @@
   color: var(--theme-muted);
 }
 
-/* Panels */
+
 
 .organizer-panel {
   background: var(--theme-surface);
@@ -389,7 +389,7 @@
   letter-spacing: 0.06em;
 }
 
-/* Table */
+
 
 .organizer-table-wrap {
   overflow-x: auto;
@@ -462,7 +462,7 @@
   color: var(--theme-muted);
 }
 
-/* Alert */
+
 
 .organizer-alert {
   padding: 0.85rem 1rem;
@@ -499,7 +499,7 @@
   font-size: 1.1rem;
 }
 
-/* Charts */
+
 
 .organizer-chart-box {
   padding: 1.25rem;
@@ -539,7 +539,7 @@
   }
 }
 
-/* Filters card */
+
 
 .organizer-filters {
   padding: 1.25rem;
@@ -608,7 +608,7 @@
   color: var(--theme-accent-light);
 }
 
-/* Load more */
+
 
 .organizer-load-more {
   display: flex;
@@ -616,7 +616,7 @@
   margin-top: 1.5rem;
 }
 
-/* Modal — portaled to body; explicit colors (không phụ thuộc .page-shell) */
+
 
 .modal.organizer-modal-root {
   z-index: 1060;

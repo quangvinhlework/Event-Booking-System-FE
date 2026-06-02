@@ -81,8 +81,8 @@ const EventDetailPage = () => {
         navigate('/login', { state: { from: `/event/${id}` } });
         return;
       }
-      // Thông báo đơn giản, có thể thay bằng toast sau này
-      // eslint-disable-next-line no-alert
+      
+      
       showAlert(err.message || 'Đặt vé thất bại');
     }
   };
@@ -316,7 +316,7 @@ const EventDetailPage = () => {
         </div>
       </Container>
 
-      {/* Chat widget — fixed bottom-right */}
+      {}
       <ChatBox eventId={id} eventName={event.name} />
       
       <ConfirmCard

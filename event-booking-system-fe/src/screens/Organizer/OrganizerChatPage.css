@@ -1,4 +1,3 @@
-/* ── Organizer Chat Layout ─────────────────────────────── */
 
 .org-chat-layout {
   display: grid;
@@ -16,7 +15,6 @@
   }
 }
 
-/* ── Left Sidebar ─────────────────────────────────────── */
 
 .org-chat-sidebar {
   display: flex;
@@ -91,7 +89,6 @@
   color: var(--theme-muted);
 }
 
-/* ── Room Item ────────────────────────────────────────── */
 
 .org-chat-room {
   display: flex;
@@ -198,7 +195,6 @@
   padding: 0 6px;
 }
 
-/* ── Conversation Panel ───────────────────────────────── */
 
 .org-chat-conv {
   display: flex;
@@ -249,7 +245,6 @@
   color: var(--theme-muted);
 }
 
-/* Conversation Header */
 
 .org-chat-conv__header {
   display: flex;
@@ -298,7 +293,6 @@
   color: var(--theme-muted);
 }
 
-/* Messages Area */
 
 .org-chat-conv__messages {
   flex: 1;
@@ -337,7 +331,6 @@
   font-size: 0.88rem;
 }
 
-/* Message Bubbles */
 
 .org-chat-bubble {
   max-width: 72%;
@@ -403,7 +396,6 @@
   text-align: left;
 }
 
-/* Input Area */
 
 .org-chat-conv__input {
   display: flex;
@@ -474,7 +466,6 @@
   height: 18px;
 }
 
-/* ── Responsive ───────────────────────────────────────── */
 
 @media (max-width: 767.98px) {
   .org-chat-layout {

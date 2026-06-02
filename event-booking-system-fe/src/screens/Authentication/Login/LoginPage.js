@@ -31,7 +31,7 @@ const LoginPage = () => {
       navigate(from, { replace: true });
     } catch (err) {
       console.error('Đăng nhập thất bại:', err);
-      // apiHandler/useAuth already dispatched the error toast, so we don't need to do it here
+      
     } finally {
       setSubmitting(false);
     }

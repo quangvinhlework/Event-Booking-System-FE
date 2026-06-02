@@ -53,7 +53,7 @@ const toPayloadValue = (field, value) => {
   return value;
 };
 
-/** Chỉ lấy field được policy cho phép gửi lên API. */
+
 export const formStateToUpdatePayload = (formState, status) => {
   const payload = { id: formState.id };
 

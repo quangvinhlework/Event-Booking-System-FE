@@ -13,7 +13,7 @@ const RegisterPage = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    role: '3', // 3: USER, 2: ORGANIZER, 1: ADMIN
+    role: '3', 
     avatar: null
   });
   const [preview, setPreview] = useState('');
@@ -84,13 +84,13 @@ const RegisterPage = () => {
     try {
       const response = await register(formData);
       if (!response) {
-        // api_error has been dispatched
+        
         return;
       }
       setSuccess('Đăng ký thành công!');
       navigate('/login', { state: location.state }); 
     } catch (error) {
-      // apiHandler already dispatched error, do nothing here
+      
     }
   };
 

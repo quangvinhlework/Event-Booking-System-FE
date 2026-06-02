@@ -7,7 +7,7 @@ const SORT_OPTIONS = [
   { label: 'Ngày diễn ra giảm dần', value: 'desc' },
 ];
 
-/** UI bộ lọc sự kiện (không nhầm với `filters/eventFilter.js` — query API) */
+
 const EventFilterPanel = ({
   id,
   selectedCategory,

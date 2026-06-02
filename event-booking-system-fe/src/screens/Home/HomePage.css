@@ -1,4 +1,4 @@
-/* Home page */
+
 
 .home-page {
   background: var(--theme-ink);
@@ -7,7 +7,7 @@
   min-height: 100%;
 }
 
-/* ─── Hero ─── */
+
 
 .home-hero {
   position: relative;
@@ -150,7 +150,7 @@
   color: var(--theme-accent-light);
 }
 
-/* Search panel */
+
 
 .home-hero__search-panel {
   padding: 2rem;
@@ -274,7 +274,7 @@
   50% { transform: translateY(12px); opacity: 0.3; }
 }
 
-/* ─── Main catalog ─── */
+
 
 .home-main {
   position: relative;
@@ -328,7 +328,7 @@
   letter-spacing: 0.05em;
 }
 
-/* Toolbar & chips */
+
 
 .home-toolbar {
   display: flex;
@@ -431,7 +431,7 @@
   color: var(--theme-ink);
 }
 
-/* Filters panel — dark overrides */
+
 
 .home-filters .surface-card {
   background: var(--theme-surface);
@@ -473,7 +473,7 @@
   color: var(--theme-text);
 }
 
-/* Grid */
+
 
 .home-grid {
   display: grid;
@@ -524,7 +524,7 @@
   cursor: not-allowed;
 }
 
-/* ─── Luxury spotlight ─── */
+
 
 .featured-event {
   display: grid;
@@ -664,7 +664,7 @@
   box-shadow: 0 12px 32px rgba(201, 169, 98, 0.3);
 }
 
-/* ─── Luxury event card ─── */
+
 
 .event-card {
   background: var(--theme-surface);

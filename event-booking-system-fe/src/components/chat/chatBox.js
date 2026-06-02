@@ -4,11 +4,6 @@ import { useAuth } from '../../hooks/useAuth';
 import { useChat } from '../../hooks/chat/useChat';
 import './ChatBox.css';
 
-/**
- * Floating chat widget for event pages.
- * Renders a FAB button (bottom-right) that opens a chat window
- * connected to a Firebase Realtime Database room scoped by eventId.
- */
 const ChatBox = ({ eventId, eventName }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [text, setText] = useState('');
@@ -32,14 +27,14 @@ const ChatBox = ({ eventId, eventName }) => {
     }
   }, [messages, isOpen, scrollToBottom]);
 
-  // Focus input when chat opens
+  
   useEffect(() => {
     if (isOpen && isAuthenticated) {
       setTimeout(() => inputRef.current?.focus(), 350);
     }
   }, [isOpen, isAuthenticated]);
 
-  // Clear error when user starts typing
+  
   useEffect(() => {
     if (error && text) {
       clearError();
@@ -72,13 +67,13 @@ const ChatBox = ({ eventId, eventName }) => {
 
   return (
     <>
-      {/* ── Chat Window ────────────────────────────────── */}
+      {}
       <div
         className={`chat-window ${isOpen ? 'chat-window--visible' : ''}`}
         role="dialog"
         aria-label="Hộp thoại chat"
       >
-        {/* Header */}
+        {}
         <div className="chat-header">
           <div className="chat-header__avatar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -106,7 +101,7 @@ const ChatBox = ({ eventId, eventName }) => {
           </button>
         </div>
 
-        {/* Body */}
+        {}
         {!isAuthenticated ? (
           <div className="chat-login-prompt">
             <div className="chat-login-prompt__icon">
@@ -130,7 +125,7 @@ const ChatBox = ({ eventId, eventName }) => {
         ) : (
           <>
             <div className="chat-messages">
-              {/* Loading state */}
+              {}
               {loading ? (
                 <div className="chat-empty">
                   <div className="chat-empty__icon">
@@ -141,8 +136,7 @@ const ChatBox = ({ eventId, eventName }) => {
                   <p className="chat-empty__text">Đang tải tin nhắn...</p>
                 </div>
               ) : error ? (
-                /* Error state */
-                <div className="chat-empty">
+                                <div className="chat-empty">
                   <div className="chat-empty__icon chat-empty__icon--error">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <circle cx="12" cy="12" r="10" />
@@ -161,8 +155,7 @@ const ChatBox = ({ eventId, eventName }) => {
                   </button>
                 </div>
               ) : messages.length === 0 ? (
-                /* Empty state */
-                <div className="chat-empty">
+                                <div className="chat-empty">
                   <div className="chat-empty__icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
@@ -174,8 +167,7 @@ const ChatBox = ({ eventId, eventName }) => {
                   </p>
                 </div>
               ) : (
-                /* Messages list */
-                messages.map((msg) => {
+                                messages.map((msg) => {
                   const isSent = String(msg.senderId) === String(user?.id);
                   return (
                     <div
@@ -194,7 +186,7 @@ const ChatBox = ({ eventId, eventName }) => {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input */}
+            {}
             <div className="chat-input">
               <textarea
                 ref={inputRef}
@@ -222,7 +214,7 @@ const ChatBox = ({ eventId, eventName }) => {
         )}
       </div>
 
-      {/* ── FAB Button ─────────────────────────────────── */}
+      {}
       <button
         type="button"
         className={`chat-fab ${isOpen ? 'chat-fab--open' : ''}`}

@@ -7,7 +7,6 @@ import { useChat } from '../../hooks/chat/useChat';
 import OrganizerLayout from './layouts/OrganizerLayout';
 import './OrganizerChatPage.css';
 
-/* ── Conversation Panel (right side) ────────────────── */
 const ConversationPanel = ({ roomId, eventName, user }) => {
   const [text, setText] = useState('');
   const messagesEndRef = useRef(null);
@@ -76,7 +75,7 @@ const ConversationPanel = ({ roomId, eventName, user }) => {
 
   return (
     <div className="org-chat-conv">
-      {/* Header */}
+      {}
       <div className="org-chat-conv__header">
         <div className="org-chat-conv__header-avatar">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -89,7 +88,7 @@ const ConversationPanel = ({ roomId, eventName, user }) => {
         </div>
       </div>
 
-      {/* Messages */}
+      {}
       <div className="org-chat-conv__messages">
         {loading ? (
           <div className="org-chat-conv__center">
@@ -121,7 +120,7 @@ const ConversationPanel = ({ roomId, eventName, user }) => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
+      {}
       <div className="org-chat-conv__input">
         <textarea
           ref={inputRef}
@@ -149,7 +148,6 @@ const ConversationPanel = ({ roomId, eventName, user }) => {
   );
 };
 
-/* ── Main Page ──────────────────────────────────────── */
 const OrganizerChatPage = () => {
   const { user } = useAuth();
   const { events, loading: eventsLoading } = useOrganizerEvent();
@@ -163,7 +161,7 @@ const OrganizerChatPage = () => {
     [events]
   );
 
-  // Map eventId → event name for display
+  
   const eventNameMap = useMemo(() => {
     const map = {};
     events.forEach((e) => {
@@ -174,7 +172,7 @@ const OrganizerChatPage = () => {
 
   const { rooms, loading: roomsLoading, error: roomsError } = useOrganizerChatRooms(eventIds);
 
-  // Filter rooms by search
+  
   const filteredRooms = useMemo(() => {
     if (!searchQuery.trim()) return rooms;
     const q = searchQuery.toLowerCase();
@@ -220,7 +218,7 @@ const OrganizerChatPage = () => {
         </div>
       ) : (
         <div className="org-chat-layout">
-          {/* ── Left: Room list ────────────────────────── */}
+          {}
           <aside className="org-chat-sidebar">
             <div className="org-chat-sidebar__search">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
@@ -296,7 +294,7 @@ const OrganizerChatPage = () => {
             </div>
           </aside>
 
-          {/* ── Right: Conversation ────────────────────── */}
+          {}
           <ConversationPanel
             roomId={activeRoomId}
             eventName={activeEventName}

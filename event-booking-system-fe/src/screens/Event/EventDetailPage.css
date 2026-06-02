@@ -47,7 +47,7 @@
   }
 }
 
-/* Gallery */
+
 
 .event-detail__gallery {
   border: 1px solid var(--theme-border);
@@ -105,7 +105,7 @@
   border-color: var(--theme-accent);
 }
 
-/* Booking panel */
+
 
 .event-detail__panel {
   padding: 2rem;
@@ -311,7 +311,7 @@
   line-height: 1.5;
 }
 
-/* Description */
+
 
 .event-detail__about {
   margin-top: 3rem;

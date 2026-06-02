@@ -24,7 +24,7 @@ const EventHeaderCard = ({ event, isBestPrice }) => {
                 </span>
             )}
 
-            {/* Khung ảnh / Icon minh họa đại diện */}
+            {}
             <div 
                 className="d-flex align-items-center justify-content-center rounded-3 mb-3" 
                 style={{ 

@@ -1,19 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
 import { sendMessage, subscribeMessages } from "../../services/chatService";
 
-/**
- * Hook quản lý chat real-time cho một phòng (roomId).
- *
- * @param {string} roomId – ID phòng chat (vd: "event_123")
- * @returns {{ messages, loading, error, sendMessage }}
- */
 export const useChat = (roomId) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Guard: nếu chưa có roomId thì không subscribe
+    
     if (!roomId) {
       setMessages([]);
       setLoading(false);
@@ -27,7 +21,7 @@ export const useChat = (roomId) => {
 
     const unsubscribe = subscribeMessages(
       roomId,
-      // onData callback
+      
       (newMessages) => {
         setMessages(newMessages);
         if (isFirstSnapshot) {
@@ -35,14 +29,14 @@ export const useChat = (roomId) => {
           isFirstSnapshot = false;
         }
       },
-      // onError callback
+      
       (errorMessage) => {
         setError(errorMessage);
         setLoading(false);
       }
     );
 
-    // Cleanup: unsubscribe khi roomId thay đổi hoặc component unmount
+    
     return () => {
       if (typeof unsubscribe === "function") {
         unsubscribe();
@@ -50,10 +44,7 @@ export const useChat = (roomId) => {
     };
   }, [roomId]);
 
-  /**
-   * Gửi tin nhắn vào phòng chat hiện tại.
-   */
-  const handleSendMessage = useCallback(
+    const handleSendMessage = useCallback(
     async (senderId, senderName, text) => {
       if (!text || !text.trim()) return;
       if (!roomId) return;
@@ -73,10 +64,7 @@ export const useChat = (roomId) => {
     [roomId]
   );
 
-  /**
-   * Xoá lỗi hiện tại.
-   */
-  const clearError = useCallback(() => {
+    const clearError = useCallback(() => {
     setError(null);
   }, []);
 

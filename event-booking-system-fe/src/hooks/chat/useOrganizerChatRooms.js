@@ -1,13 +1,6 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { subscribeChatRooms } from "../../services/chatService";
 
-/**
- * Hook quản lý danh sách phòng chat cho organizer.
- * Lắng nghe real-time các phòng chat liên quan đến events của organizer.
- *
- * @param {Array} eventIds – mảng event IDs của organizer
- * @returns {{ rooms, loading, error }}
- */
 export const useOrganizerChatRooms = (eventIds) => {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);

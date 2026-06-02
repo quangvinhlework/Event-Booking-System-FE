@@ -144,7 +144,7 @@ const EventComparison = () => {
         <div className="page-shell event-comparison py-5">
             <div className="container">
 
-                {/* TIÊU ĐỀ TRANG */}
+                {}
                 <div className="d-flex justify-content-between align-items-end mb-4">
                     <div>
                         <p className="page-eyebrow mb-1">
@@ -160,7 +160,7 @@ const EventComparison = () => {
                     </button>
                 </div>
 
-                {/* BẢNG SO SÁNH NGANG */}
+                {}
                 <div className="table-responsive comparison-table-panel shadow mb-5">
                     <table className="table comparison-table align-middle text-center" style={{ tableLayout: 'fixed' }}>
                         <thead>
@@ -175,7 +175,7 @@ const EventComparison = () => {
                         </thead>
                         <tbody>
 
-                            {/* Lĩnh vực */}
+                            {}
                             <tr>
                                 <td className="table-criteria-cell">🏷 Lĩnh vực</td>
                                 {events.map(event => (
@@ -187,7 +187,7 @@ const EventComparison = () => {
                                 ))}
                             </tr>
 
-                            {/* Ngày diễn ra */}
+                            {}
                             <tr>
                                 <td className="table-criteria-cell">📅 Ngày diễn ra</td>
                                 {events.map(event => {
@@ -201,7 +201,7 @@ const EventComparison = () => {
                                 })}
                             </tr>
 
-                            {/* Địa điểm */}
+                            {}
                             <tr>
                                 <td className="table-criteria-cell">📍 Địa điểm</td>
                                 {events.map(event => {
@@ -217,7 +217,7 @@ const EventComparison = () => {
                                 })}
                             </tr>
 
-                            {/* Giá vé */}
+                            {}
                             <tr>
                                 <td className="table-criteria-cell">💰 Giá vé</td>
                                 {events.map(event => {
@@ -232,7 +232,7 @@ const EventComparison = () => {
                                 })}
                             </tr>
 
-                            {/* Vé còn lại */}
+                            {}
                             <tr>
                                 <td className="table-criteria-cell">🎟 Vé còn lại</td>
                                 {events.map(event => {
@@ -266,7 +266,7 @@ const EventComparison = () => {
                                 })}
                             </tr>
 
-                            {/* Lượt xem */}
+                            {}
                             <tr>
                                 <td className="table-criteria-cell">👁 Lượt xem</td>
                                 {events.map(event => (
@@ -277,7 +277,7 @@ const EventComparison = () => {
                                 ))}
                             </tr>
 
-                            {/* Đã bán */}
+                            {}
                             <tr>
                                 <td className="table-criteria-cell">📊 Đã bán</td>
                                 {events.map(event => (
@@ -288,7 +288,7 @@ const EventComparison = () => {
                                 ))}
                             </tr>
 
-                            {/* Có hình ảnh */}
+                            {}
                             <tr>
                                 <td className="table-criteria-cell">🖼 Có hình ảnh</td>
                                 {events.map(event => (
@@ -302,7 +302,7 @@ const EventComparison = () => {
                                 ))}
                             </tr>
 
-                            {/* Có video */}
+                            {}
                             <tr>
                                 <td className="table-criteria-cell">▶ Có video</td>
                                 {events.map(event => (
@@ -316,7 +316,7 @@ const EventComparison = () => {
                                 ))}
                             </tr>
 
-                            {/* Hành động đặt mua */}
+                            {}
                             <tr>
                                 <td className="table-criteria-cell"></td>
                                 {events.map(event => (
@@ -336,7 +336,7 @@ const EventComparison = () => {
                     </table>
                 </div>
 
-                {/* FOOTER ĐIỀU HƯỚNG */}
+                {}
                 <div className="d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 mt-4">
                     <span className="text-muted small">Muốn thêm sự kiện khác vào so sánh?</span>
                     <button
@@ -355,7 +355,7 @@ const EventComparison = () => {
                     </button>
                 </div>
 
-                {/* Scoped CSS Custom */}
+                {}
                 <style>{`
                     .event-comparison-page {
                         background: var(--theme-ink);
