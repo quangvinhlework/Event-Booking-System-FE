@@ -6,3 +6,5 @@ export { default as FilePickerWithList } from './form/FilePickerWithList';
 export { default as FormField } from './form/FormField';
 export { default as LoadingOverlay } from './loading/LoadingOverlay';
 export { default as MediaPreviewList } from './media/MediaPreviewList';
+export { default as PaymentOptionModal } from './payment/PaymentOptionModal';
+export { default as CounterInstructionModal } from './payment/CounterInstructionModal';

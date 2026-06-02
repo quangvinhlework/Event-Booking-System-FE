@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
-import { EmptyState, LoadingState } from '../../components';
+import { EmptyState, LoadingState, PaymentOptionModal, CounterInstructionModal } from '../../components';
 import ChatBox from '../../components/chat/chatBox';
 import { useEvent } from '../../hooks/event/useEvent';
 import { useOrder } from '../../hooks/order/useOrder';
@@ -16,6 +16,8 @@ const EventDetailPage = () => {
   const { event, loading, error } = useEvent(id);
   const [quantity, setQuantity] = useState(1);
   const { createOrder, loading: ordering, error: orderError } = useOrder(id);
+  const [showPaymentOptions, setShowPaymentOptions] = useState(false);
+  const [showCounterInstruction, setShowCounterInstruction] = useState(false);
 
   const [confirmConfig, setConfirmConfig] = useState({
     show: false,
@@ -302,7 +304,7 @@ const EventDetailPage = () => {
               type="button"
               className="btn-primary-accent"
               disabled={availableTickets <= 0 || ordering}
-              onClick={handleOrder}
+              onClick={() => setShowPaymentOptions(true)}
             >
               {availableTickets > 0 ? (ordering ? 'Đang xử lý...' : 'Đặt vé ngay') : 'Hết vé'}
             </button>
@@ -325,6 +327,26 @@ const EventDetailPage = () => {
         message={confirmConfig.message}
         onConfirm={confirmConfig.onConfirm}
         onCancel={confirmConfig.onCancel}
+      />
+
+      <PaymentOptionModal
+        show={showPaymentOptions}
+        onHide={() => setShowPaymentOptions(false)}
+        ordering={ordering}
+        onSelectOnline={() => {
+          setShowPaymentOptions(false);
+          handleOrder();
+        }}
+        onSelectCounter={() => {
+          setShowPaymentOptions(false);
+          setShowCounterInstruction(true);
+        }}
+      />
+
+      <CounterInstructionModal
+        show={showCounterInstruction}
+        onHide={() => setShowCounterInstruction(false)}
+        event={event}
       />
     </div>
   );

@@ -4,7 +4,7 @@ import { Container, Badge } from 'react-bootstrap';
 import { useAuth } from '../../hooks/useAuth';
 import { useEvents } from '../../hooks/event/useEvents';
 import { useCategory } from '../../hooks/useCategory';
-import { EmptyState, LoadingState } from '../../components';
+import { EmptyState, LoadingOverlay } from '../../components';
 import { eventFilters } from '../../filters/eventFilter';
 import EventFilterPanel from '../Event/EventFilterPanel';
 import EventCard from '../../components/event/EventCard';
@@ -271,6 +271,7 @@ const HomePage = () => {
 
   return (
     <div className="home-page page-shell">
+      <LoadingOverlay loading={loading} text="Đang tải dữ liệu..." />
       <section className="home-hero">
         <div className="home-hero__bg" aria-hidden="true" />
         <div className="home-hero__grain" aria-hidden="true" />
@@ -365,11 +366,7 @@ const HomePage = () => {
 
       <main className="home-main" id="events-catalog">
         <Container>
-          {loading && page === 1 ? (
-            <div className="home-loading">
-              <LoadingState text="Đang tải sự kiện..." />
-            </div>
-          ) : error ? (
+          {error ? (
             <EmptyState description={`Lỗi: ${error}`} className="home-empty text-center py-5" />
           ) : (
             <>
@@ -432,7 +429,7 @@ const HomePage = () => {
               {categories.length > 0 && (
                 <div className="home-chips" role="tablist" aria-label="Lọc theo lĩnh vực">
                   {categoryOptions.map((option) => (
-                    <button
+                     <button
                       key={option.value || 'all'}
                       type="button"
                       role="tab"
@@ -460,32 +457,14 @@ const HomePage = () => {
                     categoryOptions={categoryOptions.map((o) =>
                       o.value === '' ? { ...o, label: 'Tất cả lĩnh vực' } : o
                     )}
-                    onCategoryChange={(e) => {
-                      setSelectedCategory(e.target.value);
-                      setPage(1);
-                    }}
-                    onLocationChange={(e) => {
-                      setLocation(e.target.value);
-                      setPage(1);
-                    }}
-                    onStartDateChange={(e) => {
-                      setStartDate(e.target.value);
-                      setPage(1);
-                    }}
-                    onEndDateChange={(e) => {
-                      setEndDate(e.target.value);
-                      setPage(1);
-                    }}
-                    onMinPriceChange={(e) => {
-                      setMinPrice(e.target.value);
-                      setPage(1);
-                    }}
-                    onMaxPriceChange={(e) => {
-                      setMaxPrice(e.target.value);
-                      setPage(1);
-                    }}
-                    onSortDirectionChange={(e) => {
-                      setSortDirection(e.target.value);
+                    onApplyFilters={(filters) => {
+                      setSelectedCategory(filters.selectedCategory);
+                      setLocation(filters.location);
+                      setStartDate(filters.startDate);
+                      setEndDate(filters.endDate);
+                      setMinPrice(filters.minPrice);
+                      setMaxPrice(filters.maxPrice);
+                      setSortDirection(filters.sortDirection);
                       setPage(1);
                     }}
                     onResetFilters={handleResetFilters}
@@ -507,7 +486,7 @@ const HomePage = () => {
                     />
                   ))}
                 </div>
-              ) : !featuredEvent ? (
+              ) : !featuredEvent && !loading ? (
                 <EmptyState description="Không tìm thấy sự kiện phù hợp" className="home-empty text-center py-5" />
               ) : null}
 

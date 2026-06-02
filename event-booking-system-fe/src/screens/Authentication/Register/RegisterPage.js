@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Form } from 'react-bootstrap';
 import { useAuth } from '../../../hooks/useAuth';
-import { FormField } from '../../../components';
+import { FormField, LoadingOverlay } from '../../../components';
 import { showErrorToast } from '../../../utils/toast';
 import AuthBrandPanel from '../AuthBrandPanel';
 import '../AuthPage.css';
-import LoadingState from '../../../components/feedback/LoadingState';
+
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
     fullName: '',
@@ -27,14 +27,6 @@ const RegisterPage = () => {
       navigate('/');
     }
   }, [isAuthenticated, navigate]);
-
-  if (registerLoading) {
-    return (
-      <div className="page-shell auth-layout d-flex align-items-center justify-content-center">
-        <LoadingState text="Đang đăng ký tài khoản..." />
-      </div>
-    );
-  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -96,6 +88,7 @@ const RegisterPage = () => {
 
   return (
     <div className="page-shell auth-layout">
+      <LoadingOverlay loading={registerLoading} text="Đang đăng ký tài khoản..." />
       <AuthBrandPanel
         title="Gia nhập"
         titleEmphasis="cộng đồng"

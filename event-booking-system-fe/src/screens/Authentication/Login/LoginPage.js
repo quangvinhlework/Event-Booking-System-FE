@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Form } from 'react-bootstrap';
 import { useAuth } from '../../../hooks/useAuth';
-import { FormField, LoadingState } from '../../../components';
+import { FormField, LoadingOverlay } from '../../../components';
 import { showErrorToast } from '../../../utils/toast';
 import AuthBrandPanel from '../AuthBrandPanel';
 import '../AuthPage.css';
@@ -37,16 +37,9 @@ const LoginPage = () => {
     }
   };
 
-  if (submitting) {
-    return (
-      <div className="page-shell auth-layout d-flex align-items-center justify-content-center">
-        <LoadingState text="Đang đăng nhập..." />
-      </div>
-    );
-  }
-
   return (
     <div className="page-shell auth-layout">
+      <LoadingOverlay loading={submitting} text="Đang đăng nhập..." />
       <AuthBrandPanel
         title="Trải nghiệm"
         titleEmphasis="đẳng cấp"

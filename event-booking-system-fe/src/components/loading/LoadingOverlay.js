@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { Spinner } from 'react-bootstrap';
 
 const LoadingOverlay = ({
@@ -8,7 +9,7 @@ const LoadingOverlay = ({
 
   if (!loading) return null;
 
-  return (
+  const overlayContent = (
     <div
       className="
         position-fixed
@@ -16,21 +17,23 @@ const LoadingOverlay = ({
         start-0
         w-100
         h-100
-        bg-dark
-        bg-opacity-50
         d-flex
         justify-content-center
         align-items-center
       "
       style={{
         zIndex: 9999,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backdropFilter: 'blur(5px)',
+        WebkitBackdropFilter: 'blur(5px)',
       }}
     >
       <div
         className="
           bg-dark
+          text-white
           rounded
-          shadow
+          shadow-lg
           p-4
           d-flex
           flex-column
@@ -48,6 +51,8 @@ const LoadingOverlay = ({
       </div>
     </div>
   );
+
+  return createPortal(overlayContent, document.body);
 };
 
 export default LoadingOverlay;

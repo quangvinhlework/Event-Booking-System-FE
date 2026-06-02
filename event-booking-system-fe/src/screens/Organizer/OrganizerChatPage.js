@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import { LoadingState } from '../../components';
+import { LoadingOverlay } from '../../components';
 import { useAuth } from '../../hooks/useAuth';
 import { useOrganizerEvent } from '../../hooks/event/useOrganizerEvent';
 import { useOrganizerChatRooms } from '../../hooks/chat/useOrganizerChatRooms';
@@ -74,8 +74,9 @@ const ConversationPanel = ({ roomId, eventName, user }) => {
   }
 
   return (
-    <div className="org-chat-conv">
-      {}
+    <div className="org-chat-conv position-relative">
+      <LoadingOverlay loading={loading} text="Đang tải tin nhắn..." />
+      { }
       <div className="org-chat-conv__header">
         <div className="org-chat-conv__header-avatar">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -88,17 +89,13 @@ const ConversationPanel = ({ roomId, eventName, user }) => {
         </div>
       </div>
 
-      {}
+      { }
       <div className="org-chat-conv__messages">
-        {loading ? (
-          <div className="org-chat-conv__center">
-            <LoadingState text="Đang tải tin nhắn..." />
-          </div>
-        ) : error ? (
+        {error ? (
           <div className="org-chat-conv__center">
             <p className="org-chat-conv__error">{error}</p>
           </div>
-        ) : messages.length === 0 ? (
+        ) : (!loading && messages.length === 0) ? (
           <div className="org-chat-conv__center">
             <p className="org-chat-conv__placeholder">Chưa có tin nhắn nào trong cuộc trò chuyện này.</p>
           </div>
@@ -120,7 +117,7 @@ const ConversationPanel = ({ roomId, eventName, user }) => {
         <div ref={messagesEndRef} />
       </div>
 
-      {}
+      { }
       <div className="org-chat-conv__input">
         <textarea
           ref={inputRef}
@@ -161,7 +158,7 @@ const OrganizerChatPage = () => {
     [events]
   );
 
-  
+
   const eventNameMap = useMemo(() => {
     const map = {};
     events.forEach((e) => {
@@ -172,7 +169,7 @@ const OrganizerChatPage = () => {
 
   const { rooms, loading: roomsLoading, error: roomsError } = useOrganizerChatRooms(eventIds);
 
-  
+
   const filteredRooms = useMemo(() => {
     if (!searchQuery.trim()) return rooms;
     const q = searchQuery.toLowerCase();
@@ -208,100 +205,95 @@ const OrganizerChatPage = () => {
       title="Trò chuyện"
       subtitle="Xem và trả lời tin nhắn từ khách hàng về các sự kiện của bạn."
     >
+      <LoadingOverlay loading={isLoading} text="Đang tải cuộc trò chuyện..." />
       {roomsError && (
         <div className="organizer-alert organizer-alert--danger">{roomsError}</div>
       )}
 
-      {isLoading ? (
-        <div className="organizer-loading">
-          <LoadingState text="Đang tải cuộc trò chuyện..." />
-        </div>
-      ) : (
-        <div className="org-chat-layout">
-          {}
-          <aside className="org-chat-sidebar">
-            <div className="org-chat-sidebar__search">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-              </svg>
-              <input
-                type="text"
-                placeholder="Tìm kiếm sự kiện..."
-                value={localSearchQuery}
-                onChange={(e) => setLocalSearchQuery(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    setSearchQuery(localSearchQuery);
-                  }
-                }}
-                className="org-chat-sidebar__search-input"
-              />
-            </div>
+      <div className="org-chat-layout">
+        { }
+        <aside className="org-chat-sidebar">
+          <div className="org-chat-sidebar__search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Tìm kiếm sự kiện..."
+              value={localSearchQuery}
+              onChange={(e) => setLocalSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  setSearchQuery(localSearchQuery);
+                }
+              }}
+              className="org-chat-sidebar__search-input"
+            />
+          </div>
 
-            <div className="org-chat-sidebar__list">
-              {filteredRooms.length === 0 ? (
-                <div className="org-chat-sidebar__empty">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="28" height="28">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                  </svg>
-                  <p>
-                    {searchQuery
-                      ? 'Không tìm thấy cuộc trò chuyện phù hợp'
-                      : 'Chưa có cuộc trò chuyện nào'}
-                  </p>
-                </div>
-              ) : (
-                filteredRooms.map((room) => (
-                  <button
-                    key={room.roomId}
-                    type="button"
-                    className={`org-chat-room ${activeRoomId === room.roomId ? 'org-chat-room--active' : ''}`}
-                    onClick={() => setActiveRoomId(room.roomId)}
-                  >
-                    <div className="org-chat-room__avatar">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <rect x="3" y="4" width="18" height="18" rx="2" />
-                        <path d="M16 2v4M8 2v4M3 10h18" />
-                      </svg>
+          <div className="org-chat-sidebar__list">
+            {(!isLoading || filteredRooms.length > 0) && filteredRooms.length === 0 ? (
+              <div className="org-chat-sidebar__empty">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="28" height="28">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+                <p>
+                  {searchQuery
+                    ? 'Không tìm thấy cuộc trò chuyện phù hợp'
+                    : 'Chưa có cuộc trò chuyện nào'}
+                </p>
+              </div>
+            ) : (
+              filteredRooms.map((room) => (
+                <button
+                  key={room.roomId}
+                  type="button"
+                  className={`org-chat-room ${activeRoomId === room.roomId ? 'org-chat-room--active' : ''}`}
+                  onClick={() => setActiveRoomId(room.roomId)}
+                >
+                  <div className="org-chat-room__avatar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="3" y="4" width="18" height="18" rx="2" />
+                      <path d="M16 2v4M8 2v4M3 10h18" />
+                    </svg>
+                  </div>
+                  <div className="org-chat-room__info">
+                    <div className="org-chat-room__top">
+                      <strong className="org-chat-room__name">
+                        {eventNameMap[room.eventId] || `Sự kiện #${room.eventId}`}
+                      </strong>
+                      <span className="org-chat-room__time">
+                        {formatRelativeTime(room.lastTimestamp)}
+                      </span>
                     </div>
-                    <div className="org-chat-room__info">
-                      <div className="org-chat-room__top">
-                        <strong className="org-chat-room__name">
-                          {eventNameMap[room.eventId] || `Sự kiện #${room.eventId}`}
-                        </strong>
-                        <span className="org-chat-room__time">
-                          {formatRelativeTime(room.lastTimestamp)}
-                        </span>
-                      </div>
-                      <p className="org-chat-room__preview">
-                        {room.lastSenderName ? (
-                          <>
-                            <span className="org-chat-room__sender">{room.lastSenderName}:</span>{' '}
-                            {room.lastMessage}
-                          </>
-                        ) : (
-                          'Chưa có tin nhắn'
-                        )}
-                      </p>
-                    </div>
-                    {room.messageCount > 0 && (
-                      <span className="org-chat-room__badge">{room.messageCount}</span>
-                    )}
-                  </button>
-                ))
-              )}
-            </div>
-          </aside>
+                    <p className="org-chat-room__preview">
+                      {room.lastSenderName ? (
+                        <>
+                          <span className="org-chat-room__sender">{room.lastSenderName}:</span>{' '}
+                          {room.lastMessage}
+                        </>
+                      ) : (
+                        'Chưa có tin nhắn'
+                      )}
+                    </p>
+                  </div>
+                  {room.messageCount > 0 && (
+                    <span className="org-chat-room__badge">{room.messageCount}</span>
+                  )}
+                </button>
+              ))
+            )}
+          </div>
+        </aside>
 
-          {}
-          <ConversationPanel
-            roomId={activeRoomId}
-            eventName={activeEventName}
-            user={user}
-          />
-        </div>
-      )}
+        { }
+        <ConversationPanel
+          roomId={activeRoomId}
+          eventName={activeEventName}
+          user={user}
+        />
+      </div>
     </OrganizerLayout>
   );
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
 import { FormField } from '../../components';
 
@@ -6,7 +6,6 @@ const SORT_OPTIONS = [
   { label: 'Ngày diễn ra tăng dần', value: 'asc' },
   { label: 'Ngày diễn ra giảm dần', value: 'desc' },
 ];
-
 
 const EventFilterPanel = ({
   id,
@@ -20,17 +19,43 @@ const EventFilterPanel = ({
   sortDirection,
   categoryOptions,
   statusOptions,
-  onCategoryChange,
-  onStatusChange,
-  onLocationChange,
-  onStartDateChange,
-  onEndDateChange,
-  onMinPriceChange,
-  onMaxPriceChange,
-  onSortDirectionChange,
+  onApplyFilters,
   onResetFilters,
   className = 'surface-card p-3 p-md-4 mb-4 g-3',
 }) => {
+  const [localCategory, setLocalCategory] = useState(selectedCategory || '');
+  const [localStatus, setLocalStatus] = useState(selectedStatus || '');
+  const [localLocation, setLocalLocation] = useState(location || '');
+  const [localStartDate, setLocalStartDate] = useState(startDate || '');
+  const [localEndDate, setLocalEndDate] = useState(endDate || '');
+  const [localMinPrice, setLocalMinPrice] = useState(minPrice || '');
+  const [localMaxPrice, setLocalMaxPrice] = useState(maxPrice || '');
+  const [localSortDirection, setLocalSortDirection] = useState(sortDirection || 'asc');
+
+  useEffect(() => { setLocalCategory(selectedCategory || ''); }, [selectedCategory]);
+  useEffect(() => { setLocalStatus(selectedStatus || ''); }, [selectedStatus]);
+  useEffect(() => { setLocalLocation(location || ''); }, [location]);
+  useEffect(() => { setLocalStartDate(startDate || ''); }, [startDate]);
+  useEffect(() => { setLocalEndDate(endDate || ''); }, [endDate]);
+  useEffect(() => { setLocalMinPrice(minPrice || ''); }, [minPrice]);
+  useEffect(() => { setLocalMaxPrice(maxPrice || ''); }, [maxPrice]);
+  useEffect(() => { setLocalSortDirection(sortDirection || 'asc'); }, [sortDirection]);
+
+  const handleApply = () => {
+    if (onApplyFilters) {
+      onApplyFilters({
+        selectedCategory: localCategory,
+        selectedStatus: localStatus,
+        location: localLocation,
+        startDate: localStartDate,
+        endDate: localEndDate,
+        minPrice: localMinPrice,
+        maxPrice: localMaxPrice,
+        sortDirection: localSortDirection,
+      });
+    }
+  };
+
   return (
     <Row id={id} className={className}>
       {statusOptions && (
@@ -39,8 +64,8 @@ const EventFilterPanel = ({
             labelClassName="fw-bold"
             label="Trạng thái"
             name="selectedStatus"
-            value={selectedStatus}
-            onChange={onStatusChange}
+            value={localStatus}
+            onChange={(e) => setLocalStatus(e.target.value)}
             options={statusOptions}
           />
         </Col>
@@ -51,8 +76,8 @@ const EventFilterPanel = ({
           labelClassName="fw-bold"
           label="Lĩnh vực"
           name="selectedCategory"
-          value={selectedCategory}
-          onChange={onCategoryChange}
+          value={localCategory}
+          onChange={(e) => setLocalCategory(e.target.value)}
           options={categoryOptions}
         />
       </Col>
@@ -62,8 +87,8 @@ const EventFilterPanel = ({
           labelClassName="fw-bold"
           label="Địa điểm"
           name="location"
-          value={location}
-          onChange={onLocationChange}
+          value={localLocation}
+          onChange={(e) => setLocalLocation(e.target.value)}
           placeholder="Nhập địa điểm..."
         />
       </Col>
@@ -74,9 +99,9 @@ const EventFilterPanel = ({
           label="Từ ngày"
           name="startDate"
           type="date"
-          value={startDate}
-          onChange={onStartDateChange}
-          max={endDate || undefined}
+          value={localStartDate}
+          onChange={(e) => setLocalStartDate(e.target.value)}
+          max={localEndDate || undefined}
         />
       </Col>
 
@@ -86,9 +111,9 @@ const EventFilterPanel = ({
           label="Đến ngày"
           name="endDate"
           type="date"
-          value={endDate}
-          onChange={onEndDateChange}
-          min={startDate || undefined}
+          value={localEndDate}
+          onChange={(e) => setLocalEndDate(e.target.value)}
+          min={localStartDate || undefined}
         />
       </Col>
 
@@ -99,8 +124,8 @@ const EventFilterPanel = ({
           name="minPrice"
           type="number"
           min="0"
-          value={minPrice}
-          onChange={onMinPriceChange}
+          value={localMinPrice}
+          onChange={(e) => setLocalMinPrice(e.target.value)}
           placeholder="0"
         />
       </Col>
@@ -112,8 +137,8 @@ const EventFilterPanel = ({
           name="maxPrice"
           type="number"
           min="0"
-          value={maxPrice}
-          onChange={onMaxPriceChange}
+          value={localMaxPrice}
+          onChange={(e) => setLocalMaxPrice(e.target.value)}
           placeholder="Không giới hạn"
         />
       </Col>
@@ -123,15 +148,18 @@ const EventFilterPanel = ({
           labelClassName="fw-bold"
           label="Sắp xếp"
           name="sortDirection"
-          value={sortDirection}
-          onChange={onSortDirectionChange}
+          value={localSortDirection}
+          onChange={(e) => setLocalSortDirection(e.target.value)}
           options={SORT_OPTIONS}
         />
       </Col>
 
-      <Col xs={12} className="d-flex justify-content-end">
+      <Col xs={12} className="d-flex justify-content-end gap-2 mt-3">
         <Button variant="outline-secondary" onClick={onResetFilters}>
           Xóa bộ lọc
+        </Button>
+        <Button variant="primary" onClick={handleApply}>
+          Áp dụng
         </Button>
       </Col>
     </Row>

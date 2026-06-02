@@ -546,102 +546,54 @@ const MyAccountPage = () => {
 
 
             {activeTab === TABS.TICKETS && (
-
-              <div className="my-account-panel">
-
-                {ticketsLoading ? (
-
-                  <LoadingState text="Đang tải vé của bạn..." />
-
-                ) : ticketsError ? (
-
+              <div className="my-account-panel position-relative">
+                <LoadingOverlay loading={ticketsLoading} text="Đang tải vé của bạn..." />
+                
+                {ticketsError ? (
                   <EmptyState
-
                     title="Không tải được vé"
-
                     description={ticketsError}
-
                   />
-
-                ) : tickets.length === 0 ? (
-
+                ) : (!ticketsLoading && tickets.length === 0) ? (
                   <EmptyState
-
                     title="Chưa có vé nào"
-
                     description="Khám phá sự kiện và đặt vé để xem tại đây."
-
                   />
-
                 ) : (
-
                   <div className="my-account-ticket-list">
-
                     {tickets.map((ticket) => {
-
                       const status = getTicketStatusDisplay(ticket.status);
-
                       const checkInLabel = ticket.checkInTime
-
                         ? formatTimestamp(ticket.checkInTime)
-
                         : 'Chưa check-in';
 
-
-
                       return (
-
                         <article key={ticket.id} className="my-account-ticket">
-
                           <div>
-
                             <h3>Sự kiện #{ticket.eventId}</h3>
-
                             <p className="my-account-ticket-meta">
-
                               Mã vé {ticket.ticketCode} · Đơn hàng #{ticket.orderId}
-
                             </p>
-
                             <p className="my-account-ticket-meta">Check-in: {checkInLabel}</p>
-
                           </div>
-
                           <div>
-
                             <span className={`badge-tag ${status.badgeClassName}`}>{status.label}</span>
-
                           </div>
-
                           <div className="my-account-ticket-actions">
-
                             <button
-
                               type="button"
-
                               className="btn-ghost"
-
                               onClick={() => navigate(`/event/${ticket.eventId}`)}
                             >
-
                               Xem sự kiện
-
                             </button>
-
                           </div>
-
                         </article>
-
                       );
-
                     })}
-
                   </div>
-
                 )}
-
               </div>
-
             )}
 
           </Col>

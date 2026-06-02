@@ -6,7 +6,7 @@ import CreateEventModal from './EventManagementModal/CreateEventModal';
 import UpdateEventModal from './EventManagementModal/UpdateEventModal';
 import { useEventMutations } from '../../hooks/event/useEventMutations';
 import { eventFilters } from '../../filters/eventFilter';
-import { LoadingState } from '../../components';
+import { LoadingOverlay } from '../../components';
 import OrganizerLayout from './layouts/OrganizerLayout';
 import { useCategory } from '../../hooks/useCategory';
 import { useEventStatus } from '../../hooks/event/useEventStatus';
@@ -33,8 +33,8 @@ const EventManagement = () => {
     show: false,
     title: '',
     message: '',
-    onConfirm: () => {},
-    onCancel: () => {},
+    onConfirm: () => { },
+    onCancel: () => { },
   });
 
   const closeConfirm = () => setConfirmConfig((prev) => ({ ...prev, show: false }));
@@ -131,14 +131,14 @@ const EventManagement = () => {
   );
 
   const hasActiveFilters = Boolean(
-      searchTerm ||
-      selectedCategory ||
-      selectedStatus ||
-      location ||
-      startDate ||
-      endDate ||
-      minPrice ||
-      maxPrice
+    searchTerm ||
+    selectedCategory ||
+    selectedStatus ||
+    location ||
+    startDate ||
+    endDate ||
+    minPrice ||
+    maxPrice
   );
 
   const activeFilterCount = [
@@ -329,9 +329,8 @@ const EventManagement = () => {
               type="button"
               role="tab"
               aria-selected={selectedCategory === option.value}
-              className={`organizer-category-chip${
-                selectedCategory === option.value ? ' is-active' : ''
-              }`}
+              className={`organizer-category-chip${selectedCategory === option.value ? ' is-active' : ''
+                }`}
               onClick={() => handleCategoryChip(option.value)}
             >
               {option.label}
@@ -356,103 +355,80 @@ const EventManagement = () => {
             o.value === '' ? { ...o, label: 'Tất cả lĩnh vực' } : o
           )}
           statusOptions={statusOptions}
-          onCategoryChange={(e) => {
-            setSelectedCategory(e.target.value);
-            resetPage();
-          }}
-          onStatusChange={(e) => {
-            setSelectedStatus(e.target.value);
-            resetPage();
-          }}
-          onLocationChange={(e) => {
-            setLocation(e.target.value);
-            resetPage();
-          }}
-          onStartDateChange={(e) => {
-            setStartDate(e.target.value);
-            resetPage();
-          }}
-          onEndDateChange={(e) => {
-            setEndDate(e.target.value);
-            resetPage();
-          }}
-          onMinPriceChange={(e) => {
-            setMinPrice(e.target.value);
-            resetPage();
-          }}
-          onMaxPriceChange={(e) => {
-            setMaxPrice(e.target.value);
-            resetPage();
-          }}
-          onSortDirectionChange={(e) => {
-            setSortDirection(e.target.value);
+          onApplyFilters={(filters) => {
+            setSelectedCategory(filters.selectedCategory);
+            setSelectedStatus(filters.selectedStatus);
+            setLocation(filters.location);
+            setStartDate(filters.startDate);
+            setEndDate(filters.endDate);
+            setMinPrice(filters.minPrice);
+            setMaxPrice(filters.maxPrice);
+            setSortDirection(filters.sortDirection);
             resetPage();
           }}
           onResetFilters={handleResetFilters}
         />
       )}
 
-      {eventsLoading && events.length === 0 ? (
-        <LoadingState text="Đang tải danh sách sự kiện..." />
-      ) : (
-        <div className="organizer-table-wrap">
-          <table className="organizer-table">
-            <thead>
+      <LoadingOverlay loading={eventsLoading} text="Đang tải danh sách sự kiện..." />
+
+      <div className="organizer-table-wrap">
+        <table className="organizer-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Tên sự kiện</th>
+              <th>Bắt đầu</th>
+              <th>Kết thúc</th>
+              <th>Trạng thái</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody>
+            {!eventsLoading && events.length === 0 ? (
               <tr>
-                <th>ID</th>
-                <th>Tên sự kiện</th>
-                <th>Bắt đầu</th>
-                <th>Kết thúc</th>
-                <th>Trạng thái</th>
-                <th>Hành động</th>
+                <td colSpan={6} className="organizer-table__empty">
+                  {hasActiveFilters
+                    ? 'Không tìm thấy sự kiện phù hợp với bộ lọc.'
+                    : 'Chưa có sự kiện. Bấm "Thêm sự kiện" để tạo mới.'}
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {events.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="organizer-table__empty">
-                    {hasActiveFilters
-                      ? 'Không tìm thấy sự kiện phù hợp với bộ lọc.'
-                      : 'Chưa có sự kiện. Bấm "Thêm sự kiện" để tạo mới.'}
+            ) : (
+              events.map((eventItem) => (
+                <tr key={eventItem.id}>
+                  <td className="text-muted">#{eventItem.id}</td>
+                  <td className="fw-semibold">{eventItem.name}</td>
+                  <td>{formatTimestamp(eventItem.startTime)}</td>
+                  <td>{formatTimestamp(eventItem.endTime)}</td>
+                  <td>
+                    <span className={`organizer-status ${getStatusClass(eventItem.status)}`}>
+                      {translateStatus(eventItem.status)}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="organizer-row-actions">
+                      <button
+                        type="button"
+                        className="organizer-btn-sm organizer-btn-sm--gold"
+                        onClick={() => handleClickUpdateButton(eventItem.id)}
+                      >
+                        Sửa
+                      </button>
+                      <button
+                        type="button"
+                        className="organizer-btn-sm organizer-btn-sm--danger"
+                        onClick={() => handleDeleteEvent(eventItem.id)}
+                      >
+                        Xóa
+                      </button>
+                    </div>
                   </td>
                 </tr>
-              ) : (
-                events.map((eventItem) => (
-                  <tr key={eventItem.id}>
-                    <td className="text-muted">#{eventItem.id}</td>
-                    <td className="fw-semibold">{eventItem.name}</td>
-                    <td>{formatTimestamp(eventItem.startTime)}</td>
-                    <td>{formatTimestamp(eventItem.endTime)}</td>
-                    <td>
-                      <span className={`organizer-status ${getStatusClass(eventItem.status)}`}>
-                        {translateStatus(eventItem.status)}
-                      </span>
-                    </td>
-                    <td>
-                      <div className="organizer-row-actions">
-                        <button
-                          type="button"
-                          className="organizer-btn-sm organizer-btn-sm--gold"
-                          onClick={() => handleClickUpdateButton(eventItem.id)}
-                        >
-                          Sửa
-                        </button>
-                        <button
-                          type="button"
-                          className="organizer-btn-sm organizer-btn-sm--danger"
-                          onClick={() => handleDeleteEvent(eventItem.id)}
-                        >
-                          Xóa
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
 
       {events.length > 0 && hasMore && (
         <div className="organizer-load-more">

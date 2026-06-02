@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import * as eventStatisticService from '../../services/eventStatisticService';
 import { mapEventStatisticResponse } from '../../mappers/eventStatisticMapper';
 import { eventStatisticFilters } from '../../filters/eventStatisticFilter';
@@ -9,7 +9,7 @@ export const useEventStatistic = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchEventStatistics = async (filters = {}) => {
+  const fetchEventStatistics = useCallback(async (filters = {}) => {
     setLoading(true);
     setError(null);
 
@@ -30,9 +30,9 @@ export const useEventStatistic = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const fetchEventStatisticsByMonth = async (month, year, filters = {}) => {
+  const fetchEventStatisticsByMonth = useCallback(async (month, year, filters = {}) => {
     setLoading(true);
     setError(null);
 
@@ -53,9 +53,9 @@ export const useEventStatistic = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const fetchEventStatisticsByQuarter = async (quarter, year, filters = {}) => {
+  const fetchEventStatisticsByQuarter = useCallback(async (quarter, year, filters = {}) => {
     setLoading(true);
     setError(null);
 
@@ -76,9 +76,9 @@ export const useEventStatistic = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const fetchEventStatisticsByYear = async (year, filters = {}) => {
+  const fetchEventStatisticsByYear = useCallback(async (year, filters = {}) => {
     setLoading(true);
     setError(null);
 
@@ -99,9 +99,9 @@ export const useEventStatistic = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const fetchEventStatisticByEventId = async (eventId) => {
+  const fetchEventStatisticByEventId = useCallback(async (eventId) => {
     setLoading(true);
     setError(null);
 
@@ -122,7 +122,7 @@ export const useEventStatistic = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   return {
     filters: eventStatisticFilters,

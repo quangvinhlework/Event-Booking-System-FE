@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Form, InputGroup, Modal, ProgressBar } from 'react-bootstrap';
-import { EmptyState, LoadingState } from '../../components';
+import { EmptyState, LoadingOverlay } from '../../components';
 import {
   TICKET_STATUS,
   TICKET_STATUS_OPTIONS,
@@ -104,6 +104,7 @@ const TicketManagement = () => {
         </>
       }
     >
+      <LoadingOverlay loading={isLoading} text="Đang tải danh sách vé..." />
       {ticketsError && (
         <div className="organizer-alert organizer-alert--danger organizer-alert--dismiss">
           <span>{ticketsError}</span>
@@ -181,9 +182,7 @@ const TicketManagement = () => {
         </div>
       </div>
 
-      {isLoading ? (
-        <LoadingState text="Đang tải danh sách vé..." />
-      ) : !selectedEventId ? (
+      {!selectedEventId && !isLoading ? (
         <EmptyState
           title="Chưa chọn sự kiện"
           description="Tạo hoặc chọn một sự kiện để xem vé."
@@ -204,7 +203,7 @@ const TicketManagement = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredTickets.length === 0 ? (
+              {(!isLoading || filteredTickets.length > 0) && filteredTickets.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="organizer-table__empty">
                     <EmptyState

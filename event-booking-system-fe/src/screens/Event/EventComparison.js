@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import EventHeaderCard from '../../components/event/EventHeaderCard';
-import { handleApi } from '../../api/apiHandler';
-import { axiosClient } from '../../api/axiosClient';
-import { EmptyState, LoadingState } from '../../components';
+import { LoadingState } from '../../components';
 import { showErrorToast } from '../../utils/toast';
 import * as eventService from '../../services/eventService';
 
