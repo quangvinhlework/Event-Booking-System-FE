@@ -81,7 +81,7 @@ const Header = () => {
           <Nav className="align-items-lg-center gap-2">
             {isAuthenticated ? (
               <>
-                {(user?.roleName === 'ROLE_USER' || user?.role === 'ROLE_USER') && (
+                {(user?.roleName === 'ROLE_CUSTOMER' || user?.role === 'ROLE_CUSTOMER') && (
                   <Button
                     variant={isDarkTheme ? 'outline-light' : 'outline-primary'}
                     size="sm"

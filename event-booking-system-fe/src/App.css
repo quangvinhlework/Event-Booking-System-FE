@@ -642,6 +642,13 @@ html {
   color: var(--app-ink);
 }
 
+@media (max-width: 767.98px) {
+  .app-page {
+    padding-top: 1.25rem;
+    padding-bottom: 2.5rem;
+  }
+}
+
 @media (max-width: 575.98px) {
   .ticket-page-actions,
   .ticket-page-actions .btn,
@@ -651,5 +658,9 @@ html {
 
   .ticket-detail-block dl {
     grid-template-columns: 1fr;
+  }
+
+  .auth-page {
+    padding: 2rem 1rem;
   }
 }

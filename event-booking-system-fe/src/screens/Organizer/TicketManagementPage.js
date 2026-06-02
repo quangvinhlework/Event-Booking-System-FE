@@ -20,6 +20,7 @@ const TicketManagement = () => {
   });
   const [selectedEventId, setSelectedEventId] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [localSearchTerm, setLocalSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [selectedTicket, setSelectedTicket] = useState(null);
 
@@ -76,6 +77,7 @@ const TicketManagement = () => {
 
   const resetFilters = () => {
     setSearchTerm('');
+    setLocalSearchTerm('');
     setStatusFilter('ALL');
   };
 
@@ -155,9 +157,14 @@ const TicketManagement = () => {
             <InputGroup>
               <InputGroup.Text>⌕</InputGroup.Text>
               <Form.Control
-                value={searchTerm}
+                value={localSearchTerm}
                 placeholder="Mã vé, mã đơn, attendee..."
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => setLocalSearchTerm(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    setSearchTerm(localSearchTerm);
+                  }
+                }}
               />
             </InputGroup>
           </div>

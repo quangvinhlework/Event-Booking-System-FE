@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Col, Container, Form, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { FilePickerWithList, FormField, LoadingOverlay } from '../../components';
-import { showErrorToast } from '../../utils/toast';
+import { showErrorToast, showSuccessToast } from '../../utils/toast';
 import { submitOrganizerApplication } from '../../services/organizerApplicationService';
 import './OrganizerApplicationPage.css';
 
@@ -33,7 +33,6 @@ const organizationTypeOptions = [
 const OrganizerApplicationPage = () => {
   const [application, setApplication] = useState(initialApplication);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
   const selectedFileCount = useMemo(
@@ -72,17 +71,8 @@ const OrganizerApplicationPage = () => {
   };
 
   const buildApplicationFormData = () => {
-    const formData = new FormData();
-
-    Object.entries(application).forEach(([key, value]) => {
-      if (Array.isArray(value)) {
-        value.forEach((file) => formData.append(key, file));
-        return;
-      }
-
-      formData.append(key, value.trim ? value.trim() : value);
-    });
-
+    const formData = {
+    };
     return formData;
   };
 
@@ -104,7 +94,6 @@ const OrganizerApplicationPage = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setSuccess('');
 
     const validationError = validateApplication();
     if (validationError) {
@@ -117,11 +106,10 @@ const OrganizerApplicationPage = () => {
     setLoading(false);
 
     if (!response.success) {
-      // apiHandler already dispatched error toast
       return;
     }
 
-    setSuccess(response.message || 'Hồ sơ đăng ký organizer đã được gửi.');
+    showSuccessToast('Hồ sơ đăng ký organizer đã được gửi.');
     setApplication(initialApplication);
   };
 
@@ -142,15 +130,6 @@ const OrganizerApplicationPage = () => {
         <Row className="g-4 align-items-start">
           <Col lg={8}>
             <div className="organizer-application-form">
-              {success && (
-                <div className="organizer-application-alert organizer-application-alert--success">
-                  <span>{success}</span>
-                  <button type="button" onClick={() => setSuccess('')} aria-label="Đóng">
-                    ×
-                  </button>
-                </div>
-              )}
-
               <Form onSubmit={handleSubmit}>
                 <section className="application-section">
                   <h2>Thông tin tổ chức</h2>

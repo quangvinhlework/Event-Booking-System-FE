@@ -174,7 +174,7 @@
 }
 
 .auth-layout__field .form-control::placeholder {
-  color: rgba(244, 239, 230, 0.25);
+  color: rgba(244, 239, 230, 0.6);
 }
 
 .auth-layout__field .form-control:focus {
@@ -281,5 +281,17 @@
 @media (min-width: 992px) {
   .auth-layout__mobile-eyebrow {
     display: none;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .auth-layout__form-side {
+    padding: 1.5rem 1rem;
+  }
+  .auth-layout__card {
+    padding: 1.5rem;
+  }
+  .auth-layout__card-title {
+    font-size: 1.75rem;
   }
 }

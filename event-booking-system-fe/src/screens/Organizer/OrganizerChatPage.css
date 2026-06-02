@@ -51,7 +51,7 @@
 }
 
 .org-chat-sidebar__search-input::placeholder {
-  color: var(--theme-muted);
+  color: rgba(244, 239, 230, 0.6);
 }
 
 .org-chat-sidebar__list {
@@ -432,7 +432,7 @@
 }
 
 .org-chat-conv__textarea::placeholder {
-  color: var(--theme-muted);
+  color: rgba(244, 239, 230, 0.6);
 }
 
 .org-chat-conv__textarea:focus {

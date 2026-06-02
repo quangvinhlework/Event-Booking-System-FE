@@ -199,7 +199,7 @@
 }
 
 .home-hero__search-input::placeholder {
-  color: rgba(244, 239, 230, 0.3);
+  color: rgba(244, 239, 230, 0.6);
 }
 
 .home-hero__search-submit {
@@ -451,6 +451,10 @@
   background: var(--theme-ink-soft);
   border-color: var(--theme-border);
   color: var(--theme-text);
+}
+
+.home-filters .form-control::placeholder {
+  color: rgba(244, 239, 230, 0.6);
 }
 
 .home-filters .form-control:focus,
@@ -883,6 +887,30 @@
   color: var(--theme-muted) !important;
 }
 
+@media (max-width: 767.98px) {
+  .home-hero {
+    padding: 4rem 0 3rem;
+    min-height: auto;
+  }
+
+  .home-hero__search-panel {
+    padding: 1.5rem;
+  }
+
+  .home-hero__quick-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .home-hero__quick-stats > div:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .home-catalog__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
 @media (max-width: 575.98px) {
   .featured-event__details {
     grid-template-columns: 1fr;
@@ -894,5 +922,18 @@
 
   .home-hero__search-submit {
     padding: 1rem;
+  }
+
+  .home-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .home-toolbar__filter,
+  .home-toolbar__compare,
+  .home-toolbar__clear {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
   }
 }

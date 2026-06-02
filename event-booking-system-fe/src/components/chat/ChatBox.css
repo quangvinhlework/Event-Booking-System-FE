@@ -356,7 +356,7 @@
 }
 
 .chat-input__field::placeholder {
-  color: var(--theme-muted);
+  color: rgba(244, 239, 230, 0.6);
 }
 
 .chat-input__field:focus {

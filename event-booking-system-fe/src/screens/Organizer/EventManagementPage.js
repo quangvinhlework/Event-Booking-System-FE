@@ -9,11 +9,10 @@ import { eventFilters } from '../../filters/eventFilter';
 import { LoadingState } from '../../components';
 import OrganizerLayout from './layouts/OrganizerLayout';
 import { useCategory } from '../../hooks/useCategory';
+import { useEventStatus } from '../../hooks/event/useEventStatus';
 import EventFilterPanel from '../Event/EventFilterPanel';
-import {
-  EVENT_STATUS_OPTIONS,
-  getEventStatusLabel,
-} from '../../constants/statuses/eventStatus';
+import ConfirmCard from '../../components/confirmation/ConfirmCard';
+import { showSuccessToast } from '../../utils/toast';
 
 const getStartOfDayTimestamp = (date) => {
   if (!date) return '';
@@ -30,8 +29,18 @@ const EventManagement = () => {
   const [showModifyModal, setShowModifyModal] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
+  const [confirmConfig, setConfirmConfig] = useState({
+    show: false,
+    title: '',
+    message: '',
+    onConfirm: () => {},
+    onCancel: () => {},
+  });
+
+  const closeConfirm = () => setConfirmConfig((prev) => ({ ...prev, show: false }));
 
   const [searchTerm, setSearchTerm] = useState('');
+  const [localSearchTerm, setLocalSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
   const [location, setLocation] = useState('');
@@ -84,6 +93,31 @@ const EventManagement = () => {
   const { createEvent, updateEvent, deleteEvent, publishEvent, endEvent, loading: mutationLoading } =
     useEventMutations();
   const { categories } = useCategory();
+  const { eventStatus } = useEventStatus();
+
+  const translateStatus = (name) => {
+    const s = String(name || '').toUpperCase();
+    const map = {
+      'DRAFT': 'Bản nháp',
+      'ONSALE': 'Đang bán',
+      'CANCELLED': 'Đã hủy',
+      'ENDED': 'Kết thúc',
+      'COMPLETED': 'Hoàn thành',
+      'REJECTED': 'Từ chối'
+    };
+    return map[s] || name;
+  };
+
+  const statusOptions = useMemo(
+    () => [
+      { label: 'Tất cả trạng thái', value: '' },
+      ...eventStatus.map((status) => ({
+        label: translateStatus(status.name),
+        value: status.name,
+      })),
+    ],
+    [eventStatus]
+  );
 
   const categoryOptions = useMemo(
     () => [
@@ -121,6 +155,7 @@ const EventManagement = () => {
 
   const handleResetFilters = () => {
     setSearchTerm('');
+    setLocalSearchTerm('');
     setSelectedCategory('');
     setSelectedStatus('');
     setLocation('');
@@ -142,6 +177,7 @@ const EventManagement = () => {
   const handleCreateEvent = async (eventData) => {
     try {
       await createEvent(eventData);
+      showSuccessToast('Tạo sự kiện thành công');
       setShowModal(false);
       setPage(1);
       fetchEvents();
@@ -153,6 +189,7 @@ const EventManagement = () => {
   const handleUpdateEvent = async (eventData, id) => {
     try {
       await updateEvent(eventData, id);
+      showSuccessToast('Cập nhật sự kiện thành công');
       setShowModifyModal(false);
       fetchEvents();
     } catch (err) {
@@ -160,15 +197,23 @@ const EventManagement = () => {
     }
   };
 
-  const handleDeleteEvent = async (id) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa sự kiện này?')) {
-      try {
-        await deleteEvent(id);
-        fetchEvents();
-      } catch (err) {
-        console.error('Error deleting event:', err);
-      }
-    }
+  const handleDeleteEvent = (id) => {
+    setConfirmConfig({
+      show: true,
+      title: 'Xác nhận xóa',
+      message: 'Bạn có chắc chắn muốn xóa sự kiện này?',
+      onConfirm: async () => {
+        closeConfirm();
+        try {
+          await deleteEvent(id);
+          showSuccessToast('Xóa sự kiện thành công');
+          fetchEvents();
+        } catch (err) {
+          console.error('Error deleting event:', err);
+        }
+      },
+      onCancel: closeConfirm,
+    });
   };
 
   const handleClickPublishButton = async (eventId) => {
@@ -196,10 +241,11 @@ const EventManagement = () => {
     }
   };
 
-  const getStatusClass = (status) => {
-    const s = String(status || '').toLowerCase();
-    if (s.includes('active') || s.includes('open') || s.includes('onsale')) return 'organizer-status--success';
-    if (s.includes('pending') || s.includes('draft')) return 'organizer-status--warning';
+  const getStatusClass = (statusName) => {
+    const name = String(statusName || '').toUpperCase();
+    if (['ONSALE', 'COMPLETED', 'ACTIVE', 'OPEN'].includes(name)) return 'organizer-status--success';
+    if (['DRAFT', 'PENDING'].includes(name)) return 'organizer-status--warning';
+    if (['CANCELLED', 'REJECTED'].includes(name)) return 'organizer-status--danger';
     return 'organizer-status--muted';
   };
 
@@ -221,11 +267,16 @@ const EventManagement = () => {
             <InputGroup>
               <InputGroup.Text>⌕</InputGroup.Text>
               <Form.Control
-                value={searchTerm}
+                value={localSearchTerm}
                 placeholder="Tên sự kiện..."
                 onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  resetPage();
+                  setLocalSearchTerm(e.target.value);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    setSearchTerm(localSearchTerm);
+                    resetPage();
+                  }
                 }}
               />
             </InputGroup>
@@ -239,7 +290,7 @@ const EventManagement = () => {
                 resetPage();
               }}
             >
-              {EVENT_STATUS_OPTIONS.map((option) => (
+              {statusOptions.map((option) => (
                 <option key={option.value || 'all'} value={option.value}>
                   {option.label}
                 </option>
@@ -304,7 +355,7 @@ const EventManagement = () => {
           categoryOptions={categoryOptions.map((o) =>
             o.value === '' ? { ...o, label: 'Tất cả lĩnh vực' } : o
           )}
-          statusOptions={EVENT_STATUS_OPTIONS}
+          statusOptions={statusOptions}
           onCategoryChange={(e) => {
             setSelectedCategory(e.target.value);
             resetPage();
@@ -374,7 +425,7 @@ const EventManagement = () => {
                     <td>{formatTimestamp(eventItem.endTime)}</td>
                     <td>
                       <span className={`organizer-status ${getStatusClass(eventItem.status)}`}>
-                        {getEventStatusLabel(eventItem.status)}
+                        {translateStatus(eventItem.status)}
                       </span>
                     </td>
                     <td>
@@ -432,6 +483,13 @@ const EventManagement = () => {
         onPublish={handleClickPublishButton}
         onEnd={handleClickEndButton}
         categories={categories}
+      />
+      <ConfirmCard
+        show={confirmConfig.show}
+        title={confirmConfig.title}
+        message={confirmConfig.message}
+        onConfirm={confirmConfig.onConfirm}
+        onCancel={confirmConfig.onCancel}
       />
     </OrganizerLayout>
   );

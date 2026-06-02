@@ -1,6 +1,5 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../hooks/useAuth';
 import '../OrganizerPage.css';
 
 const NAV_ITEMS = [
@@ -67,7 +66,6 @@ export const OrganizerStatCard = ({ label, value, hint, variant = 'default' }) =
 
 const OrganizerLayout = ({ eyebrow = 'Organizer', title, subtitle, actions, children }) => {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
 
   return (
     <div className="organizer-shell page-shell">
@@ -96,12 +94,6 @@ const OrganizerLayout = ({ eyebrow = 'Organizer', title, subtitle, actions, chil
           <button type="button" className="organizer-sidebar__ghost" onClick={() => navigate('/')}>
             ← Về trang chủ
           </button>
-          <div className="organizer-sidebar__user">
-            <span>{user?.fullName || 'Tổ chức viên'}</span>
-            <button type="button" onClick={logout}>
-              Đăng xuất
-            </button>
-          </div>
         </div>
       </aside>
 

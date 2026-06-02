@@ -41,7 +41,7 @@ const TAB_ITEMS = [
 
 const ROLE_LABELS = {
 
-  ROLE_USER: 'Người dùng',
+  ROLE_CUSTOMER: 'Người dùng',
 
   ROLE_ORGANIZER: 'Tổ chức viên',
 
@@ -87,7 +87,7 @@ const MyAccountPage = () => {
 
   const { tickets, loading: ticketsLoading, error: ticketsError } = useMyTickets(
     EMPTY_TICKET_FILTERS,
-    { autoFetch: activeTab === TABS.TICKETS }
+    { autoFetch: true }
   );
 
   const [fullName, setFullName] = useState('');
@@ -119,7 +119,7 @@ const MyAccountPage = () => {
 
   const displayAvatar = avatarPreview || user?.avatarUrl || '';
 
-  const isUserRole = user?.roleName === 'ROLE_USER';
+  const isUserRole = user?.roleName === 'ROLE_CUSTOMER';
 
 
 

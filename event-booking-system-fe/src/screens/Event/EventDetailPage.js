@@ -6,6 +6,7 @@ import ChatBox from '../../components/chat/chatBox';
 import { useEvent } from '../../hooks/event/useEvent';
 import { useOrder } from '../../hooks/order/useOrder';
 import { formatTimestamp } from '../../utils/dateConvert';
+import ConfirmCard from '../../components/confirmation/ConfirmCard';
 import './EventDetailPage.css';
 
 const EventDetailPage = () => {
@@ -15,6 +16,26 @@ const EventDetailPage = () => {
   const { event, loading, error } = useEvent(id);
   const [quantity, setQuantity] = useState(1);
   const { createOrder, loading: ordering, error: orderError } = useOrder(id);
+
+  const [confirmConfig, setConfirmConfig] = useState({
+    show: false,
+    title: '',
+    message: '',
+    onConfirm: () => {},
+    onCancel: () => {},
+  });
+
+  const closeConfirm = () => setConfirmConfig((prev) => ({ ...prev, show: false }));
+
+  const showAlert = (message) => {
+    setConfirmConfig({
+      show: true,
+      title: 'Thông báo',
+      message,
+      onConfirm: closeConfirm,
+      onCancel: closeConfirm,
+    });
+  };
 
   useEffect(() => {
     setSelectedMedia(event?.eventMedias?.[0] || null);
@@ -62,7 +83,7 @@ const EventDetailPage = () => {
       }
       // Thông báo đơn giản, có thể thay bằng toast sau này
       // eslint-disable-next-line no-alert
-      alert(err.message || 'Đặt vé thất bại');
+      showAlert(err.message || 'Đặt vé thất bại');
     }
   };
 
@@ -297,6 +318,14 @@ const EventDetailPage = () => {
 
       {/* Chat widget — fixed bottom-right */}
       <ChatBox eventId={id} eventName={event.name} />
+      
+      <ConfirmCard
+        show={confirmConfig.show}
+        title={confirmConfig.title}
+        message={confirmConfig.message}
+        onConfirm={confirmConfig.onConfirm}
+        onCancel={confirmConfig.onCancel}
+      />
     </div>
   );
 };

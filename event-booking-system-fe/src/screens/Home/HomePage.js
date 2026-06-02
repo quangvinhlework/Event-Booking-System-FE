@@ -9,6 +9,7 @@ import { eventFilters } from '../../filters/eventFilter';
 import EventFilterPanel from '../Event/EventFilterPanel';
 import EventCard from '../../components/event/EventCard';
 import FeaturedEvent from '../../components/event/FeaturedEvent';
+import ConfirmCard from '../../components/confirmation/ConfirmCard';
 import { ROUTES } from '../../config/routes';
 import './HomePage.css';
 
@@ -52,6 +53,7 @@ const HomePage = () => {
   const [searchParams] = useSearchParams();
 
   const [searchTerm, setSearchTerm] = useState(() => searchParams.get('name') || '');
+  const [localSearchTerm, setLocalSearchTerm] = useState(() => searchParams.get('name') || '');
   const [selectedCategory, setSelectedCategory] = useState(() => searchParams.get('cateId') || '');
   const [location, setLocation] = useState(() => searchParams.get('location') || '');
   const [startDate, setStartDate] = useState(() => searchParams.get('startDate') || '');
@@ -66,6 +68,25 @@ const HomePage = () => {
   const [showFilters, setShowFilters] = useState(false);
 
   const [compareList, setCompareList] = useState(readCompareList);
+  const [confirmConfig, setConfirmConfig] = useState({
+    show: false,
+    title: '',
+    message: '',
+    onConfirm: () => { },
+    onCancel: () => { },
+  });
+
+  const closeConfirm = () => setConfirmConfig((prev) => ({ ...prev, show: false }));
+
+  const showAlert = (message) => {
+    setConfirmConfig({
+      show: true,
+      title: 'Thông báo',
+      message,
+      onConfirm: closeConfirm,
+      onCancel: closeConfirm,
+    });
+  };
 
   useEffect(() => {
     if (compareList.length) {
@@ -179,6 +200,7 @@ const HomePage = () => {
 
   const handleResetFilters = () => {
     setSearchTerm('');
+    setLocalSearchTerm('');
     setSelectedCategory('');
     setLocation('');
     setStartDate('');
@@ -208,15 +230,15 @@ const HomePage = () => {
 
     const category_id = getCategoryId(event);
     if (!category_id) {
-      window.alert('Không xác định được lĩnh vực của sự kiện này để so sánh.');
+      showAlert('Không xác định được lĩnh vực của sự kiện này để so sánh.');
       return;
     }
     if (compareList.length >= MAX_COMPARE_EVENTS) {
-      window.alert('Bạn chỉ có thể so sánh tối đa 3 sự kiện.');
+      showAlert('Bạn chỉ có thể so sánh tối đa 3 sự kiện.');
       return;
     }
     if (compareList.length && compareList[0].category_id !== category_id) {
-      window.alert('Chỉ cho phép so sánh các sự kiện thuộc cùng một lĩnh vực.');
+      showAlert('Chỉ cho phép so sánh các sự kiện thuộc cùng một lĩnh vực.');
       return;
     }
 
@@ -228,7 +250,7 @@ const HomePage = () => {
 
   const handleGoToComparison = () => {
     if (compareList.length < 2) {
-      window.alert('Vui lòng chọn từ 2 đến 3 sự kiện để tiến hành so sánh.');
+      showAlert('Vui lòng chọn từ 2 đến 3 sự kiện để tiến hành so sánh.');
       return;
     }
     navigate(ROUTES.EVENT_COMPARISON);
@@ -294,14 +316,27 @@ const HomePage = () => {
                 type="search"
                 className="home-hero__search-input"
                 placeholder="Tên sự kiện, địa điểm..."
-                value={searchTerm}
+                value={localSearchTerm}
                 onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setPage(1);
+                  setLocalSearchTerm(e.target.value);
                 }}
-                onKeyDown={(e) => e.key === 'Enter' && scrollToCatalog()}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    setSearchTerm(localSearchTerm);
+                    setPage(1);
+                    scrollToCatalog();
+                  }
+                }}
               />
-              <button type="button" className="home-hero__search-submit" onClick={scrollToCatalog}>
+              <button
+                type="button"
+                className="home-hero__search-submit"
+                onClick={() => {
+                  setSearchTerm(localSearchTerm);
+                  setPage(1);
+                  scrollToCatalog();
+                }}
+              >
                 Khám phá
               </button>
             </div>
@@ -492,6 +527,13 @@ const HomePage = () => {
           )}
         </Container>
       </main>
+      <ConfirmCard
+        show={confirmConfig.show}
+        title={confirmConfig.title}
+        message={confirmConfig.message}
+        onConfirm={confirmConfig.onConfirm}
+        onCancel={confirmConfig.onCancel}
+      />
     </div>
   );
 };

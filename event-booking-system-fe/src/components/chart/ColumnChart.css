@@ -58,11 +58,10 @@
 .column-chart__bar-track {
   flex: 1;
   width: 44px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  position: relative;
   min-height: 120px;
   transition: width 0.2s ease;
+  margin: 0 auto;
 }
 
 .column-chart__item:hover .column-chart__bar-track {
@@ -75,7 +74,9 @@
   min-height: 4px;
   transition: height 0.4s cubic-bezier(0.22, 0.61, 0.36, 1), filter 0.2s ease,
     box-shadow 0.2s ease;
-  position: relative;
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }
 
 .column-chart__item:hover .column-chart__bar {

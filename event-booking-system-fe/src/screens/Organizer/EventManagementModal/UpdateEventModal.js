@@ -14,7 +14,6 @@ import {
   formStateToUpdatePayload,
   getEditableFields,
 } from '../../../utils/eventUpdateForm';
-import { EVENT_STATUS } from '../../../constants/statuses/eventStatus';
 
 const UpdateEventModal = ({
   show,
@@ -24,14 +23,16 @@ const UpdateEventModal = ({
   onEnd,
   updateLoading,
   eventData,
-  categories = []
+  categories = [],
+  eventStatus = []
 }) => {
   const [form, setForm] = useState(EMPTY_EVENT_FORM);
   const [showConfirmPublishCard, setShowConfirmPublishCard] = useState(false);
   const [showConfirmEndCard, setShowConfirmEndCard] = useState(false);
 
 
-  const editableFields = getEditableFields(eventData?.status);
+  const currentStatusName = eventData?.status;
+  const editableFields = getEditableFields(currentStatusName);
   const isEditable = (field) => editableFields.includes(field);
   const readOnlyClass = (field) => (!isEditable(field) ? 'opacity-50' : '');
 
@@ -309,17 +310,17 @@ const UpdateEventModal = ({
           </Modal.Body>
 
           <Modal.Footer>
-            {EVENT_STATUS.DRAFT === eventData?.status && (
+            {currentStatusName === 'DRAFT' && (
               <Button variant="success" onClick={() => setShowConfirmPublishCard(true)} disabled={updateLoading}>
                 Đăng sự kiện
               </Button>
             )}
-            {EVENT_STATUS.ONSALE === eventData?.status && (
+            {currentStatusName === 'ONSALE' && (
               <Button variant="danger" onClick={() => setShowConfirmEndCard(true)} disabled={updateLoading}>
                 Dừng sự kiện
               </Button>
             )}
-            
+
             <Button variant="secondary" onClick={onHide}>
               Hủy
             </Button>

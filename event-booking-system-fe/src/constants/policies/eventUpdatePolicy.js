@@ -1,6 +1,5 @@
-import { EVENT_STATUS } from "../statuses/eventStatus";
 export const EVENT_EDITABLE_FIELDS = {
-    [EVENT_STATUS.DRAFT]: [
+    "DRAFT": [
       "name",
       "description",
       "startTime",
@@ -14,7 +13,7 @@ export const EVENT_EDITABLE_FIELDS = {
       "deletedMediaUrls"
     ],
   
-    [EVENT_STATUS.ONSALE]: [
+    "ONSALE": [
       "description",
       "name",
       "location",
@@ -24,7 +23,7 @@ export const EVENT_EDITABLE_FIELDS = {
       "deletedMediaUrls"
     ],
   
-    [EVENT_STATUS.CANCELLED]: []
+    "CANCELLED": []
   };
 
 export default EVENT_EDITABLE_FIELDS;

@@ -155,6 +155,7 @@ const OrganizerChatPage = () => {
   const { events, loading: eventsLoading } = useOrganizerEvent();
   const [activeRoomId, setActiveRoomId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [localSearchQuery, setLocalSearchQuery] = useState('');
 
   // Map event IDs from organizer's events
   const eventIds = useMemo(
@@ -229,8 +230,13 @@ const OrganizerChatPage = () => {
               <input
                 type="text"
                 placeholder="Tìm kiếm sự kiện..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                value={localSearchQuery}
+                onChange={(e) => setLocalSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    setSearchQuery(localSearchQuery);
+                  }
+                }}
                 className="org-chat-sidebar__search-input"
               />
             </div>
