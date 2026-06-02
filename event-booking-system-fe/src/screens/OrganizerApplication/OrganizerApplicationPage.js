@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Col, Container, Form, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { FilePickerWithList, FormField, LoadingOverlay } from '../../components';
+import { FormField, LoadingOverlay } from '../../components';
 import { showErrorToast, showSuccessToast } from '../../utils/toast';
 import { submitOrganizerApplication } from '../../services/organizerApplicationService';
 import './OrganizerApplicationPage.css';
@@ -55,40 +55,13 @@ const OrganizerApplicationPage = () => {
     }));
   };
 
-  const handleFileChange = (event) => {
-    const { name, files } = event.target;
-    setApplication((prev) => ({
-      ...prev,
-      [name]: [...prev[name], ...Array.from(files)],
-    }));
-  };
-
-  const removeFile = (fieldName, indexToRemove) => {
-    setApplication((prev) => ({
-      ...prev,
-      [fieldName]: prev[fieldName].filter((_, index) => index !== indexToRemove),
-    }));
-  };
-
   const buildApplicationFormData = () => {
-    const formData = {
-    };
+    const formData = new FormData();
+    formData.append("company", application.organizationName)
     return formData;
   };
 
   const validateApplication = () => {
-    if (application.phoneNumber.trim().length < 9) {
-      return 'Vui lòng nhập số điện thoại hợp lệ.';
-    }
-
-    if (!application.businessLicense.length) {
-      return 'Vui lòng tải lên giấy phép kinh doanh hoặc giấy tờ chứng minh tổ chức.';
-    }
-
-    if (!application.identityDocuments.length) {
-      return 'Vui lòng tải lên giấy tờ định danh của người đại diện.';
-    }
-
     return '';
   };
 
@@ -203,128 +176,6 @@ const OrganizerApplicationPage = () => {
                         onChange={handleInputChange}
                         placeholder="Mô tả lĩnh vực hoạt động, quy mô và lý do muốn trở thành organizer"
                         required
-                      />
-                    </Col>
-                  </Row>
-                </section>
-
-                <section className="application-section">
-                  <h2>Người đại diện</h2>
-                  <Row className="g-3">
-                    <Col md={4}>
-                      <FormField
-                        controlId="representativeName"
-                        label="Họ và tên"
-                        name="representativeName"
-                        value={application.representativeName}
-                        onChange={handleInputChange}
-                        placeholder="Người chịu trách nhiệm hồ sơ"
-                        required
-                      />
-                    </Col>
-
-                    <Col md={4}>
-                      <FormField
-                        controlId="email"
-                        label="Email liên hệ"
-                        type="email"
-                        name="email"
-                        value={application.email}
-                        onChange={handleInputChange}
-                        placeholder="contact@example.com"
-                        required
-                      />
-                    </Col>
-
-                    <Col md={4}>
-                      <FormField
-                        controlId="phoneNumber"
-                        label="Số điện thoại"
-                        name="phoneNumber"
-                        value={application.phoneNumber}
-                        onChange={handleInputChange}
-                        placeholder="090..."
-                        required
-                      />
-                    </Col>
-                  </Row>
-                </section>
-
-                <section className="application-section">
-                  <h2>Kinh nghiệm tổ chức</h2>
-                  <Row className="g-3">
-                    <Col md={6}>
-                      <FormField
-                        controlId="eventExperience"
-                        label="Kinh nghiệm đã có"
-                        as="textarea"
-                        rows={4}
-                        name="eventExperience"
-                        value={application.eventExperience}
-                        onChange={handleInputChange}
-                        placeholder="Ví dụ: đã tổ chức workshop, concert, webinar..."
-                        required
-                      />
-                    </Col>
-
-                    <Col md={6}>
-                      <FormField
-                        controlId="expectedEventTypes"
-                        label="Loại sự kiện dự kiến tạo"
-                        as="textarea"
-                        rows={4}
-                        name="expectedEventTypes"
-                        value={application.expectedEventTypes}
-                        onChange={handleInputChange}
-                        placeholder="Ví dụ: âm nhạc, giáo dục, cộng đồng, triển lãm..."
-                        required
-                      />
-                    </Col>
-                  </Row>
-                </section>
-
-                <section className="application-section">
-                  <h2>Tài liệu xác minh</h2>
-                  <Row className="g-3">
-                    <Col md={6}>
-                      <FilePickerWithList
-                        label="Giấy phép / giấy tờ tổ chức"
-                        name="businessLicense"
-                        files={application.businessLicense}
-                        accept="image/*,.pdf"
-                        onChange={handleFileChange}
-                        onRemove={removeFile}
-                        removeLabel="Xóa tài liệu"
-                      />
-                      <Form.Text className="text-muted">
-                        Chấp nhận ảnh hoặc PDF.
-                      </Form.Text>
-                    </Col>
-
-                    <Col md={6}>
-                      <FilePickerWithList
-                        label="Giấy tờ định danh người đại diện"
-                        name="identityDocuments"
-                        files={application.identityDocuments}
-                        accept="image/*,.pdf"
-                        onChange={handleFileChange}
-                        onRemove={removeFile}
-                        removeLabel="Xóa tài liệu"
-                      />
-                      <Form.Text className="text-muted">
-                        Có thể tải mặt trước và mặt sau.
-                      </Form.Text>
-                    </Col>
-
-                    <Col md={12}>
-                      <FilePickerWithList
-                        label="Hồ sơ năng lực / hình ảnh sự kiện đã tổ chức (tùy chọn)"
-                        name="portfolioFiles"
-                        files={application.portfolioFiles}
-                        accept="image/*,.pdf"
-                        onChange={handleFileChange}
-                        onRemove={removeFile}
-                        removeLabel="Xóa tài liệu"
                       />
                     </Col>
                   </Row>
