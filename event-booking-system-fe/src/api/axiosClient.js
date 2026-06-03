@@ -1,12 +1,14 @@
 import axios from "axios";
 
+const API_BASE_URL = `${process.env.REACT_APP_API_URL}/api`;
+
 const axiosClient = axios.create({
-  baseURL: "http://localhost:8080/nvtt_lqv/api",
+  baseURL: API_BASE_URL,
 });
 
 const authAxiosClient = (token) => {
   const instance = axios.create({
-    baseURL: "http://localhost:8080/nvtt_lqv/api",
+    baseURL: API_BASE_URL,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -16,7 +18,7 @@ const authAxiosClient = (token) => {
 
 const axiosClientMultipart = () => {
   const instance = axios.create({
-    baseURL: "http://localhost:8080/nvtt_lqv/api",
+    baseURL: API_BASE_URL,
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -26,7 +28,7 @@ const axiosClientMultipart = () => {
 
 const authAxiosClientMultipart = (token) => {
   const instance = axios.create({
-    baseURL: "http://localhost:8080/nvtt_lqv/api",
+    baseURL: API_BASE_URL,
     headers: {
       "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${token}`,
@@ -36,7 +38,7 @@ const authAxiosClientMultipart = (token) => {
 }
 
 const axiosClientJsonBody = axios.create({
-  baseURL: "http://localhost:8080/nvtt_lqv/api",
+  baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   }
